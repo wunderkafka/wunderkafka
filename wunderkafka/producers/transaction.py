@@ -9,7 +9,7 @@ class EOSTransaction:
     def __init__(
         self, 
         producer: AbstractProducer,
-        consumer: AbstractConsumer| None = None,
+        consumer: Optional[AbstractConsumer] = None,
     ) -> None:
         self.producer = producer
         self.consumer = consumer
