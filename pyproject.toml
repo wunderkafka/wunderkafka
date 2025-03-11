@@ -173,7 +173,11 @@ dev-dependencies = [
     "authlib>=1.5.1",
     "cachetools>=5.5.2",
     "httpx>=0.28.1",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.6.7",
+    "markdown-include==0.8.1",
     "pytest>=8.3.4",
     "requests>=2.32.3",
     "ruff>=0.9.7",
+    "mkdocstrings[python]>=0.29.0",
 ]

@@ -44,7 +44,7 @@ More differences are on the way
 
 Multiple subscriptions example:
 
-{!../../examples/consumer_avro_multiple_subscriptions.py!}
+{!../examples/consumer_avro_multiple_subscriptions.py!}
 
 Let's move on.
 

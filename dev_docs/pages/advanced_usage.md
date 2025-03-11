@@ -1,6 +1,6 @@
 # Advanced Examples
 
-As you've just seen in [`quickstart`](/pages/quickstart/), we
+As you've just seen in [`quickstart`](./quickstart.md), we
 couldn't eliminate all the boilerplate which is needed to start
 consumer/producer with ease.
 
@@ -48,3 +48,19 @@ It's also simple enough to redefine every part of the (de)serializing
 pipeline with specific implementation. For example, if there is need to
 keep message's schema in message itself, it is possible to define stub
 instead of schema registry and write own header (un)packer.
+
+## Exactly-once semantics
+
+Sometimes you need to be sure that each message is sent and delivered exactly once. You
+can achieve this with exactly-once semantics. And we give you a simple way to do this!
+
+```python
+{!../examples/eos/producer_and_consumer.py!}
+```
+
+It also can be used with producer only:
+
+
+```python
+{!../examples/eos/producer_only.py!}
+```

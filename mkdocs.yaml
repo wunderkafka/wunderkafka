@@ -26,8 +26,9 @@ plugins:
       handlers:
         python:
           options:
-            docstring_style: sphinx
-            annotation_path: brief
+            extra:
+              docstring_style: sphinx
+              annotation_path: brief
 
 markdown_extensions:
   - pymdownx.highlight:
