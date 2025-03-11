@@ -180,4 +180,5 @@ dev-dependencies = [
     "requests>=2.32.3",
     "ruff>=0.9.7",
     "mkdocstrings[python]>=0.29.0",
+    "dirty-equals>=0.9.0",
 ]

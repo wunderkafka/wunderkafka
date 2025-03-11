@@ -1,5 +1,6 @@
 import pytest
 from pydantic import ValidationError
+from dirty_equals import IsPartialDict
 
 from tests.smoke.conftest import RawConfig
 from wunderkafka import BytesConsumer, BytesProducer, ConsumerConfig, ProducerConfig, SRConfig
@@ -53,3 +54,53 @@ def test_sr_required_url() -> None:
 def test_group_id_required() -> None:
     with pytest.raises(ValidationError):
         ConsumerConfig()
+
+
+@pytest.mark.parametrize(
+    ('cfg_kwargs', 'expected_config'),
+    [
+        (
+            {'transactional_id': 'test'},
+            {
+                'transactional.id': 'test',
+                'enable.idempotence': True,
+                'max.in.flight': 5,
+                'max.in.flight.requests.per.connection': 5,
+                'message.timeout.ms': 60_000,
+
+            }
+        ),
+        (
+            {
+                'transactional_id': 'test',
+                'max_in_flight': 3,
+            },
+            {
+                'transactional.id': 'test',
+                'enable.idempotence': True,
+                'max.in.flight': 3,
+                'max.in.flight.requests.per.connection': 3,
+                'message.timeout.ms': 60_000,
+
+            }
+        ),
+        (
+            {
+                'transactional_id': 'test',
+                'message_timeout_ms': 1_000,
+            },
+            {
+                'transactional.id': 'test',
+                'enable.idempotence': True,
+                'max.in.flight': 5,
+                'max.in.flight.requests.per.connection': 5,
+                'message.timeout.ms': 1_000,
+
+            }
+        )
+    ]
+)
+def test_config_with_transactional_id(cfg_kwargs: dict, expected_config: dict) -> None:
+    cfg = ProducerConfig(**cfg_kwargs)
+
+    assert cfg.dict() == IsPartialDict(expected_config)

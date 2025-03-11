@@ -1,19 +1,19 @@
-from datetime import datetime
-
+from confluent_kafka import TopicPartition
 from wunderkafka.config.generated import enums
 from wunderkafka.config.rdkafka import ConsumerConfig, ProducerConfig
-from wunderkafka.consumers import BytesConsumer
+from wunderkafka.consumers.bytes import BytesConsumer
 from wunderkafka.producers.bytes import BytesProducer
 from wunderkafka.producers.transaction import EOSTransaction
 
 
 def main():
     producer_config = ProducerConfig(
-        bootstrap_servers='kafka-broker-01.my_domain.com:9093',
-        transactional_id='eos_transaction_example'
+        bootstrap_servers='localhost:9092',
+        transactional_id='eos_transaction_example',
     )
     consumer_config = ConsumerConfig(
-        bootstrap_servers='kafka-broker-01.my_domain.com:9093',
+        bootstrap_servers='localhost:9092',
+        group_id='eos',
         auto_offset_reset=enums.AutoOffsetReset.earliest,
         # Do not advance committed offsets outside of the transaction.
         # Consumer offsets are committed along with the transaction
@@ -25,8 +25,8 @@ def main():
 
     producer = BytesProducer(producer_config)
     consumer = BytesConsumer(consumer_config)
-
-    consumer.subscribe(['input_topic'], with_timedelta=datetime.timedelta(hours=10))
+    producer.init_transactions()
+    consumer.assign([TopicPartition('input_topic', 0)])
 
     with EOSTransaction(producer, consumer):
         msgs = consumer.batch_poll()

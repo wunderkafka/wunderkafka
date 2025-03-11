@@ -50,6 +50,12 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
             logger.warning('Excluding {}={} as windows-only even it was set to default'.format(
                 property_name, property_value,
             ))
+    if dct.get('transactional.id') is not None:
+        dct['enable.idempotence'] = True
+        dct['max.in.flight'] = min(dct['max.in.flight'], 5)
+        dct['max.in.flight.requests.per.connection'] = min(dct['max.in.flight.requests.per.connection'], dct['max.in.flight'])
+        dct['message.timeout.ms'] = min(dct['message.timeout.ms'], dct['transaction.timeout.ms'])
+
     return dct
 
 
