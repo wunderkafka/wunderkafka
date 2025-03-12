@@ -1,6 +1,6 @@
 import pytest
-from pydantic import ValidationError
 from dirty_equals import IsPartialDict
+from pydantic import ValidationError
 
 from tests.smoke.conftest import RawConfig
 from wunderkafka import BytesConsumer, BytesProducer, ConsumerConfig, ProducerConfig, SRConfig

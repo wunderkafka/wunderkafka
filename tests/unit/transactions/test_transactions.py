@@ -1,13 +1,12 @@
 from confluent_kafka import TopicPartition
-from confluent_kafka.schema_registry.json_schema import JSONDeserializer
 
-from wunderkafka.serdes.schemaless.json.deserializers import SchemaLessJSONDeserializer
-from wunderkafka.serdes.schemaless.json.serializers import SchemaLessJSONSerializer
-from wunderkafka.transactions import EOSTransaction
 from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
 from wunderkafka.producers.constructor import HighLevelSerializingProducer
+from wunderkafka.serdes.schemaless.json.deserializers import SchemaLessJSONDeserializer
+from wunderkafka.serdes.schemaless.json.serializers import SchemaLessJSONSerializer
 from wunderkafka.tests.consumer import TestConsumer
 from wunderkafka.tests.producer import TestProducer
+from wunderkafka.transactions import EOSTransaction
 
 
 def test_transaction(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
