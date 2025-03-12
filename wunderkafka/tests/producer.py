@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Union
+from unittest.mock import Mock
 
 from wunderkafka.callbacks import error_callback
 from wunderkafka.producers.bytes import BytesProducer
@@ -14,15 +15,19 @@ class Message:
 
 
 class TestProducer(BytesProducer):
+    init_transactions: Mock
+    begin_transaction: Mock
+    commit_transaction: Mock
+    abort_transaction: Mock
+    send_offsets_to_transaction: Mock
 
     def __init__(self) -> None:
         self.sent: list[Message] = []
-
-    def init_transactions(*args, **kwargs): ...
-    def begin_transaction(*args, **kwargs): ...
-    def commit_transaction(*args, **kwargs): ...
-    def abort_transaction(*args, **kwargs): ...
-    def send_offsets_to_transaction(*args, **kwargs): ...
+        self.init_transactions = Mock()
+        self.begin_transaction = Mock()
+        self.commit_transaction = Mock()
+        self.abort_transaction = Mock()
+        self.send_offsets_to_transaction = Mock()
 
     def send_message(
         self,

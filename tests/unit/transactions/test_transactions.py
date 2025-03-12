@@ -1,8 +1,11 @@
 from confluent_kafka import TopicPartition
+from confluent_kafka.schema_registry.json_schema import JSONDeserializer
 
+from wunderkafka.serdes.schemaless.json.deserializers import SchemaLessJSONDeserializer
+from wunderkafka.serdes.schemaless.json.serializers import SchemaLessJSONSerializer
+from wunderkafka.transactions import EOSTransaction
 from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
 from wunderkafka.producers.constructor import HighLevelSerializingProducer
-from wunderkafka.producers.transaction import EOSTransaction
 from wunderkafka.tests.consumer import TestConsumer
 from wunderkafka.tests.producer import TestProducer
 
@@ -54,8 +57,14 @@ def test_transaction_with_raise(patched_producer: TestProducer, patched_consumer
 
 
 def test_serializing_consumer_producer(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
-    producer = HighLevelSerializingProducer(patched_producer, None, None, serializer=dict)
-    consumer = HighLevelDeserializingConsumer(patched_consumer, None, None, deserializer=dict)
+    producer = HighLevelSerializingProducer(
+        patched_producer, 
+        None, 
+        None, 
+        value_serializer=SchemaLessJSONSerializer(),
+        key_serializer=SchemaLessJSONSerializer(),
+    )
+    consumer = HighLevelDeserializingConsumer(patched_consumer, None, None, deserializer=SchemaLessJSONDeserializer())
 
     with EOSTransaction(producer, consumer): ...
 

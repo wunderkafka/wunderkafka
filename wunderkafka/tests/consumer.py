@@ -1,5 +1,6 @@
 import datetime
 from typing import Any, Optional, Union
+from unittest.mock import Mock
 
 from confluent_kafka import KafkaError
 
@@ -34,8 +35,15 @@ class Message:
 
 
 class TestConsumer(BytesConsumer):
+    assignment: Mock
+    position: Mock 
+    consumer_group_metadata: Mock
+
     def __init__(self, msgs: list[Message]) -> None:
         self._msgs = msgs
+        self.assignment = Mock()
+        self.position = Mock()
+        self.consumer_group_metadata = Mock()
 
     def subscribe(
         self,
