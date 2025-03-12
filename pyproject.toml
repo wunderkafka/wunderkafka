@@ -181,5 +181,5 @@ dev-dependencies = [
     "ruff>=0.9.7",
     "mkdocstrings[python]>=0.29.0",
     "dirty-equals>=0.9.0",
-    "mypy>=1.15.0",
+    "mypy==1.10.0",
 ]
