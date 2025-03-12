@@ -1,39 +1,31 @@
-from unittest.mock import Mock, patch
-
 from confluent_kafka import TopicPartition
 
+from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
+from wunderkafka.producers.constructor import HighLevelSerializingProducer
 from wunderkafka.producers.transaction import EOSTransaction
 from wunderkafka.tests.consumer import TestConsumer
 from wunderkafka.tests.producer import TestProducer
 
 
-def test_transaction(topic: str, patched_producer: TestProducer):
-    consumer = TestConsumer([])
-    consumer.assignment = Mock()
-    consumer.assignment.return_value = [TopicPartition(topic, 0)]
-    consumer.position = Mock()
-    consumer.position.return_value = 1
-    consumer.consumer_group_metadata = Mock()
-    consumer.consumer_group_metadata.return_value = 'fake_meta'
-
-    with EOSTransaction(patched_producer, consumer): ...
+def test_transaction(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+    with EOSTransaction(patched_producer, patched_consumer): ...
 
     patched_producer.begin_transaction.assert_called_once()
 
-    consumer.assignment.assert_called_once()
-    consumer.position.assert_called_once()
-    assert consumer.position.call_args.args == ([TopicPartition(topic, 0)],)
-    consumer.consumer_group_metadata.assert_called_once()
+    patched_consumer.assignment.assert_called_once()
+    patched_consumer.position.assert_called_once()
+    assert patched_consumer.position.call_args.args == ([TopicPartition(topic, 0)],)
+    patched_consumer.consumer_group_metadata.assert_called_once()
 
     patched_producer.send_offsets_to_transaction.assert_called_once()
     assert patched_producer.send_offsets_to_transaction.call_args.args == (
-        1, 'fake_meta'
+        [TopicPartition(topic, 0, 1)], 'fake_meta'
     )
 
     patched_producer.commit_transaction.assert_called_once()
 
 
-def test_transaction_no_consumer(patched_producer: TestProducer):
+def test_transaction_no_consumer(patched_producer: TestProducer) -> None:
 
     with EOSTransaction(patched_producer):
         ...
@@ -43,28 +35,42 @@ def test_transaction_no_consumer(patched_producer: TestProducer):
     patched_producer.commit_transaction.assert_called_once()
 
 
-def test_transaction_with_raise(topic: str, patched_producer: TestProducer):
-    consumer = TestConsumer([])
-    consumer.assignment = Mock()
-    consumer.assignment.return_value = [TopicPartition(topic, 0)]
-    consumer.position = Mock()
-    consumer.position.return_value = 1
-    consumer.consumer_group_metadata = Mock()
-    consumer.consumer_group_metadata.return_value = 'fake_meta'
-
+def test_transaction_with_raise(patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
     try:
-        with EOSTransaction(patched_producer, consumer):
+        with EOSTransaction(patched_producer, patched_consumer):
             raise Exception
     except: ...
 
     patched_producer.begin_transaction.assert_called_once()
 
-    consumer.assignment.assert_not_called()
-    consumer.position.assert_not_called()
-    consumer.consumer_group_metadata.assert_not_called()
+    patched_consumer.assignment.assert_not_called()
+    patched_consumer.position.assert_not_called()
+    patched_consumer.consumer_group_metadata.assert_not_called()
 
     patched_producer.send_offsets_to_transaction.assert_not_called()
 
     patched_producer.commit_transaction.assert_not_called()
     patched_producer.abort_transaction.assert_called_once()
+
+
+def test_serializing_consumer_producer(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+    producer = HighLevelSerializingProducer(patched_producer, None, None, serializer=dict)
+    consumer = HighLevelDeserializingConsumer(patched_consumer, None, None, deserializer=dict)
+
+    with EOSTransaction(producer, consumer): ...
+
+
+    patched_producer.begin_transaction.assert_called_once()
+
+    patched_consumer.assignment.assert_called_once()
+    patched_consumer.position.assert_called_once()
+    assert patched_consumer.position.call_args.args == ([TopicPartition(topic, 0)],)
+    patched_consumer.consumer_group_metadata.assert_called_once()
+
+    patched_producer.send_offsets_to_transaction.assert_called_once()
+    assert patched_producer.send_offsets_to_transaction.call_args.args == (
+        [TopicPartition(topic, 0, 1)], 'fake_meta', None
+    )
+
+    patched_producer.commit_transaction.assert_called_once()
 

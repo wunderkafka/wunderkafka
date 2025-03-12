@@ -9,6 +9,8 @@ All moving parts should be interchangeable in terms of schema, header and serial
 
 from typing import Any, Optional
 
+from confluent_kafka import TopicPartition
+
 from wunderkafka.callbacks import error_callback
 from wunderkafka.logger import logger
 from wunderkafka.producers.abc import AbstractProducer, AbstractSerializingProducer
@@ -223,3 +225,20 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
 
     def _get_serializer(self, is_key: bool) -> AbstractSerializer:
         return self._key_serializer if is_key else self._value_serializer
+
+    def begin_transaction(self) -> None:
+        self._producer.begin_transaction()
+
+    def abort_transaction(self) -> None:
+        self._producer.abort_transaction()
+
+    def commit_transaction(self) -> None:
+        self._producer.commit_transaction()
+
+    def send_offsets_to_transaction(
+        self, 
+        positions: list[TopicPartition], 
+        group_metadata: object, 
+        timeout: Optional[float] = None
+    ) -> None:
+        self._producer.send_offsets_to_transaction(positions, group_metadata, timeout)
