@@ -77,6 +77,7 @@ class BytesConsumer(AbstractConsumer):
         from_beginning: Optional[bool] = None,
         offset: Optional[int] = None,
         ts: Optional[int] = None,
+        dt: Optional[datetime.datetime] = None,
         with_timedelta: Optional[datetime.timedelta] = None,
     ) -> None:
         """
