@@ -1,37 +1,44 @@
 """
 Module contains interface-like skeletons for producer.
 
-- inherited from confluent-kafka Producer to use it as nested entity
+- Inherited from confluent-kafka Producer to use it as nested entity
 - high-level producer which is able to handle message's schemas
 """
 
+from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import TypeVar
 
 from confluent_kafka import Producer
+from typing_extensions import ParamSpec
 
-from wunderkafka.types import DeliveryCallback, MsgKey, MsgValue
+from wunderkafka.types import MsgKey, MsgValue, DeliveryCallback
+
+P = ParamSpec("P")
+T = TypeVar("T")
 
 
 class AbstractProducer(Producer):
     """Extension point for the original Producer API."""
 
-    def send_message(  # noqa: WPS211  # ToDo (tribunsky.kir): rethink API?
+    # TODO (tribunsky.kir): rethink API?
+    #                       https://github.com/severstal-digital/wunderkafka/issues/91
+    def send_message(  # noqa: PLR0913
         self,
         topic: str,
-        value: Optional[Union[str, bytes]] = None,  # noqa: WPS110  # Domain.
-        key: Optional[Union[str, bytes]] = None,
-        partition: Optional[int] = None,
-        on_delivery: Optional[DeliveryCallback] = None,
-        *args: Any,
+        value: str | bytes | None = None,
+        key: str | bytes | None = None,
+        partition: int | None = None,
+        on_delivery: DeliveryCallback | None = None,
+        *args: P.args,
         blocking: bool = False,
-        **kwargs: Any,
+        **kwargs: P.kwargs,
     ) -> None:
         """
-        Send encoded message to Kafka almost immediately.
+        Send an encoded message to Kafka almost immediately.
 
-        This method overlaps original producers' method.
+        This method overlaps the original producers' method.
 
         :param topic:           Target topic against which we are working for this call.
         :param value:           Message's value encoded object to be sent.
@@ -40,13 +47,10 @@ class AbstractProducer(Producer):
                                 partitioner by default.
         :param on_delivery:     Callback to be executed on successful/failed delivery.
         :param args:            Other positional arguments to call with original produce() API.
-        :param blocking:        If True, will block execution until delivery result retrieved
-                                (calls flush() under the hood). Otherwise, will produce message to
-                                built-in queue and call poll() to trigger producer's events.
+        :param blocking:        If True, will block execution until a delivery result is retrieved
+                                (calls flush() under the hood). Otherwise, will produce a message to
+                                builtin queue and call poll() to trigger producer's events.
         :param kwargs:          Other keyword arguments to call with original produce() API.
-
-
-        ..  # noqa: DAR401
         """
         raise NotImplementedError
 
@@ -55,19 +59,19 @@ class AbstractSerializingProducer(ABC):
     """High-level interface for extended producer."""
 
     @abstractmethod
-    def send_message(  # noqa: WPS211  # overlaps API from AbstractProducer, maybe should be mixin.
+    def send_message(  # noqa: PLR0913
         self,
         topic: str,
-        value: MsgValue = None,  # noqa: WPS110  # Domain, overlaps API from AbstractProducer
+        value: MsgValue = None,
         key: MsgKey = None,
-        partition: Optional[int] = None,
-        on_delivery: Optional[DeliveryCallback] = None,
-        *args: Any,
+        partition: int | None = None,
+        on_delivery: DeliveryCallback | None = None,
+        *args: P.args,
         blocking: bool = False,
-        **kwargs: Any,
+        **kwargs: P.kwargs,
     ) -> None:
         """
-        Encode and send message to Kafka.
+        Encode and send a message to Kafka.
 
         This method overlaps AbstractProducer's method and intended to use produce() of real nested producer.
 
@@ -78,25 +82,26 @@ class AbstractSerializingProducer(ABC):
                                 partitioner by default.
         :param on_delivery:     Callback to be executed on successful/failed delivery.
         :param args:            Other positional arguments to call with original produce() API.
-        :param blocking:        If True, will block execution until delivery result retrieved
-                                (calls flush() under the hood). Otherwise, will produce message to
-                                built-in queue and call poll() to trigger producer's events.
+        :param blocking:        If True, will block execution until a delivery result is retrieved
+                                (calls flush() under the hood). Otherwise, will produce a message to
+                                builtin queue and call poll() to trigger producer's events.
         :param kwargs:          Other keyword arguments to call with original produce() API.
         """
 
-    # ToDo (tribunsky.kir): change naming. It is like subscribe, but publish/add_topic whatever
+    # TODO (tribunsky.kir): change naming. It is like subscribe, but publish/add_topic whatever
+    #                       https://github.com/severstal-digital/wunderkafka/issues/92
     @abstractmethod
-    def set_target_topic(self, topic: str, value: Any, key: Any = None, *, lazy: bool = False) -> None:  # noqa: WPS110
+    def set_target_topic(self, topic: str, value: T, key: T | None = None, *, lazy: bool = False) -> None:
         """
-        Make producer aware how it should work with specific topic.
+        Make producer aware how it should work with a specific topic.
 
-        This method is used to instantiate producer with mapping, but also add schemas in runtime.
+        This method is used to instantiate producer with mapping, but also adds schemas in runtime.
 
         :param topic:           Target topic to specify schema description against.
         :param value:           Message's value schema description.
         :param key:             Message's key schema description.
         :param lazy:            If True, do not register schema in registry during __init__,
-                                or before the first attempt to send message for a given topic.
+                                or before the first attempt to send a message for a given topic.
                                 Otherwise, register schema immediately.
         """
 
@@ -105,7 +110,7 @@ class AbstractSerializingProducer(ABC):
         """
         Wait for all messages in the Producer queue to be delivered.
 
-        This method overlaps original producers' method and will use the nested producer.
+        This method overlaps the original producers' method and will use the nested producer.
 
         :param timeout:         Maximum time to block.
         :return:                Number of messages still in queue.

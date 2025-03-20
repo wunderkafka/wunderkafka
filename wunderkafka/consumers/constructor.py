@@ -33,10 +33,10 @@ def choose_one_of(
     chosen_deserializer = specific_deserializer if specific_deserializer else common_deserializer
     if chosen_deserializer is None:
         msg = [
-            f'{what.capitalize()} deserializer is not specified,',
-            f'it should be passed via {what}_deserializer or deserializer at least.',
+            f"{what.capitalize()} deserializer is not specified,",
+            f"it should be passed via {what}_deserializer or deserializer at least.",
         ]
-        raise ValueError(' '.join(msg))
+        raise ValueError(" ".join(msg))
     return chosen_deserializer
 
 
@@ -70,8 +70,8 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
         self._registry = schema_registry
         self._deserializer = deserializer
 
-        self._value_deserializer = choose_one_of(deserializer, value_deserializer, 'value')
-        self._key_deserializer = choose_one_of(deserializer, key_deserializer, 'key')
+        self._value_deserializer = choose_one_of(deserializer, value_deserializer, "value")
+        self._key_deserializer = choose_one_of(deserializer, key_deserializer, "key")
 
         self._stream_result = stream_result
 
@@ -86,7 +86,11 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
         with_timedelta: Optional[datetime.timedelta] = None,
     ) -> None:
         self.consumer.subscribe(
-            topics, from_beginning=from_beginning, offset=offset, ts=ts, with_timedelta=with_timedelta,
+            topics,
+            from_beginning=from_beginning,
+            offset=offset,
+            ts=ts,
+            with_timedelta=with_timedelta,
         )
 
     def commit(  # noqa: D102,WPS211 # docstring inherited from superclass.
@@ -196,7 +200,7 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
 
         deserializer = self._get_deserializer(is_key)
         if deserializer.schemaless:
-            return deserializer.deserialize('', blob)
+            return deserializer.deserialize("", blob)
         # Header is separate in the sake of customization, e.g., we don't have SR and put schema directly in a message
         assert self._header_parser is not None
         assert self._registry is not None

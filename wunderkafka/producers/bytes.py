@@ -1,15 +1,19 @@
 """This module contains implementation of extended confluent-kafka Producer's API."""
 
+from __future__ import annotations
+
 import atexit
-from typing import Any, Optional, Union
 
 from confluent_kafka import KafkaException
+from typing_extensions import ParamSpec
 
-from wunderkafka.callbacks import error_callback
-from wunderkafka.config import ProducerConfig
-from wunderkafka.config.krb.rdkafka import challenge_krb_arg
-from wunderkafka.producers.abc import AbstractProducer
 from wunderkafka.types import DeliveryCallback
+from wunderkafka.config import ProducerConfig
+from wunderkafka.callbacks import error_callback
+from wunderkafka.producers.abc import AbstractProducer
+from wunderkafka.config.krb.rdkafka import challenge_krb_arg
+
+P = ParamSpec("P")
 
 
 class BytesProducer(AbstractProducer):
@@ -28,9 +32,12 @@ class BytesProducer(AbstractProducer):
             super().__init__(config.dict())
 
         self._config = config
+        # TODO (tribunsky.kir): make it configurable
+        #                       https://github.com/severstal-digital/wunderkafka/issues/90
         atexit.register(self.flush)
 
-    #TODO: Do we need re-initiation of consumer/producer in runtime?
+    # TODO (tribunsky.kir): Do we need re-initiation of consumer/producer in runtime?
+    #                       https://github.com/severstal-digital/wunderkafka/issues/94
     @property
     def config(self) -> ProducerConfig:
         """
@@ -40,16 +47,18 @@ class BytesProducer(AbstractProducer):
         """
         return self._config
 
-    def send_message(  # noqa: D102,WPS211  # inherited from superclass.
+    # TODO (tribunsky.kir): rethink API?
+    #                       https://github.com/severstal-digital/wunderkafka/issues/91
+    def send_message(  # noqa: PLR0913
         self,
         topic: str,
-        value: Optional[Union[str, bytes]] = None,  # noqa: WPS110  # Domain. inherited from superclass.
-        key: Optional[Union[str, bytes]] = None,
-        partition: Optional[int] = None,
-        on_delivery: Optional[DeliveryCallback] = error_callback,
-        *args: Any,
+        value: str | bytes | None = None,
+        key: str | bytes | None = None,
+        partition: int | None = None,
+        on_delivery: DeliveryCallback | None = error_callback,
+        *args: P.args,  # noqa: ARG002
         blocking: bool = False,
-        **kwargs: Any,
+        **kwargs: P.kwargs,
     ) -> None:
         if partition is not None:
             self.produce(topic, value, key=key, partition=partition, on_delivery=on_delivery, **kwargs)
