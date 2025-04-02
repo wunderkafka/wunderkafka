@@ -67,7 +67,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
         self._store = store
         self._sr = schema_registry
         self._serializer = serializer
-        self._producer = producer
+        self.producer = producer
         self._header_packer = header_packer
         self._protocol_id = protocol_id
 
@@ -92,8 +92,8 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
 
     def flush(self, timeout: Optional[float] = None) -> int:  # noqa: D102 # docstring inherited from superclass.
         if timeout is None:
-            return self._producer.flush()
-        return self._producer.flush(timeout)
+            return self.producer.flush()
+        return self.producer.flush(timeout)
 
     def set_target_topic(  # noqa: D102 # docstring inherited from superclass.
         self,
@@ -137,7 +137,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
         encoded_value = self._encode(topic, value, protocol_id)
         encoded_key = self._encode(topic, key, protocol_id, is_key=True)
 
-        self._producer.send_message(
+        self.producer.send_message(
             topic,
             encoded_value,
             encoded_key,
@@ -225,20 +225,3 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
 
     def _get_serializer(self, is_key: bool) -> AbstractSerializer:
         return self._key_serializer if is_key else self._value_serializer
-
-    def begin_transaction(self) -> None:
-        self._producer.begin_transaction()
-
-    def abort_transaction(self) -> None:
-        self._producer.abort_transaction()
-
-    def commit_transaction(self) -> None:
-        self._producer.commit_transaction()
-
-    def send_offsets_to_transaction(
-        self, 
-        positions: list[TopicPartition], 
-        group_metadata: object, 
-        timeout: Optional[float] = None
-    ) -> None:
-        self._producer.send_offsets_to_transaction(positions, group_metadata, timeout)

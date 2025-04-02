@@ -10,6 +10,7 @@ from wunderkafka.transactions import EOSTransaction
 
 
 def test_transaction(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+    patched_producer.prepare_transactions()
     with EOSTransaction(patched_producer, patched_consumer): ...
 
     patched_producer.begin_transaction.assert_called_once()
@@ -28,6 +29,7 @@ def test_transaction(topic: str, patched_producer: TestProducer, patched_consume
 
 
 def test_transaction_no_consumer(patched_producer: TestProducer) -> None:
+    patched_producer.prepare_transactions()
 
     with EOSTransaction(patched_producer):
         ...
@@ -38,6 +40,7 @@ def test_transaction_no_consumer(patched_producer: TestProducer) -> None:
 
 
 def test_transaction_with_raise(patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+    patched_producer.prepare_transactions()
     try:
         with EOSTransaction(patched_producer, patched_consumer):
             raise Exception
@@ -56,16 +59,17 @@ def test_transaction_with_raise(patched_producer: TestProducer, patched_consumer
 
 
 def test_serializing_consumer_producer(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+    patched_producer.prepare_transactions()
     producer = HighLevelSerializingProducer(
-        patched_producer, 
-        None, 
-        None, 
+        patched_producer,
+        None,
+        None,
         value_serializer=StringSerializer(),
         key_serializer=StringSerializer(),
     )
     consumer = HighLevelDeserializingConsumer(patched_consumer, None, None, deserializer=StringDeserializer())
 
-    with EOSTransaction(producer, consumer): ...
+    with EOSTransaction(producer.producer, consumer.consumer): ...
 
 
     patched_producer.begin_transaction.assert_called_once()
@@ -77,7 +81,7 @@ def test_serializing_consumer_producer(topic: str, patched_producer: TestProduce
 
     patched_producer.send_offsets_to_transaction.assert_called_once()
     assert patched_producer.send_offsets_to_transaction.call_args.args == (
-        [TopicPartition(topic, 0, 1)], 'fake_meta', None
+        [TopicPartition(topic, 0, 1)], 'fake_meta'
     )
 
     patched_producer.commit_transaction.assert_called_once()

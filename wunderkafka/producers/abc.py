@@ -16,6 +16,15 @@ from wunderkafka.types import DeliveryCallback, MsgKey, MsgValue
 
 class AbstractProducer(Producer):
     """Extension point for the original Producer API."""
+    __transaction_ready: bool = False
+
+    @property
+    def transaction_ready(self) -> bool:
+        return self.__transaction_ready
+
+    def prepare_transactions(self) -> None:
+        self.__transaction_ready = True
+        self.init_transactions()
 
     def send_message(  # noqa: WPS211  # ToDo (tribunsky.kir): rethink API?
         self,

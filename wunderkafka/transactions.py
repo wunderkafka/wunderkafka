@@ -1,19 +1,18 @@
 from types import TracebackType
-from typing import Optional, Union
+from typing import Optional
 
 from wunderkafka.consumers.abc import AbstractConsumer
-from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
 from wunderkafka.producers.abc import AbstractProducer
-from wunderkafka.producers.constructor import HighLevelSerializingProducer
 
 
 class EOSTransaction:
 
     def __init__(
         self, 
-        producer: Union[AbstractProducer, HighLevelSerializingProducer],
-        consumer: Optional[Union[AbstractConsumer, HighLevelDeserializingConsumer]] = None,
+        producer: AbstractProducer,
+        consumer: Optional[AbstractConsumer] = None,
     ) -> None:
+        assert producer.transaction_ready, "You must call producer.prepare_transactions() before using EOSTransaction."
         self.producer = producer
         self.consumer = consumer
 

@@ -216,12 +216,3 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
     def _get_deserializer(self, is_key: bool) -> AbstractDeserializer:
         return self._key_deserializer if is_key else self._value_deserializer
 
-    def assignment(self) -> list[TopicPartition]:
-        return self.consumer.assignment()
-
-    def position(self, partitions: list[TopicPartition]) -> list[TopicPartition]:
-        return self.consumer.position(partitions)
-
-    def consumer_group_metadata(self) -> object:
-        return self.consumer.consumer_group_metadata()
-

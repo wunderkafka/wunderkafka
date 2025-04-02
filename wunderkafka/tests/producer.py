@@ -29,6 +29,7 @@ class TestProducer(BytesProducer):
         self.abort_transaction = Mock()
         self.send_offsets_to_transaction = Mock()
 
+
     def send_message(
         self,
         topic: str,

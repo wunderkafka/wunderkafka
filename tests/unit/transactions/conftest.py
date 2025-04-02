@@ -1,5 +1,4 @@
 from typing import Generator
-from unittest.mock import Mock
 
 import pytest
 from confluent_kafka import TopicPartition
@@ -9,11 +8,12 @@ from wunderkafka.tests.producer import TestProducer
 
 
 @pytest.fixture
-def patched_producer() -> Generator[TestProducer, None, None]:
-    return TestProducer() 
+def patched_producer() -> TestProducer:
+    return TestProducer()
+
 
 @pytest.fixture 
-def patched_consumer(topic: str) -> Generator[TestConsumer, None, None]: 
+def patched_consumer(topic: str) -> TestConsumer:
     c = TestConsumer([])
     c.assignment.return_value = [TopicPartition(topic, 0)]
     c.position.return_value = [TopicPartition(topic, 0, 1)]
