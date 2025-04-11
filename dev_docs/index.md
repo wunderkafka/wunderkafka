@@ -15,3 +15,5 @@ It's built on top of the [confluent-kafka](https://pypi.org/project/confluent-ka
 
 ---
 
+{!pages/errata.md!}
+
