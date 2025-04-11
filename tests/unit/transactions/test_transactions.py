@@ -10,7 +10,7 @@ from wunderkafka.tests.producer import TestProducer
 from wunderkafka.transactions import EOSTransaction
 
 
-def test_transaction_without_prepare_transactions(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+def test_transaction_without_prepare_transactions(patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
     with pytest.raises(AssertionError):
         EOSTransaction(patched_producer, patched_consumer)
 

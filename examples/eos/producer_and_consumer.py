@@ -25,7 +25,7 @@ def main():
 
     producer = BytesProducer(producer_config)
     consumer = BytesConsumer(consumer_config)
-    producer.init_transactions()
+    producer.prepare_transactions()
     consumer.assign([TopicPartition('input_topic', 0)])
 
     with EOSTransaction(producer, consumer):

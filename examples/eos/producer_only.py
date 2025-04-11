@@ -10,7 +10,7 @@ def main():
         allow_auto_create_topics=True,
     )
     producer = BytesProducer(producer_config)
-    producer.init_transactions()
+    producer.prepare_transactions()
 
     msgs = [(f'value: {i}', i) for i in range(100)]
 
