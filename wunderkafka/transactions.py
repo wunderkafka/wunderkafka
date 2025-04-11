@@ -18,6 +18,7 @@ class EOSTransaction:
 
     def __enter__(self) -> "EOSTransaction":
         self.producer.begin_transaction()
+        self.producer.poll(0)
         return self
 
     def _abort(self) -> None:

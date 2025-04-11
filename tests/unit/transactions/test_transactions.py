@@ -1,3 +1,4 @@
+import pytest
 from confluent_kafka import TopicPartition
 
 from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
@@ -9,11 +10,17 @@ from wunderkafka.tests.producer import TestProducer
 from wunderkafka.transactions import EOSTransaction
 
 
+def test_transaction_without_prepare_transactions(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
+    with pytest.raises(AssertionError):
+        EOSTransaction(patched_producer, patched_consumer)
+
+
 def test_transaction(topic: str, patched_producer: TestProducer, patched_consumer: TestConsumer) -> None:
     patched_producer.prepare_transactions()
     with EOSTransaction(patched_producer, patched_consumer): ...
 
     patched_producer.begin_transaction.assert_called_once()
+    patched_producer.poll.assert_called_once()
 
     patched_consumer.assignment.assert_called_once()
     patched_consumer.position.assert_called_once()
@@ -35,6 +42,8 @@ def test_transaction_no_consumer(patched_producer: TestProducer) -> None:
         ...
 
     patched_producer.begin_transaction.assert_called_once()
+    patched_producer.poll.assert_called_once()
+
     patched_producer.send_offsets_to_transaction.assert_not_called()
     patched_producer.commit_transaction.assert_called_once()
 
@@ -47,6 +56,7 @@ def test_transaction_with_raise(patched_producer: TestProducer, patched_consumer
     except: ...
 
     patched_producer.begin_transaction.assert_called_once()
+    patched_producer.poll.assert_called_once()
 
     patched_consumer.assignment.assert_not_called()
     patched_consumer.position.assert_not_called()
@@ -73,6 +83,7 @@ def test_serializing_consumer_producer(topic: str, patched_producer: TestProduce
 
 
     patched_producer.begin_transaction.assert_called_once()
+    patched_producer.poll.assert_called_once()
 
     patched_consumer.assignment.assert_called_once()
     patched_consumer.position.assert_called_once()
