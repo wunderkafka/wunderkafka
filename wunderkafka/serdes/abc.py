@@ -3,6 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any, Optional, Union
 
+from confluent_kafka.serialization import SerializationContext
+
 from wunderkafka.structures import ParsedHeader, SRMeta
 from wunderkafka.types import KeySchemaDescription, TopicName, ValueSchemaDescription
 
@@ -20,6 +22,10 @@ class AbstractProtocolHandler(ABC):
 # ToDo (tribunsky.kir): make it parametrized generic?
 class AbstractDeserializer(ABC):
     schemaless: bool = False
+    ctx: Optional[SerializationContext] = None
+
+    def set_context(self, ctx: SerializationContext) -> None:
+        self.ctx = ctx
 
     @abstractmethod
     def deserialize(self, schema: str, payload: bytes, seek_pos: Optional[int] = None) -> Any: ...
