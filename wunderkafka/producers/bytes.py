@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import atexit
-from typing import ParamSpec
 
 from confluent_kafka import KafkaException
 
 from wunderkafka.types import DeliveryCallback
+from wunderkafka.compat import ParamSpec
 from wunderkafka.config import ProducerConfig
 from wunderkafka.callbacks import error_callback
 from wunderkafka.producers.abc import AbstractProducer
