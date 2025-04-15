@@ -49,7 +49,8 @@ class BytesProducer(AbstractProducer):
 
     # TODO (tribunsky.kir): rethink API?
     #                       https://github.com/severstal-digital/wunderkafka/issues/91
-    def send_message(  # noqa: PLR0913
+    # https://github.com/python/mypy/issues/13966
+    def send_message(  # type: ignore[valid-type] # noqa: PLR0913
         self,
         topic: str,
         value: str | bytes | None = None,

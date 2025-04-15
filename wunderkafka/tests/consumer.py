@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 from typing import Any, Optional, Union
 
@@ -8,7 +10,7 @@ from wunderkafka.consumers.subscription import TopicSubscription
 
 
 class Message:
-    def __init__(self, topic: str, value: bytes, key: Optional[bytes] = None, error: Optional[KafkaError] = None):
+    def __init__(self, topic: str, value: bytes, key: bytes | None = None, error: KafkaError | None = None):
         self._topic = topic
         self._value = value
         self._key = key
@@ -39,12 +41,13 @@ class TestConsumer(BytesConsumer):
 
     def subscribe(
         self,
-        topics: list[Union[str, TopicSubscription]],
+        topics: list[str | TopicSubscription],
         *,
-        from_beginning: Optional[bool] = None,
-        offset: Optional[int] = None,
-        ts: Optional[int] = None,
-        with_timedelta: Optional[datetime.timedelta] = None,
+        from_beginning: bool | None = None,
+        offset: int | None = None,
+        ts: float | None = None,
+        dt: datetime.datetime | None = None,
+        with_timedelta: datetime.timedelta | None = None,
     ) -> None:
         pass
 
