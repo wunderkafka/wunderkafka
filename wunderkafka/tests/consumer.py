@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any, Optional, Union
+from typing import Any
 
 from confluent_kafka import KafkaError
 
@@ -22,7 +22,7 @@ class Message:
     def set_value(self, value: Any) -> None:
         self._value = value
 
-    def key(self) -> Optional[bytes]:
+    def key(self) -> bytes | None:
         return self._key
 
     def set_key(self, key: Any) -> None:
@@ -31,7 +31,7 @@ class Message:
     def topic(self) -> str:
         return self._topic
 
-    def error(self) -> Optional[KafkaError]:
+    def error(self) -> KafkaError | None:
         return self._error
 
 

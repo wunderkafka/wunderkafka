@@ -8,10 +8,9 @@ Module contains interface-like skeletons for producer.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, ParamSpec
 
 from confluent_kafka import Producer
-from typing_extensions import ParamSpec
 
 from wunderkafka.types import MsgKey, MsgValue, DeliveryCallback
 

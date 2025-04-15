@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import atexit
+from typing import ParamSpec
 
 from confluent_kafka import KafkaException
-from typing_extensions import ParamSpec
 
 from wunderkafka.types import DeliveryCallback
 from wunderkafka.config import ProducerConfig
