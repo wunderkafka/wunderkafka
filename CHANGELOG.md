@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v0.19.0-beta.14 (2025-04-18)
+
+### Features
+
+- subscription API
+  - allow using a datetime object for time offset subscription
+  - ensure that provided timestamp is in milliseconds
+
+## v0.19.0-beta.13 (2025-04-13)
+
+### Build System
+
+- Dependabot security bump (tj-actions)
 
 ## v0.19.0-beta.3 (2025-02-13)
 
