@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import datetime
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
 
 from wunderkafka.time import ts2dt
 

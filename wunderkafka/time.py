@@ -1,7 +1,7 @@
 """Some timing boilerplate."""
 
-import time
 import datetime
+import time
 
 from wunderkafka.logger import logger
 

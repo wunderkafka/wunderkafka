@@ -2,20 +2,20 @@
 
 from __future__ import annotations
 
-import time
 import atexit
 import datetime
+import time
 
 from confluent_kafka import KafkaException
 
-from wunderkafka.types import HowToSubscribe
+from wunderkafka.callbacks import reset_partitions
 from wunderkafka.config import ConsumerConfig
+from wunderkafka.config.krb.rdkafka import challenge_krb_arg
+from wunderkafka.consumers.abc import AbstractConsumer, Message
+from wunderkafka.consumers.subscription import TopicSubscription
 from wunderkafka.errors import ConsumerException
 from wunderkafka.logger import logger
-from wunderkafka.callbacks import reset_partitions
-from wunderkafka.consumers.abc import Message, AbstractConsumer
-from wunderkafka.config.krb.rdkafka import challenge_krb_arg
-from wunderkafka.consumers.subscription import TopicSubscription
+from wunderkafka.types import HowToSubscribe
 
 
 class BytesConsumer(AbstractConsumer):

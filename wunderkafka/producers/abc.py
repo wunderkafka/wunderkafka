@@ -12,8 +12,8 @@ from typing import TypeVar
 
 from confluent_kafka import Producer
 
-from wunderkafka.types import MsgKey, MsgValue, DeliveryCallback
 from wunderkafka.compat import ParamSpec
+from wunderkafka.types import DeliveryCallback, MsgKey, MsgValue
 
 P = ParamSpec("P")
 T = TypeVar("T")

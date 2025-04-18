@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import datetime
 
-from confluent_kafka import OFFSET_END, OFFSET_BEGINNING
+from confluent_kafka import OFFSET_BEGINNING, OFFSET_END
 
-from wunderkafka.time import ensure_ms_timestamp
 from wunderkafka.structures import Offset, Timestamp
+from wunderkafka.time import ensure_ms_timestamp
 
 
 def choose_offset(

@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from confluent_kafka import Message, KafkaError, TopicPartition
+from confluent_kafka import KafkaError, Message, TopicPartition
 
+from wunderkafka.consumers.abc import AbstractConsumer
 from wunderkafka.logger import logger
 from wunderkafka.structures import Timestamp
-from wunderkafka.consumers.abc import AbstractConsumer
 
 
 def reset_partitions(consumer: AbstractConsumer, partitions: list[TopicPartition]) -> None:
