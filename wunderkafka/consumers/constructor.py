@@ -11,7 +11,7 @@ import datetime
 from typing import Any, Optional, TypeVar, Union
 
 from confluent_kafka import Message, TopicPartition
-from confluent_kafka.serialization import SerializationError
+from confluent_kafka.serialization import MessageField, SerializationContext, SerializationError
 
 from wunderkafka.consumers.abc import AbstractConsumer, AbstractDeserializingConsumer
 from wunderkafka.consumers.subscription import TopicSubscription
@@ -205,6 +205,8 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
         assert self._header_parser is not None
         assert self._registry is not None
         parsed_header = self._header_parser(blob)
+        ctx = SerializationContext(topic, MessageField.VALUE)
+        deserializer.set_context(ctx)
         schema_meta = SchemaMeta(
             topic=topic,
             is_key=is_key,

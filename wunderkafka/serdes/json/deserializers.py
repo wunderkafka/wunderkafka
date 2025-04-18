@@ -15,5 +15,5 @@ class JSONDeserializer(AbstractDeserializer):
         if schema not in self._cache:
             self._cache[schema] = JSONDSchemaDeserializer(json.dumps(json.loads(schema)))
         deserializer = self._cache[schema]
-        dct = deserializer(blob, None)
+        dct = deserializer(blob, self.ctx)
         return dct
