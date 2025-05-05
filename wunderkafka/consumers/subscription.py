@@ -74,6 +74,7 @@ class TopicSubscription:
         - from the end (consume only latest messages)
         - via specific offset
         - via specific timestamp
+        - via specific datetime (datetime.datetime object)
         - via specific timedelta (from current datetime)
         - no special option (consumer will use "default" value of auto.offset.reset)
 
@@ -84,6 +85,8 @@ class TopicSubscription:
                                 If offset not found, it will behave with built-in default.
         :param ts:              Subscribe to specific timestamp (milliseconds).
                                 If timestamp is not found, will behave with built-in default.
+        :param dt:              Subscribe to specific datetime.
+                                If datetime is not found, will behave with built-in default.
         :param with_timedelta:  Subscribe to some moments in the past, from current datetime for a given timedelta.
                                 Will calculate specific timestamp and subscribe via ts.
         """
