@@ -3,6 +3,7 @@ import struct
 from wunderkafka.errors import DeserializerException
 from wunderkafka.serdes.abc import AbstractProtocolHandler
 from wunderkafka.serdes.protocols import MIN_HEADER_SIZE, get_protocol
+from wunderkafka.serdes.vendors import Actions
 from wunderkafka.structures import ParsedHeader, SRMeta
 
 # TODO (tribunsky.kir): Get rid of AbstractProtocolHandler?
@@ -18,7 +19,7 @@ class ConfluentClouderaHeadersHandler(AbstractProtocolHandler):
         # 1st byte is magic byte.
         [protocol_id] = struct.unpack(">b", blob[0:1])
 
-        protocol = get_protocol(protocol_id)
+        protocol = get_protocol(protocol_id, Actions.deserialize)
 
         # already read 1 byte from header as protocol id
         meta = struct.unpack(protocol.mask.unpack, blob[1:1+protocol.header_size])
@@ -40,7 +41,7 @@ class ConfluentClouderaHeadersHandler(AbstractProtocolHandler):
         )
 
     def pack(self, protocol_id: int, meta: SRMeta) -> bytes:
-        protocol = get_protocol(protocol_id)
+        protocol = get_protocol(protocol_id, Actions.serialize)
 
         if protocol_id == 1:
             if meta.meta_id is None:
