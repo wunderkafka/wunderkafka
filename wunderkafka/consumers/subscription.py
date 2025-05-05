@@ -11,6 +11,7 @@ from wunderkafka.time import ensure_ms_timestamp
 
 
 def choose_offset(
+    *,
     from_beginning: bool | None = None,
     offset: int | None = None,
     ts: float | None = None,
