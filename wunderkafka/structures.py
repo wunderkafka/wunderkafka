@@ -6,6 +6,7 @@ import datetime
 from dataclasses import dataclass
 from enum import Enum
 
+from wunderkafka.serdes.vendors import get_subject_suffix
 from wunderkafka.time import ts2dt
 
 
@@ -56,13 +57,7 @@ class SchemaMeta:
         :return:            String which should be used as a path in schema registry's url
                             corresponding to a given topic.
         """
-        suffixes = {
-            # Confluent
-            0: {True: "_key", False: "_value"},
-            # Cloudera
-            1: {True: ":k", False: ""},
-        }
-        suffix = suffixes[bool(self.header.protocol_id)][self.is_key]
+        suffix = get_subject_suffix(self.header.protocol_id, is_key=self.is_key)
         return f"{self.topic}{suffix}"
 
 
