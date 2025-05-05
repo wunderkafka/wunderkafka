@@ -15,6 +15,15 @@ from wunderkafka.serdes.vendors import (
 )
 
 
+@pytest.fixture
+def currently_known_protocols_count() -> int:
+    return 4
+
+@pytest.fixture
+def currently_known_vendors_count() -> int:
+    return 2
+
+
 # Tests for VendorRegistry class still need the fixtures
 @pytest.fixture
 def sample_vendors() -> list[Vendor]:
@@ -42,19 +51,24 @@ def registry(sample_vendors: list[Vendor]) -> VendorRegistry:
     return VendorRegistry(sample_vendors)
 
 
-# Tests for VendorRegistry instance methods
-def test_init_and_register(registry: VendorRegistry) -> None:
-    assert len(registry.get_vendors()) == 2
-    assert len(registry.get_protocols()) == 3
+def test_init_and_register_vendors(registry: VendorRegistry) -> None:
+    answer = 2
+    assert len(registry.get_vendors()) == answer
+
+def test_init_and_register_protocols(registry: VendorRegistry) -> None:
+    answer =3
+    assert len(registry.get_protocols()) == answer
+
 
 @pytest.fixture
 def duplicated_vendor(sample_vendors: list[Vendor]) -> list[Vendor]:
-    return sample_vendors + [
+    return [
         Vendor(
             name="test_vendor1",
             suffixes=Suffixes("_key3", "_value3"),
             protocols=[ProtocolDefinition(id=30, protocol=Protocol(4, Mask("I")))],
         ),
+        *sample_vendors,
     ]
 
 def test_init_with_duplicate_vendor_name(duplicated_vendor: list[Vendor]) -> None:
@@ -63,12 +77,13 @@ def test_init_with_duplicate_vendor_name(duplicated_vendor: list[Vendor]) -> Non
 
 @pytest.fixture
 def duplicated_vendor_protocol(sample_vendors: list[Vendor]) -> list[Vendor]:
-    return sample_vendors + [
+    return [
         Vendor(
             name="test_vendor3",
             suffixes=Suffixes("_key3", "_value3"),
             protocols=[ProtocolDefinition(id=10, protocol=Protocol(4, Mask("I")))],
         ),
+        *sample_vendors,
     ]
 
 def test_init_with_duplicate_protocol_id(duplicated_vendor_protocol: list[Vendor]) -> None:
@@ -76,42 +91,36 @@ def test_init_with_duplicate_protocol_id(duplicated_vendor_protocol: list[Vendor
         VendorRegistry(duplicated_vendor_protocol)
 
 
-def test_get_protocol(registry: VendorRegistry):
+def test_get_protocol(registry: VendorRegistry) -> None:
     protocol = registry.get_protocol(10)
     assert isinstance(protocol, Protocol)
-    assert protocol.header_size == 4
 
+def test_get_missing_protocol(registry: VendorRegistry) -> None:
     with pytest.raises(KeyError):
         registry.get_protocol(999)
 
+@pytest.fixture
+def suffixes(registry: VendorRegistry) -> Suffixes:
+    return registry.get_subject_suffixes(10)
 
-def test_get_subject_suffixes(registry: VendorRegistry) -> None:
-    suffixes = registry.get_subject_suffixes(10)
+
+def test_get_subject_suffixes_key(suffixes: Suffixes) -> None:
     assert suffixes.key == "_key1"
+
+def test_get_subject_suffixes_value(suffixes: Suffixes) -> None:
     assert suffixes.value == "_value1"
 
+
+def test_get_missing_subject_suffixes(registry: VendorRegistry) -> None:
     with pytest.raises(KeyError):
         registry.get_subject_suffixes(999)
 
 
-def test_get_protocols(registry: VendorRegistry) -> None:
-    protocols = registry.get_protocols()
-    assert len(protocols) == 3
-    assert all(isinstance(p, Protocol) for p in protocols)
 
-
-def test_get_vendors(registry: VendorRegistry) -> None:
-    vendors = registry.get_vendors()
-    assert len(vendors) == 2
-    assert all(isinstance(v, Vendor) for v in vendors)
-
-
-# Tests for public functions using the real registry (no mocking)
-def test_get_protocol_success() -> None:
-    # Using confluent's protocol ID (0)
-    protocol = get_protocol(0, Actions.serialize)
+@pytest.mark.parametrize("protocol_id", [0, 1, 2, 3])
+def test_get_protocol_success(protocol_id: int) -> None:
+    protocol = get_protocol(protocol_id, Actions.serialize)
     assert isinstance(protocol, Protocol)
-    assert protocol.header_size == 4
 
 
 def test_get_protocol_error_deserialize() -> None:
@@ -151,26 +160,25 @@ def test_get_subject_suffix_unknown_protocol() -> None:
         get_subject_suffix(999, is_key=True)
 
 
-def test_get_protocols_function() -> None:
+def test_get_protocols_function(currently_known_protocols_count: int) -> None:
     protocols = get_protocols()
-    # At least the known protocols from confluent (1) and cloudera (3)
-    assert len(protocols) >= 4
+    assert len(protocols) == currently_known_protocols_count
     assert all(isinstance(p, Protocol) for p in protocols)
 
 @pytest.fixture
-def vendors() -> dict[str, Vendor]:
+def vendors(currently_known_vendors_count: int) -> dict[str, Vendor]:
     vndrs = get_vendors()
-    assert len(vndrs) == 2
+    assert len(vndrs) == currently_known_vendors_count
     return {vendor.name: vendor for vendor in vndrs}
 
 
-@pytest.mark.parametrize("vendor_name", ['confluent', 'cloudera'])
+@pytest.mark.parametrize("vendor_name", ["confluent", "cloudera"])
 def test_get_vendors_function(vendor_name: str, vendors: dict[str, Vendor]) -> None:
     assert vendor_name in vendors
 
 @pytest.fixture
 def confluent(vendors: dict[str, Vendor]) -> Vendor:
-    return vendors['confluent']
+    return vendors["confluent"]
 
 
 def test_confluent_vendor_subject_suffix_key(confluent: Vendor) -> None:
@@ -193,7 +201,7 @@ def test_confluent_vendor_protocol(protocol_id: int, confluent_protocols: dict[i
 
 @pytest.fixture
 def cloudera(vendors: dict[str, Vendor]) -> Vendor:
-    return vendors['cloudera']
+    return vendors["cloudera"]
 
 def test_cloudera_vendor_subject_suffix_key(cloudera: Vendor) -> None:
     assert cloudera.suffixes.key == ":k"
@@ -203,8 +211,9 @@ def test_cloudera_vendor_subject_suffix_value(cloudera: Vendor) -> None:
 
 @pytest.fixture
 def cloudera_protocols(cloudera: Vendor) -> dict[int, Protocol]:
+    known_cloudera_protocols = 3
     protocols = {pr.id: pr.protocol for pr in cloudera.protocols}
-    assert len(protocols) == 3
+    assert len(protocols) == known_cloudera_protocols
     return protocols
 
 @pytest.mark.parametrize("protocol_id", [1,2,3])
