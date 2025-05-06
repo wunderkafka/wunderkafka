@@ -1,13 +1,14 @@
 """
-Module contains interface-like skeletons for consumer.
+The Module contains interface-like skeletons for consumer.
 
-- inherited from confluent-kafka Consumer to use it as nested entity
+- Inherited from confluent-kafka Consumer to use it as nested entity
 - high-level consumer which is able to handle message's schemas
 """
 
+from __future__ import annotations
+
 import datetime
 from abc import ABC, abstractmethod
-from typing import Optional, Union
 
 from confluent_kafka import Consumer, Message, TopicPartition
 
@@ -21,8 +22,10 @@ class AbstractConsumer(Consumer):
 
     # Why so: https://github.com/python/mypy/issues/4125
     _config: ConsumerConfig
-    subscription_offsets: Optional[dict[str, HowToSubscribe]] = None
+    subscription_offsets: dict[str, HowToSubscribe] | None = None
 
+    # TODO (tribunsky.kir): Do we need re-initiation of consumer/producer in runtime?
+    #                       https://github.com/severstal-digital/wunderkafka/issues/94
     @property
     def config(self) -> ConsumerConfig:
         """
@@ -67,14 +70,16 @@ class AbstractDeserializingConsumer(ABC):
     @abstractmethod
     def commit(
         self,
-        message: Optional[Message] = None,
-        offsets: Optional[list[TopicPartition]] = None,
-        asynchronous: bool = True,
-    ) -> Optional[list[TopicPartition]]:
+        message: Message | None = None,
+        offsets: list[TopicPartition] | None = None,
+        # TODO (tribunsky.kir): implement API to allow only keyword arguments for booleans
+        #                       https://github.com/severstal-digital/wunderkafka/issues/93
+        asynchronous: bool = True,  # noqa: FBT001, FBT002
+    ) -> list[TopicPartition] | None:
         """
         Commit a message or a list of offsets.
 
-        This method overlaps original consumer's method and will use the nested consumer.
+        This method overlaps the original consumer's method and will use the nested consumer.
 
         :param message:         Commit offset (+1), extracted from Message object itself.
         :param offsets:         Commit exactly TopicPartition data.
@@ -83,28 +88,31 @@ class AbstractDeserializingConsumer(ABC):
         :raises KafkaException: If all commits failed.
 
         :return:                On asynchronous call returns None immediately.
-                                Committed offsets on synchronous call, if succeed.
+                                Committed offsets on synchronous call, if succeeded.
         """
 
+    # TODO (tribunsky.kir): reconsider API of 'how'
+    #                       https://github.com/severstal-digital/wunderkafka/issues/89
     @abstractmethod
-    def subscribe(  # noqa: WPS211  # ToDo (tribunsky.kir): reconsider API of 'how'
+    def subscribe(
         self,
-        topics: list[Union[str, TopicSubscription]],
+        topics: list[str | TopicSubscription],
         *,
-        from_beginning: Optional[bool] = None,
-        offset: Optional[int] = None,
-        ts: Optional[int] = None,
-        with_timedelta: Optional[datetime.timedelta] = None,
+        from_beginning: bool | None = None,
+        offset: int | None = None,
+        ts: int | None = None,
+        with_timedelta: datetime.timedelta | None = None,
     ) -> None:
         """
         Subscribe to a given list of topics. This replaces a previous subscription.
 
-        This method overlaps original consumer's method and will use the nested consumer.
+        This method overlaps the original consumer's method and will use the nested consumer.
 
-        :param topics:          List of topics to subscribe. If topic has no specific subscription, specified value
+        :param topics:          List of topics to subscribe to. If a topic has no specific subscription, specified value
                                 for beginning/end/offset/timestamp/timedelta/built-in will be used.
-        :param from_beginning:  If flag is set, return specific offset corresponding to beginning/end of the topic.
-        :param offset:          If set, will return Offset object.
+        :param from_beginning:  If a flag is set,
+                                return specific offset corresponding to the beginning/end of the topic.
+        :param offset:          If set, will return an Offset object.
         :param ts:              If set, will return Timestamp.
         :param with_timedelta:  If set, will calculate timestamp for corresponding timedelta.
         """

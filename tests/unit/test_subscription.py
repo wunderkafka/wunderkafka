@@ -7,7 +7,7 @@ from wunderkafka.consumers.subscription import Offset, Timestamp, choose_offset
 
 
 def test_nothing_set() -> None:
-    assert choose_offset(None, None, None, None) is None
+    assert choose_offset(from_beginning=None, offset=None, ts=None, dt=None, with_timedelta=None) is None
 
 
 def test_from_beginning() -> None:

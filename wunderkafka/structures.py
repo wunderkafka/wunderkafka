@@ -1,17 +1,21 @@
 """This module contains common datastructures which is used in the package."""
+
+from __future__ import annotations
+
+import datetime
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
+from wunderkafka.serdes.vendors import get_subject_suffix
 from wunderkafka.time import ts2dt
 
 
 class SchemaType(str, Enum):
-    AVRO = 'AVRO'
-    JSON = 'JSON'
-    PROTOBUF = 'PROTOBUF'
+    AVRO = "AVRO"
+    JSON = "JSON"
+    PROTOBUF = "PROTOBUF"
     # Strings, doubles, integers
-    PRIMITIVES = 'PRIMITIVES'
+    PRIMITIVES = "PRIMITIVES"
 
 
 @dataclass(frozen=True)
@@ -19,7 +23,8 @@ class Timestamp:
     value: int
 
     def __str__(self) -> str:
-        return f'{self.__class__.__name__}: {self.value:.2f} ({ts2dt(self.value)})'
+        tz_local = datetime.datetime.now().astimezone().tzinfo
+        return f"{self.__class__.__name__}: {self.value:.2f} ({ts2dt(self.value).astimezone(tz_local)})"
 
 
 @dataclass(frozen=True)
@@ -27,13 +32,14 @@ class Offset:
     value: int
 
 
-# ToDo (ka.tribunskii): compose header & meta in symmetrical way
+# TODO (tribunsky.kir): compose header & meta in symmetrical way
+#                       https://github.com/severstal-digital/wunderkafka/issues/88
 @dataclass(frozen=True)
 class ParsedHeader:
     protocol_id: int
-    meta_id: Optional[int]
-    schema_id: Optional[int]
-    schema_version: Optional[int]
+    meta_id: int | None
+    schema_id: int | None
+    schema_version: int | None
     size: int
 
 
@@ -51,25 +57,23 @@ class SchemaMeta:
         :return:            String which should be used as a path in schema registry's url
                             corresponding to a given topic.
         """
-        # Confluent
-        if self.header.protocol_id == 0:
-            suffix = '_key' if self.is_key else '_value'
-        # Cloudera
-        else:
-            suffix = ':k' if self.is_key else ''
-        return f'{self.topic}{suffix}'
+        suffix = get_subject_suffix(self.header.protocol_id, is_key=self.is_key)
+        return f"{self.topic}{suffix}"
 
 
-# ToDo: (tribunsky.kir): add cross-validation of invariants on the model itself?
+# TODO (tribunsky.kir): add cross-validation of invariants on the model itself?
+#                       This awkward class may be gone with:
+#                       https://github.com/severstal-digital/wunderkafka/issues/88
 @dataclass(frozen=True)
 class SRMeta:
     """Meta, which is retrieved after schema registration."""
+
     # Confluent always has schema_id, but one of cloudera protocols doesn't use it
-    schema_id: Optional[int]
+    schema_id: int | None
     # Confluent has schema_version, but serdes works around schema_id, which is a unique identifier there.
-    schema_version: Optional[int]
+    schema_version: int | None
     # Confluent doesn't have metaId
-    meta_id: Optional[int] = None
+    meta_id: int | None = None
 
 
 @dataclass(frozen=True)
@@ -89,7 +93,7 @@ class SerializerSchemaDescription:
 
         Some serializers (e.g., confluent StringSerializer) practically don't have an effective schema.
         """
-        return self.text == ''
+        return self.text == ""
 
 
 @dataclass(frozen=True)
