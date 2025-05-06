@@ -25,6 +25,7 @@ dependencies = [
 	"fastavro>=1.4.7",
 	"pydantic-settings>2.0",
 	"pydantic>=2.7.0",
+	"setuptools>=80.3.1",
 ]
 
 [project.optional-dependencies]
@@ -173,7 +174,9 @@ dev-dependencies = [
     "authlib>=1.5.1",
     "cachetools>=5.5.2",
     "httpx>=0.28.1",
+    "mypy>=1.15.0",
     "pytest>=8.3.4",
+    "pytest-cov>=6.1.1",
     "requests>=2.32.3",
     "ruff>=0.9.7",
 ]
