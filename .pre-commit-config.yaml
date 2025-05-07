@@ -17,11 +17,11 @@ repos:
         name: ruff
         language: python
         entry: bash -c "ruff check --fix"
-#      - id: mypy
-#        name: mypy
-#        language: python
-#        language_version: python3.9
-#        entry: bash -c "mypy --config-file pyproject.toml ."
+      - id: mypy
+        name: mypy
+        language: python
+        # Even `from __future__ import annotations` helps with X | Y, mypy for 3.9 still complains.
+        entry: bash -c "mypy --config-file pyproject.toml --python-version=3.10 ."
       - id: pytest-check
         name: pytest-check
         entry: pytest

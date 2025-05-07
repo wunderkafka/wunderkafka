@@ -44,9 +44,12 @@ jobs:
         run: uv run pytest -s tests/
       - name: Install dependencies
         run: |
-          uv pip install -U mypy==1.10.0
+          uv pip install -U mypy==1.15.0
       - name: run mypy
-        run: uv run mypy --config pyproject.toml .
+        run: |
+          PY="${{ matrix.python-version }}"
+          if [ "$PY" = "3.9" ]; then PY="3.10"; fi
+          uv run mypy --python-version "$PY" --config pyproject.toml .
       - name: run ruff
         run: uv run ruff check .
 
@@ -94,11 +97,6 @@ jobs:
         fi
     - name: run pytest
       run: uv run pytest -s tests/
-    - name: Install dependencies
-      run: |
-        uv pip install -U mypy==1.10.0
-    - name: run mypy
-      run: uv run mypy --config pyproject.toml .
 
   version:
     runs-on: ubuntu-latest

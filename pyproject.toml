@@ -44,8 +44,8 @@ exclude = ["tests"]
 python_classes = "!Test"
 
 [tool.mypy]
-exclude = "examples"
 plugins = ["pydantic.mypy"]
+exclude = "examples"
 disallow_untyped_calls = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true

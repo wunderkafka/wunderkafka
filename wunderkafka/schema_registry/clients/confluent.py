@@ -58,7 +58,7 @@ class SchemaRegistryHttpClientAdapter:
 
 class SchemaRegistryClient(ConfluentSchemaRegistryClient):
     @classmethod
-    def from_client(cls, http_client: AbstractHTTPClient, *args: P.args, **kwargs: P.kwargs) -> SchemaRegistryClient:
+    def from_client(cls, http_client: AbstractHTTPClient, *args: P.args, **kwargs: P.kwargs) -> SchemaRegistryClient:  # type: ignore[valid-type]
         # Minimal initialization as we will override a client with our own
         client = cls({"url": http_client.base_url, **kwargs})
         client._rest_client = SchemaRegistryHttpClientAdapter(http_client)
@@ -70,8 +70,8 @@ class ConfluentSRClient(AbstractSchemaRegistry):
         self,
         http_client: AbstractHTTPClient,
         _: Optional[SimpleCache] = None,
-        *args: P.args,
-        **kwargs: P.kwargs,
+        *args: P.args,  # type: ignore[valid-type]
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
     ) -> None:
         self.client = SchemaRegistryClient.from_client(http_client, *args, **kwargs)
 

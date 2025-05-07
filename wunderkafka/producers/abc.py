@@ -25,16 +25,16 @@ class AbstractProducer(Producer):
     # TODO (tribunsky.kir): rethink API?
     #                       https://github.com/severstal-digital/wunderkafka/issues/91
     # https://github.com/python/mypy/issues/13966
-    def send_message(  # type: ignore[valid-type] # noqa: PLR0913
+    def send_message(  # noqa: PLR0913
         self,
         topic: str,
         value: str | bytes | None = None,
         key: str | bytes | None = None,
         partition: int | None = None,
         on_delivery: DeliveryCallback | None = None,
-        *args: P.args,
+        *args: P.args,  # type: ignore[valid-type]
         blocking: bool = False,
-        **kwargs: P.kwargs,
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
     ) -> None:
         """
         Send an encoded message to Kafka almost immediately.
@@ -61,16 +61,16 @@ class AbstractSerializingProducer(ABC):
 
     @abstractmethod
     # https://github.com/python/mypy/issues/13966
-    def send_message(  # type: ignore[valid-type] # noqa: PLR0913
+    def send_message(  # noqa: PLR0913
         self,
         topic: str,
         value: MsgValue = None,
         key: MsgKey = None,
         partition: int | None = None,
         on_delivery: DeliveryCallback | None = None,
-        *args: P.args,
+        *args: P.args,  # type: ignore[valid-type]
         blocking: bool = False,
-        **kwargs: P.kwargs,
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
     ) -> None:
         """
         Encode and send a message to Kafka.
