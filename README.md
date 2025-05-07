@@ -1,14 +1,12 @@
-<img src="./.github/assets/todo-count-badge.svg">
-
 # Wunderkafka
 
 >The power of librdkafka for <s>humans</s> pythons
 
 Wunderkafka provides a handful of facades for C-powered consumer/producer. It's built on top of the [confluent-kafka](https://pypi.org/project/confluent-kafka/)
 
-For a quick view on what is going on, please check [Quickstart](https://severstal-digital.github.io/wunderkafka/pages/quickstart/) and [Documentation](https://severstal-digital.github.io/wunderkafka/)
+For a quick view on what is going on, please check [Quickstart](https://wunderkafka.github.io/wunderkafka/pages/quickstart/) and [Documentation](https://wunderkafka.github.io/wunderkafka/)
 
-Installation process described [here](https://severstal-digital.github.io/wunderkafka/pages/install/)
+Installation process described [here](https://wunderkafka.github.io/wunderkafka/pages/install/)
 
 ## Features
 

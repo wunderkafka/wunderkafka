@@ -190,8 +190,7 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
                 if self._stream_result:
                     results.append(StreamResult(payload=decoded_value, error=None, msg=msg))
 
-        to_return = results if self._stream_result else msgs
-        return to_return
+        return results if self._stream_result else msgs  # type: ignore[return-value]
 
     # Todo (tribunsky.kir): arguable: make different composition (headers, SR & deserializer united cache)
     def _decode(self, topic: str, blob: Optional[bytes], *, is_key: bool = False) -> Any:

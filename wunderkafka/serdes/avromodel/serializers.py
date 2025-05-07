@@ -20,11 +20,11 @@ class AvroModelSerializer(AbstractSerializer):
         schema: str,
         payload: Any,
         header: Optional[bytes] = None,
-        *args: P.args,
-        **kwargs: P.kwargs,
+        *args: P.args,  # type: ignore[valid-type]
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
     ) -> bytes:
         if isinstance(payload, BaseModel):
             dct = payload.model_dump()
         else:
-            dct = asdict(payload) if is_dataclass(payload) else dict(payload)
+            dct = asdict(payload) if is_dataclass(payload) else dict(payload)  # type: ignore[arg-type]
         return self._serializer.serialize(schema, dct, header)

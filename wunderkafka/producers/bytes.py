@@ -57,9 +57,9 @@ class BytesProducer(AbstractProducer):
         key: str | bytes | None = None,
         partition: int | None = None,
         on_delivery: DeliveryCallback | None = error_callback,
-        *args: P.args,  # noqa: ARG002
+        *args: P.args,  # type: ignore[valid-type] # noqa: ARG002
         blocking: bool = False,
-        **kwargs: P.kwargs,
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
     ) -> None:
         if partition is not None:
             self.produce(topic, value, key=key, partition=partition, on_delivery=on_delivery, **kwargs)
