@@ -1,5 +1,3 @@
-<img src="./.github/assets/todo-count-badge.svg">
-
 # Wunderkafka
 
 >The power of librdkafka for <s>humans</s> pythons
