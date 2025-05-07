@@ -15,7 +15,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 authors = [{name = "Kirill Tribunsky", email = "tribunsky.kir@yandex.ru"}]
-urls = {"Homepage" = "https://github.com/severstal-digital/wunderkafka", "Bug Tracker" = "https://github.com/severstal-digital/wunderkafka/issues"}
+urls = {"Homepage" = "https://github.com/wunderkafka/wunderkafka", "Bug Tracker" = "https://github.com/wunderkafka/wunderkafka/issues"}
 requires-python = ">=3.9"
 
 dependencies = [
