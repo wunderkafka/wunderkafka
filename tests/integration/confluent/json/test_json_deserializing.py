@@ -31,9 +31,7 @@ IMAGE_MESSAGE = Msg(
 )
 
 
-HEADERS = (
-    b'\x00\x00\x00\x07<',
-)
+HEADERS = (b"\x00\x00\x00\x07<",)
 
 
 @pytest.mark.parametrize("header", list(HEADERS))

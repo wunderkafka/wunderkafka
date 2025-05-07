@@ -14,7 +14,6 @@ class Message:
 
 
 class TestProducer(BytesProducer):
-
     def __init__(self) -> None:
         self.sent: list[Message] = []
 

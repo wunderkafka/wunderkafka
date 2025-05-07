@@ -16,14 +16,18 @@ def create_annotation(generic: Any, types_list: list[type[object]]) -> type[obje
 
 # Same as `sys.version_info <= (3, 10)`
 if HAS_UNION_TYPE is False:
+
     def is_union_type(generic: Any) -> bool:
         return False
 else:
+
     def is_union_type(generic: Any) -> bool:
         return inspect.isclass(generic) and issubclass(generic, UnionType)
 
+
 def get_generic(annotation: Any) -> Any:
     return get_origin(annotation)
+
 
 def is_annotated_type(annotation: Any) -> bool:
     return get_origin(annotation) is Annotated

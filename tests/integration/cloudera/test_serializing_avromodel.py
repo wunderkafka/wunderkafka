@@ -14,13 +14,13 @@ from wunderkafka.time import now
 
 class Signal(BaseModel):
     ts: int = Field(default_factory=now)
-    source: str = 'test'
-    type: str = 'string'
-    id: str = 'string'
-    value: str = 'NA'
+    source: str = "test"
+    type: str = "string"
+    id: str = "string"
+    value: str = "NA"
 
     class Meta:
-        name = 'SignalsTest'
+        name = "SignalsTest"
 
 
 class DefaultKey(BaseModel):
@@ -38,7 +38,9 @@ def ts() -> int:
 
 @pytest.fixture
 def value_answer() -> bytes:
-    return b'\x01\x00\x00\x00\x00\x00\x00\x06\x9c\x00\x00\x00\x01\xcc\xb8\xeb\xa6\x80_\x08test\x0cstring\x0cstring\x04NA'  # noqa: E501
+    return (
+        b"\x01\x00\x00\x00\x00\x00\x00\x06\x9c\x00\x00\x00\x01\xcc\xb8\xeb\xa6\x80_\x08test\x0cstring\x0cstring\x04NA"  # noqa: E501
+    )
 
 
 @pytest.fixture
@@ -59,11 +61,7 @@ def clean_producer(test_producer: TestProducer, sr_root: Path) -> HighLevelSeria
 
 
 def test_avro_producer_moving_parts_value_only(
-    clean_producer: HighLevelSerializingProducer,
-    test_producer: TestProducer,
-    topic: str,
-    ts: int,
-    value_answer: bytes
+    clean_producer: HighLevelSerializingProducer, test_producer: TestProducer, topic: str, ts: int, value_answer: bytes
 ) -> None:
     clean_producer.set_target_topic(topic, Signal)
     value = Signal(ts=ts)
@@ -85,5 +83,5 @@ def test_avro_producer_moving_parts_value_and_key(
     value = Signal(ts=ts)
     clean_producer.send_message(topic, value, key)
     [message] = test_producer.sent
-    assert message.key == b'\x01\x00\x00\x00\x00\x00\x00\x06\x9d\x00\x00\x00\x01\xcc\xb8\xeb\xa6\x80_'
+    assert message.key == b"\x01\x00\x00\x00\x00\x00\x00\x06\x9d\x00\x00\x00\x01\xcc\xb8\xeb\xa6\x80_"
     assert message.value == value_answer

@@ -9,13 +9,13 @@ from wunderkafka.config.generated.models import RDConsumerConfig, RDProducerConf
 from wunderkafka.config.schema_registry import SRConfig
 from wunderkafka.logger import logger
 
-CONF_CONSUMER_FIELDS = MappingProxyType({
-    field_name.replace('.', '_'): field_name for field_name in (*COMMON_FIELDS, *CONSUMER_FIELDS)
-})
+CONF_CONSUMER_FIELDS = MappingProxyType(
+    {field_name.replace(".", "_"): field_name for field_name in (*COMMON_FIELDS, *CONSUMER_FIELDS)}
+)
 
-CONF_PRODUCER_FIELDS = MappingProxyType({
-    field_name.replace('.', '_'): field_name for field_name in (*COMMON_FIELDS, *PRODUCER_FIELDS)
-})
+CONF_PRODUCER_FIELDS = MappingProxyType(
+    {field_name.replace(".", "_"): field_name for field_name in (*COMMON_FIELDS, *PRODUCER_FIELDS)}
+)
 
 ConfigValues = Union[str, int, bool, float]
 
@@ -43,13 +43,16 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
     #   ...
     #   "Configuration property "ssl.ca.certificate.stores" not supported in this build: configuration only valid on Windows"  # noqa: E501
     #  }
-    if os.name != 'nt':
-        property_name = 'ssl.ca.certificate.stores'
+    if os.name != "nt":
+        property_name = "ssl.ca.certificate.stores"
         property_value = dct.pop(property_name, None)
         if property_value is not None:
-            logger.warning('Excluding {}={} as windows-only even it was set to default'.format(
-                property_name, property_value,
-            ))
+            logger.warning(
+                "Excluding {}={} as windows-only even it was set to default".format(
+                    property_name,
+                    property_value,
+                )
+            )
     return dct
 
 
@@ -61,7 +64,7 @@ class ConsumerConfig(RDConsumerConfig):
 
     def dict(self, **kwargs: Any) -> dict[str, ConfigValues]:
         dct = super().model_dump(**kwargs)
-        dct.pop('sr')
+        dct.pop("sr")
         return sanitize(remap_properties(dct, CONF_CONSUMER_FIELDS))
 
 
@@ -71,8 +74,8 @@ class ProducerConfig(RDProducerConfig):
 
     def dict(self, **kwargs: Any) -> dict[str, ConfigValues]:
         dct = super().model_dump(**kwargs)
-        dct.pop('sr')
+        dct.pop("sr")
         return sanitize(remap_properties(dct, CONF_PRODUCER_FIELDS))
 
 
-RDKafkaConfig = TypeVar('RDKafkaConfig', ConsumerConfig, ProducerConfig)
+RDKafkaConfig = TypeVar("RDKafkaConfig", ConsumerConfig, ProducerConfig)

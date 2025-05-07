@@ -7,5 +7,5 @@ except ImportError:
 
 
 __all__ = [
-    'JSONDeserializer',
+    "JSONDeserializer",
 ]

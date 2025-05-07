@@ -7,11 +7,10 @@ from wunderkafka.compat import ParamSpec
 from wunderkafka.serdes.abc import AbstractDescriptionStore, AbstractSerializer
 from wunderkafka.serdes.avro import FastAvroSerializer
 
-P = ParamSpec('P')
+P = ParamSpec("P")
 
 
 class AvroModelSerializer(AbstractSerializer):
-
     def __init__(self, store: Optional[AbstractDescriptionStore] = None) -> None:
         self._serializer = FastAvroSerializer()
         self.store = store

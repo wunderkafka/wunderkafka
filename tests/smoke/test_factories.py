@@ -3,7 +3,7 @@ from wunderkafka.factories.avro import AvroConsumer, AvroModelProducer, AvroProd
 
 
 def test_init_avro_consumer(sr_url: str) -> None:
-    AvroConsumer(ConsumerConfig(group_id='test', sr=SRConfig(url=sr_url)))
+    AvroConsumer(ConsumerConfig(group_id="test", sr=SRConfig(url=sr_url)))
 
 
 def test_init_avro_producer(sr_url: str) -> None:

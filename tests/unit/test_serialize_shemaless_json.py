@@ -12,7 +12,7 @@ from wunderkafka.serdes.schemaless.jsonmodel.serializers import SchemaLessJSONMo
 
 
 def get_random_string() -> str:
-    return ''.join(random.choice(string.printable) for i in range(random.randint(3, 20)))
+    return "".join(random.choice(string.printable) for i in range(random.randint(3, 20)))
 
 
 def get_random_int() -> int:

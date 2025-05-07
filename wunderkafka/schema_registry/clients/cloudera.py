@@ -52,7 +52,6 @@ def prepare_schemas_for_caching(
 
 
 class ClouderaSRClient(AbstractSchemaRegistry):
-
     def __init__(self, http_client: AbstractHTTPClient, cache: Optional[SimpleCache] = None) -> None:
         self._client = http_client
         self._cache = AlwaysEmptyCache() if cache is None else cache

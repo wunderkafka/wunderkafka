@@ -38,15 +38,19 @@ class KerberizableHTTPClient(AbstractHTTPClient):
         if config.ssl_key_location is not None:
             s.verify = config.ssl_ca_location
 
-        accept = ', '.join([
-            'application/vnd.schemaregistry.v1+json',
-            'application/vnd.schemaregistry+json',
-            'application/json',
-        ])
-        s.headers.update({
-            'Accept': accept,
-            'Content-Type': "application/vnd.schemaregistry.v1+json",
-        })
+        accept = ", ".join(
+            [
+                "application/vnd.schemaregistry.v1+json",
+                "application/vnd.schemaregistry+json",
+                "application/json",
+            ]
+        )
+        s.headers.update(
+            {
+                "Accept": accept,
+                "Content-Type": "application/vnd.schemaregistry.v1+json",
+            }
+        )
 
         self._session = s
         self._base_url = config.url
@@ -63,16 +67,16 @@ class KerberizableHTTPClient(AbstractHTTPClient):
     def make_request(
         self,
         relative_url: str,
-        method: str = 'GET',
+        method: str = "GET",
         body: Any = None,
         query: Any = None,
     ) -> Any:
-        url = "/".join([self._base_url.rstrip('/'), relative_url.lstrip('/')])
-        logger.debug(f'{method}: {url}')
+        url = "/".join([self._base_url.rstrip("/"), relative_url.lstrip("/")])
+        logger.debug(f"{method}: {url}")
         response = self._session.request(method, url, json=body, params=query)
         # ToDo(aa.perelygin): more informative message when fail
         if response.status_code >= 400:
-            logger.error(f'HTTPError for url: {url}, more details: {response.content}')
+            logger.error(f"HTTPError for url: {url}, more details: {response.content}")
 
         response.raise_for_status()
 
@@ -81,8 +85,8 @@ class KerberizableHTTPClient(AbstractHTTPClient):
 
     def _dump(self, method: str, relative_url: str, response: requests.Response) -> None:
         if self._save_replay:
-            filename = f'{method}/{relative_url}.json'
+            filename = f"{method}/{relative_url}.json"
             dir_name = os.path.dirname(filename)
             os.makedirs(dir_name, exist_ok=True)
-            with open(filename, 'w') as fl:
+            with open(filename, "w") as fl:
                 json.dump(response.json(), fl)

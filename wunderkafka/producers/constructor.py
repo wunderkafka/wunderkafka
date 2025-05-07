@@ -71,13 +71,13 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
 
         chosen_value_serializer = value_serializer if value_serializer else serializer
         if chosen_value_serializer is None:
-            msg = 'Value serializer is not specified, should be passed via value_serializer or serializer at least.'
+            msg = "Value serializer is not specified, should be passed via value_serializer or serializer at least."
             raise ValueError(msg)
         self._value_serializer = chosen_value_serializer
 
         chosen_key_serializer = key_serializer if value_serializer else serializer
         if chosen_key_serializer is None:
-            msg = 'Key serializer is not specified, should be passed via key_serializer or serializer at least.'
+            msg = "Key serializer is not specified, should be passed via key_serializer or serializer at least."
             raise ValueError(msg)
         self._key_serializer = chosen_key_serializer
 
@@ -167,7 +167,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
         :return:        Container with schema's ids.
         """
         if self._sr is None:
-            logger.warning(f'Schema registry is not passed, skipping schema check for {topic}')
+            logger.warning(f"Schema registry is not passed, skipping schema check for {topic}")
             return None
         if schema is None:
             raise ValueError("Couldn't check schema from store.")
@@ -194,7 +194,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
 
         schema = store.get(topic, is_key=is_key)
         if schema is None:
-            logger.warning(f'Missing schema for {topic} (key: {is_key}')
+            logger.warning(f"Missing schema for {topic} (key: {is_key}")
             return None
         if schema.empty:
             return serializer.serialize(schema.text, obj, None, topic, is_key=is_key)
@@ -215,7 +215,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
             return serializer.serialize(schema.text, obj, header, topic, is_key=is_key)
 
     def _get_store(self, serializer: AbstractSerializer) -> AbstractDescriptionStore:
-        serializers_store = getattr(serializer, 'store', None)
+        serializers_store = getattr(serializer, "store", None)
         if serializers_store is not None:
             return serializers_store
         assert self._store is not None

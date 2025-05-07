@@ -4,8 +4,8 @@ from wunderkafka.schema_registry.clients.confluent import ConfluentSRClient
 from wunderkafka.schema_registry.transport import KerberizableHTTPClient
 
 __all__ = [
-    'SimpleCache',
-    'KerberizableHTTPClient',
-    'ClouderaSRClient',
-    'ConfluentSRClient',
+    "SimpleCache",
+    "KerberizableHTTPClient",
+    "ClouderaSRClient",
+    "ConfluentSRClient",
 ]

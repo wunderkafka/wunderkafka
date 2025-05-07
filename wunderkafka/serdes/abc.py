@@ -10,7 +10,6 @@ from wunderkafka.types import KeySchemaDescription, TopicName, ValueSchemaDescri
 
 
 class AbstractProtocolHandler(ABC):
-
     @abstractmethod
     def parse(self, blob: bytes) -> ParsedHeader: ...
 
@@ -50,12 +49,10 @@ class AbstractSerializer(ABC):
         topic: Optional[str] = None,
         *,
         is_key: Optional[bool] = None,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
 
 class AbstractDescriptionStore(ABC):
-
     def __init__(self) -> None:
         self._values: dict[TopicName, ValueSchemaDescription] = {}
         self._keys: dict[TopicName, KeySchemaDescription] = {}
@@ -72,5 +69,4 @@ class AbstractDescriptionStore(ABC):
             return self._values.get(topic)
 
     @abstractmethod
-    def add(self, topic: TopicName, value: Any, key: Any) -> None:
-        ...
+    def add(self, topic: TopicName, value: Any, key: Any) -> None: ...

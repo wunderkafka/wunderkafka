@@ -45,7 +45,7 @@ class JSONConsumer(HighLevelDeserializingConsumer):
         sr = config.sr
         self._default_timeout: int = 60
         if sr is None:
-            raise ValueError(f'Schema registry config is necessary for {self.__class__.__name__}')
+            raise ValueError(f"Schema registry config is necessary for {self.__class__.__name__}")
         if sr_client is None:
             sr_client = ClouderaSRClient
 
@@ -73,7 +73,7 @@ class JSONProducer(HighLevelSerializingProducer):
         config: ProducerConfig,
         *,
         sr_client: Optional[type[ConfluentSRClient]] = None,
-        protocol_id: int = 1
+        protocol_id: int = 1,
     ) -> None:
         """
         Init producer from pre-defined blocks.
@@ -94,14 +94,16 @@ class JSONProducer(HighLevelSerializingProducer):
         """
         sr = config.sr
         if sr is None:
-            raise ValueError(f'Schema registry config is necessary for {self.__class__.__name__}')
+            raise ValueError(f"Schema registry config is necessary for {self.__class__.__name__}")
         if sr_client is None:
             sr_client = ConfluentSRClient
         self._default_timeout: int = 60
 
         schema_registry = sr_client(
             KerberizableHTTPClient(
-                sr, requires_kerberos=config_requires_kerberos(config), cmd_kinit=config.sasl_kerberos_kinit_cmd,
+                sr,
+                requires_kerberos=config_requires_kerberos(config),
+                cmd_kinit=config.sasl_kerberos_kinit_cmd,
             ),
             SimpleCache(),
         )
@@ -112,7 +114,7 @@ class JSONProducer(HighLevelSerializingProducer):
             serializer=JSONSerializer(schema_registry.client),
             store=SchemaTextRepo(schema_type=SchemaType.JSON),
             mapping=mapping,
-            protocol_id=protocol_id
+            protocol_id=protocol_id,
         )
 
 
@@ -125,7 +127,7 @@ class JSONModelProducer(HighLevelSerializingProducer):
         config: ProducerConfig,
         *,
         sr_client: Optional[type[ConfluentSRClient]] = None,
-        protocol_id: int = 1
+        protocol_id: int = 1,
     ) -> None:
         """
         Init producer from pre-defined blocks.
@@ -147,7 +149,7 @@ class JSONModelProducer(HighLevelSerializingProducer):
         """
         sr = config.sr
         if sr is None:
-            raise ValueError(f'Schema registry config is necessary for {self.__class__.__name__}')
+            raise ValueError(f"Schema registry config is necessary for {self.__class__.__name__}")
 
         if sr_client is None:
             sr_client = ConfluentSRClient
@@ -168,7 +170,7 @@ class JSONModelProducer(HighLevelSerializingProducer):
             serializer=JSONModelSerializer(schema_registry.client),
             store=JSONModelRepo(),
             mapping=mapping,
-            protocol_id=protocol_id
+            protocol_id=protocol_id,
         )
 
 

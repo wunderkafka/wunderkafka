@@ -54,12 +54,12 @@ class Mixed(BaseModel):
     text: str
     value: float
     integer: int = 0
-    string: str = 'str'
+    string: str = "str"
 
 
 # Pydantic allows following of non-default arguments, but dataclasses are not.
 class ImageData(BaseModel):
-    name: str = 'str'
+    name: str = "str"
     image: bytes
     camera: str
     ts: float = Field(default_factory=time.time)
@@ -69,29 +69,29 @@ class OtherImageData(BaseModel):
     image: bytes
     camera: str
     ts: float = Field(default_factory=time.time)
-    name: str = 'str'
+    name: str = "str"
 
 
 class TsWithMeta(BaseModel):
     ts: datetime = Field(default_factory=datetime.now)
 
     class Meta:
-        namespace = 'com.namespace.my'
-        name = 'MsgKey'
+        namespace = "com.namespace.my"
+        name = "MsgKey"
 
 
 class User1(BaseModel):
-    model_config = ConfigDict(extra='ignore')
+    model_config = ConfigDict(extra="ignore")
     name: str
 
 
 class User2(BaseModel):
-    model_config: ConfigDict = ConfigDict(extra='ignore')  # type: ignore[assignment,misc]
+    model_config: ConfigDict = ConfigDict(extra="ignore")  # type: ignore[assignment,misc]
     name: str
 
 
 class User3(BaseModel):
-    model_config: int = ConfigDict(extra='ignore')  # type: ignore[assignment,misc]
+    model_config: int = ConfigDict(extra="ignore")  # type: ignore[assignment,misc]
     name: str
 
 
@@ -109,156 +109,128 @@ class ItemList(BaseModel):
 
 
 def test_dataclass() -> None:
-    schema = derive(SomeData, topic='test_data_1')
+    schema = derive(SomeData, topic="test_data_1")
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'test_data_1_value',
-        'fields': [
+        "type": "record",
+        "name": "test_data_1_value",
+        "fields": [
             {
-                'name': 'field1',
-                'type': 'long',
+                "name": "field1",
+                "type": "long",
             },
             {
-                'name': 'field2',
-                'type': 'string',
+                "name": "field2",
+                "type": "string",
             },
         ],
     }
 
 
 def test_dataclass_defaults() -> None:
-    schema = derive(SomeDefaultData, topic='test_data_2')
+    schema = derive(SomeDefaultData, topic="test_data_2")
 
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'test_data_2_value',
-        'fields': [
+        "type": "record",
+        "name": "test_data_2_value",
+        "fields": [
             {
-                'name': 'field1',
-                'type': ['null', 'long'],
-                'default': None,
+                "name": "field1",
+                "type": ["null", "long"],
+                "default": None,
             },
             {
-                'name': 'field2',
-                'type': ['null', 'string'],
-                'default': None,
+                "name": "field2",
+                "type": ["null", "string"],
+                "default": None,
             },
         ],
     }
 
 
 def test_pydantic_with_defaults() -> None:
-    schema = derive(Metrics, topic='some_topic')
+    schema = derive(Metrics, topic="some_topic")
 
     assert json.loads(schema) == {
         "type": "record",
         "name": "some_topic_value",
         "fields": [
-            {
-                "name": "line_speed",
-                "type": [
-                    "long",
-                    "null"
-                ]
-            },
-            {
-                "name": "defect_detected",
-                "type": [
-                    "boolean",
-                    "null"
-                ],
-                "default": False
-            },
-            {
-                "name": "model_on",
-                "type": [
-                    "boolean",
-                    "null"
-                ],
-                "default": False
-            },
+            {"name": "line_speed", "type": ["long", "null"]},
+            {"name": "defect_detected", "type": ["boolean", "null"], "default": False},
+            {"name": "model_on", "type": ["boolean", "null"], "default": False},
             {
                 "name": "squad_number",
                 "type": "long",
                 "default": 0,
-            }
-        ]
-    }
-
-
-def test_pydantic_defaults() -> None:
-    schema = derive(Mixed, topic='topic')
-
-    assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'topic_value',
-        'fields': [
-            {
-                'type': 'string',
-                'name': 'text',
-            },
-            {
-                'type': 'double',
-                'name': 'value',
-            },
-            {
-                'type': 'long',
-                'name': 'integer',
-                'default': 0,
-            },
-            {
-                'type': 'string',
-                'name': 'string',
-                'default': 'str'
             },
         ],
     }
 
 
-def test_pydantic_defaults_none() -> None:
-    schema = derive(Event, topic='topic')
+def test_pydantic_defaults() -> None:
+    schema = derive(Mixed, topic="topic")
 
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'topic_value',
-        'namespace': 'any.data',
-        'fields': [
+        "type": "record",
+        "name": "topic_value",
+        "fields": [
             {
-                'type': ['long', 'null'],
-                'name': 'id',
+                "type": "string",
+                "name": "text",
             },
             {
-                'type': ['null', 'long'],
-                'name': 'ts',
-                'default': None,
+                "type": "double",
+                "name": "value",
+            },
+            {
+                "type": "long",
+                "name": "integer",
+                "default": 0,
+            },
+            {"type": "string", "name": "string", "default": "str"},
+        ],
+    }
+
+
+def test_pydantic_defaults_none() -> None:
+    schema = derive(Event, topic="topic")
+
+    assert json.loads(schema) == {
+        "type": "record",
+        "name": "topic_value",
+        "namespace": "any.data",
+        "fields": [
+            {
+                "type": ["long", "null"],
+                "name": "id",
+            },
+            {
+                "type": ["null", "long"],
+                "name": "ts",
+                "default": None,
             },
         ],
     }
 
 
 def test_pydantic_mixed_defaults() -> None:
-    s1 = derive(ImageData, topic='topic')
-    s2 = derive(OtherImageData, topic='topic')
+    s1 = derive(ImageData, topic="topic")
+    s2 = derive(OtherImageData, topic="topic")
     assert json.loads(s1) == {
-        'type': 'record',
-        'name': 'topic_value',
-        'fields': [
+        "type": "record",
+        "name": "topic_value",
+        "fields": [
+            {"name": "name", "type": "string", "default": "str"},
             {
-                'name': 'name',
-                'type': 'string',
-                'default': 'str'
+                "name": "image",
+                "type": "bytes",
             },
             {
-                'name': 'image',
-                'type': 'bytes',
+                "name": "camera",
+                "type": "string",
             },
             {
-                'name': 'camera',
-                'type': 'string',
-            },
-            {
-                'name': 'ts',
-                'type': 'double',
+                "name": "ts",
+                "type": "double",
             },
         ],
     }
@@ -266,77 +238,57 @@ def test_pydantic_mixed_defaults() -> None:
 
 
 def test_pydantic_with_meta() -> None:
-    schema = derive(TsWithMeta, topic='topic')
+    schema = derive(TsWithMeta, topic="topic")
 
     assert json.loads(schema) == {
-        'type': 'record',
-        'namespace': 'com.namespace.my',
-        'name': 'MsgKey',
-        'fields': [
+        "type": "record",
+        "namespace": "com.namespace.my",
+        "name": "MsgKey",
+        "fields": [
             {
-                'name': 'ts',
-                'type': {
-                    'logicalType': 'timestamp-millis',
-                    'type': 'long',
-                }
+                "name": "ts",
+                "type": {
+                    "logicalType": "timestamp-millis",
+                    "type": "long",
+                },
             }
         ],
     }
 
 
 def test_pydantic_base_settings_with_defaults() -> None:
-    schema = derive(Metric, topic='some_topic')
+    schema = derive(Metric, topic="some_topic")
 
     assert json.loads(schema) == {
         "type": "record",
         "name": "some_topic_value",
         "fields": [
-            {
-                "name": "line_speed",
-                "type": [
-                    "long",
-                    "null"
-                ]
-            },
-            {
-                "name": "defect_detected",
-                "type": [
-                    "boolean",
-                    "null"
-                ],
-                "default": False
-            },
-            {
-                "name": "model_on",
-                "type": [
-                    "boolean",
-                    "null"
-                ],
-                "default": False
-            },
+            {"name": "line_speed", "type": ["long", "null"]},
+            {"name": "defect_detected", "type": ["boolean", "null"], "default": False},
+            {"name": "model_on", "type": ["boolean", "null"], "default": False},
             {
                 "name": "squad_number",
                 "type": "long",
                 "default": 0,
-            }
-        ]
+            },
+        ],
     }
 
 
 if sys.version_info <= (3, 10):
-    class ParentOptional(BaseModel):
-        volume: float = Field(description='...')
-        weight: Optional[float] = Field(description='...')
 
+    class ParentOptional(BaseModel):
+        volume: float = Field(description="...")
+        weight: Optional[float] = Field(description="...")
 
     class ParentUnion(BaseModel):
         payload: Union[bytes, str]
         value: float
 else:
-    class ParentOptional(BaseModel):
-        volume: float = Field(description='...')
-        weight: float | None = Field(description='...')
 
+    class ParentOptional(BaseModel):
+        volume: float = Field(description="...")
+        weight: float | None = Field(description="...")
 
     class ParentUnion(BaseModel):
         payload: bytes | str
@@ -344,64 +296,64 @@ else:
 
 
 def test_optional_type() -> None:
-    schema = derive(ParentOptional, topic='test_data_1')
+    schema = derive(ParentOptional, topic="test_data_1")
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'test_data_1_value',
-        'fields': [
+        "type": "record",
+        "name": "test_data_1_value",
+        "fields": [
             {
-                'name': 'volume',
-                'type': 'double',
+                "name": "volume",
+                "type": "double",
             },
             {
-                'name': 'weight',
-                'type': ['double', 'null'],
+                "name": "weight",
+                "type": ["double", "null"],
             },
         ],
     }
 
 
 def test_union_type() -> None:
-    schema = derive(ParentUnion, topic='test_data_1')
+    schema = derive(ParentUnion, topic="test_data_1")
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'test_data_1_value',
-        'fields': [
+        "type": "record",
+        "name": "test_data_1_value",
+        "fields": [
             {
-                'name': 'payload',
-                'type': ['bytes', 'string'],
+                "name": "payload",
+                "type": ["bytes", "string"],
             },
             {
-                'name': 'value',
-                'type': 'double',
+                "name": "value",
+                "type": "double",
             },
         ],
     }
 
 
 def test_pydantic_v2_legal_model_config() -> None:
-    schema = derive(User1, topic='test_data_1')
+    schema = derive(User1, topic="test_data_1")
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'test_data_1_value',
-        'fields': [
+        "type": "record",
+        "name": "test_data_1_value",
+        "fields": [
             {
-                'name': 'name',
-                'type': 'string',
+                "name": "name",
+                "type": "string",
             },
         ],
     }
 
 
 def test_pydantic_v2_legal_model_config_annotated() -> None:
-    schema = derive(User2, topic='test_data_1')
+    schema = derive(User2, topic="test_data_1")
     assert json.loads(schema) == {
-        'type': 'record',
-        'name': 'test_data_1_value',
-        'fields': [
+        "type": "record",
+        "name": "test_data_1_value",
+        "fields": [
             {
-                'name': 'name',
-                'type': 'string',
+                "name": "name",
+                "type": "string",
             },
         ],
     }
@@ -410,11 +362,11 @@ def test_pydantic_v2_legal_model_config_annotated() -> None:
 def test_pydantic_v2_wrong_model_config_annotated() -> None:
     # Maybe we should not raise an error here and check if field value, not the annotation, is ConfigDict?
     with pytest.raises(ValueError):
-        derive(User3, topic='test_data_1')
+        derive(User3, topic="test_data_1")
 
 
 def test_pydantic_annotated() -> None:
-    schema = derive(Image, topic='test_data_1')
+    schema = derive(Image, topic="test_data_1")
     assert json.loads(schema) == {
         "type": "record",
         "name": "test_data_1_value",
@@ -426,24 +378,17 @@ def test_pydantic_annotated() -> None:
                     {
                         "type": "string",
                         "logicalType": "uuid",
-                    }
+                    },
                 ],
-                "default": None
+                "default": None,
             },
-            {
-                "name": "path",
-                "type": [
-                    "null",
-                    "string"
-                ],
-                "default": None
-            }
-        ]
+            {"name": "path", "type": ["null", "string"], "default": None},
+        ],
     }
 
 
 def test_pydantic_annotated_items() -> None:
-    schema = derive(ItemList, topic='test_data_1')
+    schema = derive(ItemList, topic="test_data_1")
     assert json.loads(schema) == {
         "type": "record",
         "name": "test_data_1_value",
@@ -463,14 +408,14 @@ def test_pydantic_annotated_items() -> None:
                                     "type": {
                                         "type": "string",
                                         "logicalType": "uuid",
-                                    }
+                                    },
                                 }
-                            ]
+                            ],
                         },
-                        "name": "item"
-                    }
+                        "name": "item",
+                    },
                 ],
-                "default": None
+                "default": None,
             }
-        ]
+        ],
     }

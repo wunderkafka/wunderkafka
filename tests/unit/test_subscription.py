@@ -32,7 +32,7 @@ def test_set_timedelta() -> None:
     target = time.time() - 2 * 60
     res = choose_offset(with_timedelta=datetime.timedelta(minutes=2))
     assert isinstance(res, Timestamp)
-    assert res.value == pytest.approx(target*1000)
+    assert res.value == pytest.approx(target * 1000)
 
     with pytest.raises(ValueError):
         choose_offset(with_timedelta=datetime.timedelta(minutes=2), from_beginning=True)

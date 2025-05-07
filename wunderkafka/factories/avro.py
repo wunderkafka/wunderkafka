@@ -43,15 +43,16 @@ class AvroConsumer(HighLevelDeserializingConsumer):
         sr = config.sr
         self._default_timeout: int = 60
         if sr is None:
-            raise ValueError(f'Schema registry config is necessary for {self.__class__.__name__}')
+            raise ValueError(f"Schema registry config is necessary for {self.__class__.__name__}")
         if sr_client is None:
             sr_client = ClouderaSRClient
 
         super().__init__(
             consumer=BytesConsumer(config),
             schema_registry=sr_client(
-                KerberizableHTTPClient(sr, requires_kerberos=config_requires_kerberos(config),
-                                       cmd_kinit=config.sasl_kerberos_kinit_cmd),
+                KerberizableHTTPClient(
+                    sr, requires_kerberos=config_requires_kerberos(config), cmd_kinit=config.sasl_kerberos_kinit_cmd
+                ),
                 SimpleCache(),
             ),
             headers_handler=ConfluentClouderaHeadersHandler().parse,
@@ -68,7 +69,7 @@ class AvroProducer(HighLevelSerializingProducer):
         config: ProducerConfig,
         *,
         sr_client: Optional[Union[type[ClouderaSRClient], type[ConfluentSRClient]]] = None,
-        protocol_id: int = 1
+        protocol_id: int = 1,
     ) -> None:
         """
         Init producer from pre-defined blocks.
@@ -89,7 +90,7 @@ class AvroProducer(HighLevelSerializingProducer):
         """
         sr = config.sr
         if sr is None:
-            raise ValueError(f'Schema registry config is necessary for {self.__class__.__name__}')
+            raise ValueError(f"Schema registry config is necessary for {self.__class__.__name__}")
         if sr_client is None:
             sr_client = ClouderaSRClient
         self._default_timeout: int = 60
@@ -97,15 +98,16 @@ class AvroProducer(HighLevelSerializingProducer):
         super().__init__(
             producer=BytesProducer(config),
             schema_registry=sr_client(
-                KerberizableHTTPClient(sr, requires_kerberos=config_requires_kerberos(config),
-                                       cmd_kinit=config.sasl_kerberos_kinit_cmd),
+                KerberizableHTTPClient(
+                    sr, requires_kerberos=config_requires_kerberos(config), cmd_kinit=config.sasl_kerberos_kinit_cmd
+                ),
                 SimpleCache(),
             ),
             header_packer=ConfluentClouderaHeadersHandler().pack,
             serializer=FastAvroSerializer(),
             store=SchemaTextRepo(schema_type=SchemaType.AVRO),
             mapping=mapping,
-            protocol_id=protocol_id
+            protocol_id=protocol_id,
         )
 
 
@@ -118,7 +120,7 @@ class AvroModelProducer(HighLevelSerializingProducer):
         config: ProducerConfig,
         *,
         sr_client: Optional[Union[type[ClouderaSRClient], type[ConfluentSRClient]]] = None,
-        protocol_id: int = 1
+        protocol_id: int = 1,
     ) -> None:
         """
         Init producer from pre-defined blocks.
@@ -140,7 +142,7 @@ class AvroModelProducer(HighLevelSerializingProducer):
         """
         sr = config.sr
         if sr is None:
-            raise ValueError(f'Schema registry config is necessary for {self.__class__.__name__}')
+            raise ValueError(f"Schema registry config is necessary for {self.__class__.__name__}")
 
         if sr_client is None:
             sr_client = ClouderaSRClient
@@ -150,9 +152,7 @@ class AvroModelProducer(HighLevelSerializingProducer):
             producer=BytesProducer(config),
             schema_registry=sr_client(
                 KerberizableHTTPClient(
-                    sr, 
-                    requires_kerberos=config_requires_kerberos(config),
-                    cmd_kinit=config.sasl_kerberos_kinit_cmd
+                    sr, requires_kerberos=config_requires_kerberos(config), cmd_kinit=config.sasl_kerberos_kinit_cmd
                 ),
                 SimpleCache(),
             ),
@@ -160,7 +160,7 @@ class AvroModelProducer(HighLevelSerializingProducer):
             serializer=AvroModelSerializer(),
             store=AvroModelRepo(),
             mapping=mapping,
-            protocol_id=protocol_id
+            protocol_id=protocol_id,
         )
 
 

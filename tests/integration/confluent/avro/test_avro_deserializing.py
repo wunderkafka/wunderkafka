@@ -12,20 +12,18 @@ from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.tests.consumer import Message
 
 SIGNAL_MESSAGE = Msg(
-    payload=b'\x08test\x0cstring\x0cstring\x04NA\xcc\xb8\xeb\xa6\x80_',
+    payload=b"\x08test\x0cstring\x0cstring\x04NA\xcc\xb8\xeb\xa6\x80_",
     deserialized={
-        'source': 'test',
-        'type': 'string',
-        'id': 'string',
-        'value': 'NA',
-        'ts': 1632128298534,
+        "source": "test",
+        "type": "string",
+        "id": "string",
+        "value": "NA",
+        "ts": 1632128298534,
     },
 )
 
 
-HEADERS = (
-    b'\x00\x00\x00\x08<',
-)
+HEADERS = (b"\x00\x00\x00\x08<",)
 
 
 @pytest.mark.parametrize("header", list(HEADERS))

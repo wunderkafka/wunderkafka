@@ -13,9 +13,7 @@ from wunderkafka.types import DeliveryCallback, MsgKey, MsgValue
 
 
 class AnyConsumer(Protocol):
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
     def commit(
         self,
@@ -48,20 +46,18 @@ class AnyConsumer(Protocol):
 
 
 class AnyProducer(Protocol):
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
     def send_message(
-            self,
-            topic: str,
-            value: MsgValue = None,
-            key: MsgKey = None,
-            partition: Optional[int] = None,
-            on_delivery: Optional[DeliveryCallback] = None,
-            *args: Any,
-            blocking: bool = False,
-            **kwargs: Any,
+        self,
+        topic: str,
+        value: MsgValue = None,
+        key: MsgKey = None,
+        partition: Optional[int] = None,
+        on_delivery: Optional[DeliveryCallback] = None,
+        *args: Any,
+        blocking: bool = False,
+        **kwargs: Any,
     ) -> None:
         """Send encoded message to Kafka almost immediately."""
 

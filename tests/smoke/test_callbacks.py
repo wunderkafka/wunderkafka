@@ -7,9 +7,8 @@ from wunderkafka.callbacks import error_callback, info_callback
 
 
 class Message:
-
     def topic(self) -> str:
-        return 'test'
+        return "test"
 
     def partition(self) -> Optional[int]:
         return 1

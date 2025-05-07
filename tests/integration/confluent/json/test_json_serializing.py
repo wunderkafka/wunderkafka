@@ -15,7 +15,7 @@ from wunderkafka.tests import TestHTTPClient, TestProducer
 
 
 def test_json_producer_create_schema(sr_root_existing: Path) -> None:
-    topic = 'testing_json_str_producer'
+    topic = "testing_json_str_producer"
     schema_str = '{"properties": {"id": {"anyOf": [{"format": "uuid4", "type": "string"}, {"type": "null"}], "default": null, "title": "Id"}, "path": {"anyOf": [{"type": "string"}, {"type": "null"}], "default": null, "title": "Path"}}, "title": "Image", "type": "object", "additionalProperties": false}'  # noqa: E501
     test_producer = TestProducer()
     sr_client = ConfluentSRClient(TestHTTPClient(sr_root_existing), SimpleCache())
@@ -40,4 +40,7 @@ def test_json_producer_create_schema(sr_root_existing: Path) -> None:
     [message] = test_producer.sent
 
     assert message.key is None
-    assert message.value == b'\x00\x00\x00\x07<{"id": "714fc713-37ff-4477-9157-cb4f14b63e1a", "path": "/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'  # noqa: E501
+    assert (
+        message.value
+        == b'\x00\x00\x00\x07<{"id": "714fc713-37ff-4477-9157-cb4f14b63e1a", "path": "/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'
+    )  # noqa: E501

@@ -4,8 +4,8 @@ from dataclasses import dataclass
 class Mask:
     def __init__(self, value: str):
         self._value = value
-        self.__unpack = f'>{self._value}'
-        self.__pack = f'>b{self._value}'
+        self.__unpack = f">{self._value}"
+        self.__pack = f">b{self._value}"
 
     @property
     def unpack(self) -> str:

@@ -24,14 +24,12 @@ MESSAGE = Msg(
     },
 )
 
-HEADERS = (
-    b'\x00\x00\x00\x07<',
-)
+HEADERS = (b"\x00\x00\x00\x07<",)
 
 
 @pytest.mark.parametrize("header", list(HEADERS))
 def test_consume_moving_parts(sr_root_existing: Path, topic: str, header: bytes) -> None:
-    msg = Message(topic, value=MESSAGE.serialized(header), key=b'714fc713-37ff-4477-9157-cb4f14b63e1a')
+    msg = Message(topic, value=MESSAGE.serialized(header), key=b"714fc713-37ff-4477-9157-cb4f14b63e1a")
     consumer = HighLevelDeserializingConsumer(
         consumer=TestConsumer([msg]),
         schema_registry=ConfluentSRClient(TestHTTPClient(sr_root_existing), SimpleCache()),
@@ -44,5 +42,5 @@ def test_consume_moving_parts(sr_root_existing: Path, topic: str, header: bytes)
 
     messages: list[Message] = consumer.consume()
     [message] = messages
-    assert message.key() == '714fc713-37ff-4477-9157-cb4f14b63e1a'
+    assert message.key() == "714fc713-37ff-4477-9157-cb4f14b63e1a"
     assert message.value() == MESSAGE.deserialized

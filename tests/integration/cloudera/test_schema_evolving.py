@@ -15,7 +15,7 @@ def client(sr_root: Path) -> ClouderaSRClient:
 
 @pytest.fixture
 def topic() -> str:
-    return 'test_signals'
+    return "test_signals"
 
 
 @pytest.fixture

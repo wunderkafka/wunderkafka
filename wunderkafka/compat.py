@@ -7,5 +7,5 @@ else:
 
 
 __all__ = [
-    'ParamSpec',
+    "ParamSpec",
 ]

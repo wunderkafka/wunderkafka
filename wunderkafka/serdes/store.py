@@ -32,13 +32,13 @@ def _load_from_file(filename: Path) -> str:
 class DummyRepo(AbstractDescriptionStore):
     def add(self, topic: TopicName, value: Union[str, Path], key: Union[str, Path]) -> None:
         # schema = '{"schema": "{\"type\": \"string\"}"}'
-        schema = ''
+        schema = ""
         self._values[topic] = ValueSchemaDescription(text=schema, type=SchemaType.PRIMITIVES)
         if key is not None:
             self._keys[topic] = KeySchemaDescription(text=schema, type=SchemaType.PRIMITIVES)
 
-class StringRepo(DummyRepo):
-    ...
+
+class StringRepo(DummyRepo): ...
 
 
 # ToDo (tribunsky.kir): refactor it, maybe add hooks to parent class.
@@ -55,7 +55,6 @@ class SchemaFSRepo(AbstractDescriptionStore):
 
 
 class AvroModelRepo(AbstractDescriptionStore):
-
     # ToDo (tribunsky.kir): change Type[AvroModel] to more general alias + check derivation from python built-ins
     def add(self, topic: TopicName, value: type[AvroModel], key: Optional[type[AvroModel]]) -> None:
         self._values[topic] = ValueSchemaDescription(text=avromodel.derive(value, topic), type=SchemaType.AVRO)
@@ -67,7 +66,6 @@ class AvroModelRepo(AbstractDescriptionStore):
 
 
 class JSONRepo(AbstractDescriptionStore):
-
     def add(self, topic: TopicName, value: str, key: Optional[str]) -> None:
         self._values[topic] = ValueSchemaDescription(text=value, type=SchemaType.JSON)
         if key is not None:

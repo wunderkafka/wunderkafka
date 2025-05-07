@@ -23,7 +23,7 @@ class Image(BaseModel):
 
 
 def test_json_producer_create_schema(sr_root_existing: Path) -> None:
-    topic = 'testing_json_str_producer'
+    topic = "testing_json_str_producer"
     test_producer = TestProducer()
     sr_client = ConfluentSRClient(TestHTTPClient(sr_root_existing), SimpleCache())
     producer = HighLevelSerializingProducer(
@@ -47,4 +47,7 @@ def test_json_producer_create_schema(sr_root_existing: Path) -> None:
     [message] = test_producer.sent
 
     assert message.key is None
-    assert message.value == b'\x00\x00\x00\x07<{"id": "714fc713-37ff-4477-9157-cb4f14b63e1a", "path": "/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'  # noqa: E501
+    assert (
+        message.value
+        == b'\x00\x00\x00\x07<{"id": "714fc713-37ff-4477-9157-cb4f14b63e1a", "path": "/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'
+    )  # noqa: E501
