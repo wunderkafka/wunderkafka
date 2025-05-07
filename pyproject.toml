@@ -156,6 +156,7 @@ dist_glob_patterns = ["dist/*"]
 
 [tool.ruff]
 line-length = 120
+indent-width = 4
 target-version="py39"
 exclude = [
 	"wunderkafka/config/generated/*",
