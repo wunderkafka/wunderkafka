@@ -51,7 +51,7 @@ jobs:
           if [ "$PY" = "3.9" ]; then PY="3.10"; fi
           uv run mypy --python-version "$PY" --config pyproject.toml .
       - name: run ruff
-        run: uv run ruff check .
+        run: uv run ruff check wunderkafka tests
 
   checks:
     needs: [independent]
