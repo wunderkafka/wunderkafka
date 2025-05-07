@@ -28,7 +28,7 @@ jobs:
             VERSION=$(echo "${LAST_GIT_TAG}" | grep -P '^v\d+\.\d+.\d+$' | sed 's/^v//')
             echo "$VERSION"
           }
-          
+
           VERSION_TAG="$(get_version)"
           echo "Extracted latest tag from master branch: ${VERSION_TAG}"
           if [ -z "${VERSION_TAG}" ]; then

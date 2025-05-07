@@ -129,7 +129,7 @@ jobs:
             array[$section]=$((array[$section]+1))
             echo $(local IFS=$delimiter ; echo "${array[*]}")
           }
-          
+
           VERSION_TAG="$(get_version)"
           echo "Extracted latest tag from master branch: ${VERSION_TAG}"
           if [ -z "${VERSION_TAG}" ]; then
