@@ -25,7 +25,7 @@ jobs:
             local VERSION=''
             local LAST_GIT_TAG=''
             LAST_GIT_TAG=$(git tag --merged origin/master | sort -V | tail -n 1)
-            VERSION=$(echo "${LAST_GIT_TAG}" | grep -P '^v\d+\.\d+.\d+$' | sed 's/^v//')
+            VERSION=$(echo "${LAST_GIT_TAG}" | grep -P '^v\d+\.\d+\.\d+(?:rc\d+)?$' | sed 's/^v//')
             echo "$VERSION"
           }
 
