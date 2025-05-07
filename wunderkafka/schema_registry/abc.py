@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from wunderkafka.structures import SchemaMeta, SchemaType, SRMeta
+from wunderkafka.structures import SRMeta, SchemaMeta, SchemaType
 
 
 # TODO: replace with http.HTTPMethod when we drop python 3.10

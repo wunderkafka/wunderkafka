@@ -2,9 +2,9 @@ import struct
 
 from wunderkafka.errors import DeserializerException
 from wunderkafka.serdes.abc import AbstractProtocolHandler
-from wunderkafka.serdes.protocols import MIN_HEADER_SIZE, get_protocol
+from wunderkafka.structures import SRMeta, ParsedHeader
 from wunderkafka.serdes.vendors import Actions
-from wunderkafka.structures import ParsedHeader, SRMeta
+from wunderkafka.serdes.protocols import MIN_HEADER_SIZE, get_protocol
 
 # TODO (tribunsky.kir): Get rid of AbstractProtocolHandler?
 #                       https://github.com/

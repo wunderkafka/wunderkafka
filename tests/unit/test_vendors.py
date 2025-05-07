@@ -1,18 +1,18 @@
 import pytest
 
 from wunderkafka.errors import DeserializerException
-from wunderkafka.serdes.structures import Mask, Protocol
 from wunderkafka.serdes.vendors import (
-    Actions,
-    ProtocolDefinition,
-    Suffixes,
     Vendor,
+    Actions,
+    Suffixes,
     VendorRegistry,
+    ProtocolDefinition,
+    get_vendors,
     get_protocol,
     get_protocols,
     get_subject_suffix,
-    get_vendors,
 )
+from wunderkafka.serdes.structures import Mask, Protocol
 
 
 @pytest.fixture

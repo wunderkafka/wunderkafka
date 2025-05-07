@@ -1,10 +1,10 @@
-import logging
-import operator
 import os
 import shutil
-from collections import defaultdict
+import logging
+import operator
+from typing import Union, Optional, NamedTuple
 from pathlib import Path
-from typing import NamedTuple, Optional, Union
+from collections import defaultdict
 
 Name = str
 Version = str

@@ -1,7 +1,7 @@
 import json
 
-from dataclasses_avroschema.pydantic import AvroBaseModel
 from pydantic import UUID4
+from dataclasses_avroschema.pydantic import AvroBaseModel
 
 from wunderkafka.serdes.avromodel import derive
 

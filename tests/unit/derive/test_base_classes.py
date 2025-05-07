@@ -1,14 +1,14 @@
-import json
 import sys
+import json
 import time
-from dataclasses import dataclass
+from typing import Union, Optional
 from datetime import datetime
-from typing import Optional, Union
+from dataclasses import dataclass
 
 import pytest
-from dataclasses_avroschema.pydantic import AvroBaseModel
-from pydantic import UUID4, BaseModel, ConfigDict, Field, ValidationError
+from pydantic import UUID4, Field, BaseModel, ConfigDict, ValidationError
 from pydantic_settings import BaseSettings
+from dataclasses_avroschema.pydantic import AvroBaseModel
 
 from wunderkafka.serdes.avromodel import derive
 

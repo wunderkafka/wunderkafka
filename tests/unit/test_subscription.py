@@ -1,5 +1,5 @@
-import datetime
 import time
+import datetime
 
 import pytest
 

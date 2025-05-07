@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import Any, Union, Optional
 
 from confluent_kafka.serialization import SerializationContext
 
-from wunderkafka.structures import ParsedHeader, SRMeta
-from wunderkafka.types import KeySchemaDescription, TopicName, ValueSchemaDescription
+from wunderkafka.types import TopicName, KeySchemaDescription, ValueSchemaDescription
+from wunderkafka.structures import SRMeta, ParsedHeader
 
 
 class AbstractProtocolHandler(ABC):

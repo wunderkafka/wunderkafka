@@ -167,6 +167,16 @@ exclude = [
 
 [tool.ruff.lint]
 select = ["I"]
+ignore = [
+    "D",
+    "TC001",
+    "TC002",
+    "TC003",
+    "FIX002",
+]
+
+[tool.ruff.lint.isort]
+length-sort = true
 
 [tool.uv]
 dev-dependencies = [

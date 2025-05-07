@@ -1,15 +1,15 @@
-from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
+from pathlib import Path
+from dataclasses import dataclass
 
 import pytest
 
-from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
-from wunderkafka.schema_registry import ClouderaSRClient, SimpleCache
+from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.serdes.avro import FastAvroDeserializer
 from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
-from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.tests.consumer import Message
+from wunderkafka.schema_registry import SimpleCache, ClouderaSRClient
+from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
 
 
 @dataclass

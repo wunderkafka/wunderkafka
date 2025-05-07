@@ -1,5 +1,5 @@
 import inspect
-from typing import Annotated, Any, get_origin
+from typing import Any, Annotated, get_origin
 
 # We check it via import to avoid using nested imports in implementation in `is_union_type() function`
 HAS_UNION_TYPE = True
