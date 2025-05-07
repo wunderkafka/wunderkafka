@@ -40,17 +40,6 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.packages.find]
 exclude = ["tests"]
 
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-default_section = "THIRDPARTY"
-line_length = 120
-length_sort = true
-known_first_party = ["wunderkafka", "tests"]
-
-[tool.darglint]
-docstring_style = "sphinx"
-
 [tool.pytest.ini_options]
 python_classes = "!Test"
 
