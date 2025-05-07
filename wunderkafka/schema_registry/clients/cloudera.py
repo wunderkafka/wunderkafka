@@ -1,11 +1,11 @@
-from typing import Any, Optional, Union
+from typing import Any, Union, Optional
 
 from wunderkafka.errors import SchemaRegistryLookupException
 from wunderkafka.logger import logger
-from wunderkafka.schema_registry.abc import AbstractHTTPClient, AbstractSchemaRegistry
-from wunderkafka.schema_registry.cache import AlwaysEmptyCache, SimpleCache
+from wunderkafka.structures import SRMeta, SchemaMeta, SchemaType, ParsedHeader
 from wunderkafka.serdes.vendors import Actions, get_protocol
-from wunderkafka.structures import ParsedHeader, SchemaMeta, SchemaType, SRMeta
+from wunderkafka.schema_registry.abc import AbstractHTTPClient, AbstractSchemaRegistry
+from wunderkafka.schema_registry.cache import SimpleCache, AlwaysEmptyCache
 
 
 def prepare_schemas_for_caching(
@@ -52,7 +52,6 @@ def prepare_schemas_for_caching(
 
 
 class ClouderaSRClient(AbstractSchemaRegistry):
-
     def __init__(self, http_client: AbstractHTTPClient, cache: Optional[SimpleCache] = None) -> None:
         self._client = http_client
         self._cache = AlwaysEmptyCache() if cache is None else cache

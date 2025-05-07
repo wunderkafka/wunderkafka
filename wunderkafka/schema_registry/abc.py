@@ -1,22 +1,21 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from wunderkafka.structures import SchemaMeta, SchemaType, SRMeta
+from wunderkafka.structures import SRMeta, SchemaMeta, SchemaType
 
 
 # TODO: replace with http.HTTPMethod when we drop python 3.10
 class HTTPMethod:
-    GET = 'GET'
-    POST = 'POST'
-    PUT = 'PUT'
-    PATCH = 'PATCH'
-    DELETE = 'DELETE'
+    GET = "GET"
+    POST = "POST"
+    PUT = "PUT"
+    PATCH = "PATCH"
+    DELETE = "DELETE"
 
 
 class AbstractHTTPClient(ABC):
-
     @abstractmethod
-    def make_request(self, relative_url: str, method: str = 'GET', body: Any = None, query: Any = None) -> Any: ...
+    def make_request(self, relative_url: str, method: str = "GET", body: Any = None, query: Any = None) -> Any: ...
 
     @property
     def base_url(self) -> str:
@@ -42,10 +41,10 @@ class AbstractHTTPClient(ABC):
 
 
 class AbstractSchemaRegistry(ABC):
-
     @abstractmethod
     def get_schema_text(self, schema_meta: SchemaMeta) -> str: ...
 
     @abstractmethod
-    def register_schema(self, topic: str, schema_text: str, schema_type: SchemaType, *, is_key: bool = True) -> SRMeta:
-        ...
+    def register_schema(
+        self, topic: str, schema_text: str, schema_type: SchemaType, *, is_key: bool = True
+    ) -> SRMeta: ...

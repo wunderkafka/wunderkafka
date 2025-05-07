@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import datetime
-from dataclasses import dataclass
 from enum import Enum
+from dataclasses import dataclass
 
-from wunderkafka.serdes.vendors import get_subject_suffix
 from wunderkafka.time import ts2dt
+from wunderkafka.serdes.vendors import get_subject_suffix
 
 
 class SchemaType(str, Enum):

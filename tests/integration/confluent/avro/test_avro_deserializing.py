@@ -2,30 +2,28 @@ from pathlib import Path
 
 import pytest
 
-from tests.integration.confluent.conftest import Msg
-from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
-from wunderkafka.consumers.types import StreamResult
-from wunderkafka.schema_registry import ConfluentSRClient, SimpleCache
+from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.serdes.avro import FastAvroDeserializer
 from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
-from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.tests.consumer import Message
+from wunderkafka.consumers.types import StreamResult
+from wunderkafka.schema_registry import SimpleCache, ConfluentSRClient
+from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
+from tests.integration.confluent.conftest import Msg
 
 SIGNAL_MESSAGE = Msg(
-    payload=b'\x08test\x0cstring\x0cstring\x04NA\xcc\xb8\xeb\xa6\x80_',
+    payload=b"\x08test\x0cstring\x0cstring\x04NA\xcc\xb8\xeb\xa6\x80_",
     deserialized={
-        'source': 'test',
-        'type': 'string',
-        'id': 'string',
-        'value': 'NA',
-        'ts': 1632128298534,
+        "source": "test",
+        "type": "string",
+        "id": "string",
+        "value": "NA",
+        "ts": 1632128298534,
     },
 )
 
 
-HEADERS = (
-    b'\x00\x00\x00\x08<',
-)
+HEADERS = (b"\x00\x00\x00\x08<",)
 
 
 @pytest.mark.parametrize("header", list(HEADERS))

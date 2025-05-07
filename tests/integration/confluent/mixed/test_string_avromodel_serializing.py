@@ -1,16 +1,16 @@
-from pathlib import Path
-from typing import Optional
 from uuid import UUID
+from typing import Optional
+from pathlib import Path
 
 from pydantic import UUID4, BaseModel
 
-from wunderkafka.producers.constructor import HighLevelSerializingProducer
-from wunderkafka.schema_registry import ConfluentSRClient, SimpleCache
-from wunderkafka.serdes.avromodel.serializers import AvroModelSerializer
-from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
-from wunderkafka.serdes.schemaless.string.serializers import StringSerializer
+from wunderkafka.tests import TestProducer, TestHTTPClient
 from wunderkafka.serdes.store import AvroModelRepo
-from wunderkafka.tests import TestHTTPClient, TestProducer
+from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
+from wunderkafka.schema_registry import SimpleCache, ConfluentSRClient
+from wunderkafka.producers.constructor import HighLevelSerializingProducer
+from wunderkafka.serdes.avromodel.serializers import AvroModelSerializer
+from wunderkafka.serdes.schemaless.string.serializers import StringSerializer
 
 
 class Image(BaseModel):
@@ -19,7 +19,7 @@ class Image(BaseModel):
 
 
 def test_avro_producer_string_key_create_schema(sr_root_existing: Path) -> None:
-    topic = 'testing_avro_str_producer'
+    topic = "testing_avro_str_producer"
     test_producer = TestProducer()
     sr_client = ConfluentSRClient(TestHTTPClient(sr_root_existing), SimpleCache())
     producer = HighLevelSerializingProducer(
@@ -42,5 +42,8 @@ def test_avro_producer_string_key_create_schema(sr_root_existing: Path) -> None:
 
     [message] = test_producer.sent
 
-    assert message.key == b'714fc713-37ff-4477-9157-cb4f14b63e1a'
-    assert message.value == b'\x00\x00\x00\x00\x13H714fc713-37ff-4477-9157-cb4f14b63e1a\x02x/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3'  # noqa: E501
+    assert message.key == b"714fc713-37ff-4477-9157-cb4f14b63e1a"
+    assert (
+        message.value
+        == b"\x00\x00\x00\x00\x13H714fc713-37ff-4477-9157-cb4f14b63e1a\x02x/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"
+    )  # noqa: E501

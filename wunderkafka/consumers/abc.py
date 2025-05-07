@@ -10,11 +10,11 @@ from __future__ import annotations
 import datetime
 from abc import ABC, abstractmethod
 
-from confluent_kafka import Consumer, Message, TopicPartition
+from confluent_kafka import Message, Consumer, TopicPartition
 
+from wunderkafka.types import HowToSubscribe
 from wunderkafka.config import ConsumerConfig
 from wunderkafka.consumers.subscription import TopicSubscription
-from wunderkafka.types import HowToSubscribe
 
 
 class AbstractConsumer(Consumer):

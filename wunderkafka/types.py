@@ -1,11 +1,11 @@
 """This module contains aliases and helper definitions for type hints."""
 
 # ToDo (tribunsky.kir): move it to module with structures
-from typing import Any, Callable, Optional, Union
+from typing import Any, Union, Callable, Optional
 
-from confluent_kafka import KafkaError, Message
+from confluent_kafka import Message, KafkaError
 
-from wunderkafka.structures import DeserializerSchemaDescription, Offset, ParsedHeader, SRMeta, Timestamp
+from wunderkafka.structures import Offset, SRMeta, Timestamp, ParsedHeader, DeserializerSchemaDescription
 
 # ToDo (tribunsky.kir): add symmetry and generalize this part
 HeaderParser = Callable[[bytes], ParsedHeader]

@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import Any, Union, Optional
 
 from confluent_kafka.serialization import SerializationContext
 
-from wunderkafka.structures import ParsedHeader, SRMeta
-from wunderkafka.types import KeySchemaDescription, TopicName, ValueSchemaDescription
+from wunderkafka.types import TopicName, KeySchemaDescription, ValueSchemaDescription
+from wunderkafka.structures import SRMeta, ParsedHeader
 
 
 class AbstractProtocolHandler(ABC):
-
     @abstractmethod
     def parse(self, blob: bytes) -> ParsedHeader: ...
 
@@ -50,12 +49,10 @@ class AbstractSerializer(ABC):
         topic: Optional[str] = None,
         *,
         is_key: Optional[bool] = None,
-    ) -> bytes:
-        ...
+    ) -> bytes: ...
 
 
 class AbstractDescriptionStore(ABC):
-
     def __init__(self) -> None:
         self._values: dict[TopicName, ValueSchemaDescription] = {}
         self._keys: dict[TopicName, KeySchemaDescription] = {}
@@ -72,5 +69,4 @@ class AbstractDescriptionStore(ABC):
             return self._values.get(topic)
 
     @abstractmethod
-    def add(self, topic: TopicName, value: Any, key: Any) -> None:
-        ...
+    def add(self, topic: TopicName, value: Any, key: Any) -> None: ...

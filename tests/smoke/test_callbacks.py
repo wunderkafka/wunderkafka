@@ -3,13 +3,12 @@ from typing import Any, Callable, Optional
 import pytest
 from confluent_kafka import KafkaError
 
-from wunderkafka.callbacks import error_callback, info_callback
+from wunderkafka.callbacks import info_callback, error_callback
 
 
 class Message:
-
     def topic(self) -> str:
-        return 'test'
+        return "test"
 
     def partition(self) -> Optional[int]:
         return 1

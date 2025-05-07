@@ -12,21 +12,25 @@ else:
     HAS_KERBEROS = True
 
 if HAS_KERBEROS:
+
     class HTTPKerberosMutualAuth(Enum):
         REQUIRED = requests_kerberos.REQUIRED
         OPTIONAL = requests_kerberos.OPTIONAL
         DISABLED = requests_kerberos.DISABLED
 
 else:
-    class HTTPKerberosMutualAuth(Enum):                                                                   # type: ignore
+
+    class HTTPKerberosMutualAuth(Enum):  # type: ignore
         REQUIRED = 1
         OPTIONAL = 2
         DISABLED = 3
 
-    class HTTPKerberosAuth(AuthBase):                                                        # type: ignore # noqa: F811
+    class HTTPKerberosAuth(AuthBase):  # type: ignore # noqa: F811
         def __init__(self, *args: Any, **kwargs: Any) -> None:
-            message = ' '.join([
-                'Something went wrong: trying to use HTTPKerberosAuth while missing requests-kerberos.',
-                'Maybe it is unexpected manual usage. Please, install requests-kerberos.',
-            ])
+            message = " ".join(
+                [
+                    "Something went wrong: trying to use HTTPKerberosAuth while missing requests-kerberos.",
+                    "Maybe it is unexpected manual usage. Please, install requests-kerberos.",
+                ]
+            )
             raise ImportError(message)

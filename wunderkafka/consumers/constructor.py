@@ -8,19 +8,19 @@ All moving parts should be interchangeable in terms of schema, header and serial
 """
 
 import datetime
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, Union, TypeVar, Optional
 
 from confluent_kafka import Message, TopicPartition
-from confluent_kafka.serialization import MessageField, SerializationContext, SerializationError
+from confluent_kafka.serialization import MessageField, SerializationError, SerializationContext
 
-from wunderkafka.consumers.abc import AbstractConsumer, AbstractDeserializingConsumer
-from wunderkafka.consumers.subscription import TopicSubscription
-from wunderkafka.consumers.types import PayloadError, StreamResult
+from wunderkafka.types import HeaderParser
 from wunderkafka.logger import logger
-from wunderkafka.schema_registry.abc import AbstractSchemaRegistry
 from wunderkafka.serdes.abc import AbstractDeserializer
 from wunderkafka.structures import SchemaMeta, SerializerSchemaDescription
-from wunderkafka.types import HeaderParser
+from wunderkafka.consumers.abc import AbstractConsumer, AbstractDeserializingConsumer
+from wunderkafka.consumers.types import PayloadError, StreamResult
+from wunderkafka.schema_registry.abc import AbstractSchemaRegistry
+from wunderkafka.consumers.subscription import TopicSubscription
 
 T = TypeVar("T")
 

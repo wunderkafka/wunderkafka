@@ -9,18 +9,21 @@ from wunderkafka.serdes.structures import Mask, Protocol
 
 class Suffixes(NamedTuple):
     """A pair of suffix strings to append to a Schema Registry's subject for a key and for value."""
+
     key: str
     value: str
 
 
 class ProtocolDefinition(NamedTuple):
     """Associates a numeric protocol ID with its Protocol implementation."""
+
     id: int
     protocol: Protocol
 
 
 class Vendor(NamedTuple):
     """Holds vendor-specific information for message headers and schema registry."""
+
     name: str
     suffixes: Suffixes
     protocols: list[ProtocolDefinition]
@@ -47,7 +50,6 @@ class VendorRegistry:
     def get_vendors(self) -> list[Vendor]:
         return list(self.__registered.values())
 
-
     def _register(self, vendor: Vendor) -> None:
         if vendor.name in self.__registered:
             msg = f"Vendor {vendor!r} already registered"
@@ -62,26 +64,31 @@ class VendorRegistry:
 
 
 # see: https://git.io/JvYyC
-__VENDOR_REGISTRY: Final[VendorRegistry] = VendorRegistry([
-    Vendor(
-        name="confluent",
-        suffixes=Suffixes("_key", "_value"),
-        protocols=[
-            # public static final byte CONFLUENT_VERSION_PROTOCOL = 0x0;
-            ProtocolDefinition(id=0, protocol=Protocol(4, Mask("I"))),
-        ]),
-    Vendor(
-        name="cloudera",
-        suffixes=Suffixes(":k", ""),
-        protocols=[
-            # public static final byte METADATA_ID_VERSION_PROTOCOL = 0x1;
-            ProtocolDefinition(id=1, protocol=Protocol(12, Mask("qi"))),
-            # public static final byte VERSION_ID_AS_LONG_PROTOCOL = 0x2;
-            ProtocolDefinition(id=2, protocol=Protocol(8, Mask("q"))),
-            # public static final byte VERSION_ID_AS_INT_PROTOCOL = 0x3;
-            ProtocolDefinition(id=3, protocol=Protocol(4, Mask("I"))),
-        ]),
-])
+__VENDOR_REGISTRY: Final[VendorRegistry] = VendorRegistry(
+    [
+        Vendor(
+            name="confluent",
+            suffixes=Suffixes("_key", "_value"),
+            protocols=[
+                # public static final byte CONFLUENT_VERSION_PROTOCOL = 0x0;
+                ProtocolDefinition(id=0, protocol=Protocol(4, Mask("I"))),
+            ],
+        ),
+        Vendor(
+            name="cloudera",
+            suffixes=Suffixes(":k", ""),
+            protocols=[
+                # public static final byte METADATA_ID_VERSION_PROTOCOL = 0x1;
+                ProtocolDefinition(id=1, protocol=Protocol(12, Mask("qi"))),
+                # public static final byte VERSION_ID_AS_LONG_PROTOCOL = 0x2;
+                ProtocolDefinition(id=2, protocol=Protocol(8, Mask("q"))),
+                # public static final byte VERSION_ID_AS_INT_PROTOCOL = 0x3;
+                ProtocolDefinition(id=3, protocol=Protocol(4, Mask("I"))),
+            ],
+        ),
+    ]
+)
+
 
 class Actions(str, Enum):
     deserialize = "deserialize"
@@ -91,7 +98,7 @@ class Actions(str, Enum):
 def get_protocol(protocol_id: int, action: Actions) -> Protocol:
     """Retrieve the Protocol implementation for this ID, wrapping errors by action."""
     try:
-       return __VENDOR_REGISTRY.get_protocol(protocol_id)
+        return __VENDOR_REGISTRY.get_protocol(protocol_id)
     except KeyError as exc:
         if action == Actions.deserialize:
             msg = f"Unknown protocol extracted from message: {protocol_id}"
@@ -112,6 +119,7 @@ def get_subject_suffix(protocol_id: int, *, is_key: bool) -> str:
         raise DeserializerException(msg) from exc
     else:
         return suffixes.key if is_key else suffixes.value
+
 
 def get_protocols() -> list[Protocol]:
     """Returns a list of all registered header protocols."""

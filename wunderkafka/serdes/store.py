@@ -1,15 +1,15 @@
+from typing import Union, Optional
 from pathlib import Path
-from typing import Optional, Union
 
-from dataclasses_avroschema import AvroModel
 from pydantic import BaseModel
 from pydantic.json_schema import GenerateJsonSchema
+from dataclasses_avroschema import AvroModel
 
+from wunderkafka.types import TopicName, KeySchemaDescription, ValueSchemaDescription
 from wunderkafka.serdes import avromodel, jsonmodel
 from wunderkafka.serdes.abc import AbstractDescriptionStore
-from wunderkafka.serdes.jsonmodel.derive import JSONClosedModelGenerator
 from wunderkafka.structures import SchemaType
-from wunderkafka.types import KeySchemaDescription, TopicName, ValueSchemaDescription
+from wunderkafka.serdes.jsonmodel.derive import JSONClosedModelGenerator
 
 
 class SchemaTextRepo(AbstractDescriptionStore):
@@ -25,20 +25,20 @@ class SchemaTextRepo(AbstractDescriptionStore):
 
 def _load_from_file(filename: Path) -> str:
     with open(filename) as fl:
-        return fl.read()
+        return fl.read().strip()
 
 
 # FixMe (tribunsky.kir): for now it looks like a crutch, but much better than just `if StringSerializer`
 class DummyRepo(AbstractDescriptionStore):
     def add(self, topic: TopicName, value: Union[str, Path], key: Union[str, Path]) -> None:
         # schema = '{"schema": "{\"type\": \"string\"}"}'
-        schema = ''
+        schema = ""
         self._values[topic] = ValueSchemaDescription(text=schema, type=SchemaType.PRIMITIVES)
         if key is not None:
             self._keys[topic] = KeySchemaDescription(text=schema, type=SchemaType.PRIMITIVES)
 
-class StringRepo(DummyRepo):
-    ...
+
+class StringRepo(DummyRepo): ...
 
 
 # ToDo (tribunsky.kir): refactor it, maybe add hooks to parent class.
@@ -55,7 +55,6 @@ class SchemaFSRepo(AbstractDescriptionStore):
 
 
 class AvroModelRepo(AbstractDescriptionStore):
-
     # ToDo (tribunsky.kir): change Type[AvroModel] to more general alias + check derivation from python built-ins
     def add(self, topic: TopicName, value: type[AvroModel], key: Optional[type[AvroModel]]) -> None:
         self._values[topic] = ValueSchemaDescription(text=avromodel.derive(value, topic), type=SchemaType.AVRO)
@@ -67,7 +66,6 @@ class AvroModelRepo(AbstractDescriptionStore):
 
 
 class JSONRepo(AbstractDescriptionStore):
-
     def add(self, topic: TopicName, value: str, key: Optional[str]) -> None:
         self._values[topic] = ValueSchemaDescription(text=value, type=SchemaType.JSON)
         if key is not None:

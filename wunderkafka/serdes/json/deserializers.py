@@ -7,7 +7,6 @@ from wunderkafka.serdes.abc import AbstractDeserializer
 
 
 class JSONDeserializer(AbstractDeserializer):
-
     def __init__(self) -> None:
         self._cache: dict[str, JSONDSchemaDeserializer] = {}
 

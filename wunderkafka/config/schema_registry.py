@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any, Union, Optional
 
 from pydantic_settings import BaseSettings
 
@@ -6,7 +6,7 @@ from wunderkafka.config.krb.schema_registry import HTTPKerberosMutualAuth
 
 
 def remap_fields(dct: dict[str, Any]) -> dict[str, Any]:
-    return {f_name.replace('_', '.'): f_value for f_name, f_value in dct.items()}
+    return {f_name.replace("_", "."): f_value for f_name, f_value in dct.items()}
 
 
 class SRConfig(BaseSettings):

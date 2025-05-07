@@ -1,15 +1,15 @@
-from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
+from pathlib import Path
+from dataclasses import dataclass
 
 import pytest
 
-from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
-from wunderkafka.schema_registry import ClouderaSRClient, SimpleCache
+from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.serdes.avro import FastAvroDeserializer
 from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
-from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.tests.consumer import Message
+from wunderkafka.schema_registry import SimpleCache, ClouderaSRClient
+from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
 
 
 @dataclass
@@ -22,21 +22,21 @@ class Msg:
 
 
 SIGNAL_MESSAGE = Msg(
-    payload=b'\x08test\x0cstring\x0cstring\x04NA\xcc\xb8\xeb\xa6\x80_',
+    payload=b"\x08test\x0cstring\x0cstring\x04NA\xcc\xb8\xeb\xa6\x80_",
     deserialized={
-        'source': 'test',
-        'type': 'string',
-        'id': 'string',
-        'value': 'NA',
-        'ts': 1632128298534,
+        "source": "test",
+        "type": "string",
+        "id": "string",
+        "value": "NA",
+        "ts": 1632128298534,
     },
 )
 
 
 HEADERS = (
-    b'\x01\x00\x00\x00\x00\x00\x00\x06\x9c\x00\x00\x00\x01',
-    b'\x02\x00\x00\x00\x00\x00\x00\x08<',
-    b'\x03\x00\x00\x08<',
+    b"\x01\x00\x00\x00\x00\x00\x00\x06\x9c\x00\x00\x00\x01",
+    b"\x02\x00\x00\x00\x00\x00\x00\x08<",
+    b"\x03\x00\x00\x08<",
 )
 
 

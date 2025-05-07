@@ -1,6 +1,6 @@
-from pathlib import Path
-from typing import Optional
 from uuid import UUID
+from typing import Optional
+from pathlib import Path
 
 import pytest
 from pydantic import UUID4, BaseModel
@@ -10,11 +10,11 @@ from wunderkafka.serdes.store import JSONModelRepo
 
 if not HAS_JSON_SCHEMA:
     pytest.skip("skipping json-schema-only tests", allow_module_level=True)
-from wunderkafka.producers.constructor import HighLevelSerializingProducer
-from wunderkafka.schema_registry import ConfluentSRClient, SimpleCache
+from wunderkafka.tests import TestProducer, TestHTTPClient
 from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
+from wunderkafka.schema_registry import SimpleCache, ConfluentSRClient
+from wunderkafka.producers.constructor import HighLevelSerializingProducer
 from wunderkafka.serdes.jsonmodel.serializers import JSONModelSerializer
-from wunderkafka.tests import TestHTTPClient, TestProducer
 
 
 class Image(BaseModel):
@@ -23,7 +23,7 @@ class Image(BaseModel):
 
 
 def test_json_producer_create_schema(sr_root_existing: Path) -> None:
-    topic = 'testing_json_str_producer'
+    topic = "testing_json_str_producer"
     test_producer = TestProducer()
     sr_client = ConfluentSRClient(TestHTTPClient(sr_root_existing), SimpleCache())
     producer = HighLevelSerializingProducer(
@@ -47,4 +47,7 @@ def test_json_producer_create_schema(sr_root_existing: Path) -> None:
     [message] = test_producer.sent
 
     assert message.key is None
-    assert message.value == b'\x00\x00\x00\x07<{"id": "714fc713-37ff-4477-9157-cb4f14b63e1a", "path": "/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'  # noqa: E501
+    assert (
+        message.value
+        == b'\x00\x00\x00\x07<{"id": "714fc713-37ff-4477-9157-cb4f14b63e1a", "path": "/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'
+    )  # noqa: E501

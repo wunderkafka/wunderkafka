@@ -1,20 +1,20 @@
 import uuid
-from typing import Optional
 from uuid import UUID
+from typing import Optional
 
 import pytest
 from pydantic import BaseModel
 
 from wunderkafka.serdes.json import HAS_JSON_SCHEMA
-from wunderkafka.serdes.schemaless.jsonmodel.serializers import SchemaLessJSONModelSerializer
 from wunderkafka.serdes.schemaless.string.serializers import StringSerializer
+from wunderkafka.serdes.schemaless.jsonmodel.serializers import SchemaLessJSONModelSerializer
 
 if not HAS_JSON_SCHEMA:
     pytest.skip("skipping json-schema-only tests", allow_module_level=True)
 
 
-from wunderkafka.producers.constructor import HighLevelSerializingProducer
 from wunderkafka.tests import TestProducer
+from wunderkafka.producers.constructor import HighLevelSerializingProducer
 
 
 class Image(BaseModel):
@@ -45,5 +45,8 @@ def test_json_producer_string_key_create_schema() -> None:
 
     [message] = test_producer.sent
 
-    assert message.key == b'714fc713-37ff-4477-9157-cb4f14b63e1a'
-    assert message.value == b'{"id":"714fc713-37ff-4477-9157-cb4f14b63e1a","path":"/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'  # noqa: E501
+    assert message.key == b"714fc713-37ff-4477-9157-cb4f14b63e1a"
+    assert (
+        message.value
+        == b'{"id":"714fc713-37ff-4477-9157-cb4f14b63e1a","path":"/var/folders/x5/zlpmj3915pqfj5lhnlq5qwkm0000gn/T/tmprq2rktq3"}'
+    )  # noqa: E501

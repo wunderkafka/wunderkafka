@@ -2,15 +2,15 @@ import struct
 
 from wunderkafka.errors import DeserializerException
 from wunderkafka.serdes.abc import AbstractProtocolHandler
-from wunderkafka.serdes.protocols import MIN_HEADER_SIZE, get_protocol
+from wunderkafka.structures import SRMeta, ParsedHeader
 from wunderkafka.serdes.vendors import Actions
-from wunderkafka.structures import ParsedHeader, SRMeta
+from wunderkafka.serdes.protocols import MIN_HEADER_SIZE, get_protocol
 
 # TODO (tribunsky.kir): Get rid of AbstractProtocolHandler?
 #                       https://github.com/
 
-class ConfluentClouderaHeadersHandler(AbstractProtocolHandler):
 
+class ConfluentClouderaHeadersHandler(AbstractProtocolHandler):
     def parse(self, blob: bytes) -> ParsedHeader:
         if len(blob) < MIN_HEADER_SIZE:
             msg = f"Message is too small to decode: ({blob!r})"
@@ -22,7 +22,7 @@ class ConfluentClouderaHeadersHandler(AbstractProtocolHandler):
         protocol = get_protocol(protocol_id, Actions.deserialize)
 
         # already read 1 byte from header as protocol id
-        meta = struct.unpack(protocol.mask.unpack, blob[1:1+protocol.header_size])
+        meta = struct.unpack(protocol.mask.unpack, blob[1 : 1 + protocol.header_size])
 
         if protocol_id == 1:
             schema_id = None

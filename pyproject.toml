@@ -25,6 +25,7 @@ dependencies = [
 	"fastavro>=1.4.7",
 	"pydantic-settings>2.0",
 	"pydantic>=2.7.0",
+	"setuptools>=80.3.1",
 ]
 
 [project.optional-dependencies]
@@ -38,17 +39,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 exclude = ["tests"]
-
-[tool.isort]
-multi_line_output = 3
-include_trailing_comma = true
-default_section = "THIRDPARTY"
-line_length = 120
-length_sort = true
-known_first_party = ["wunderkafka", "tests"]
-
-[tool.darglint]
-docstring_style = "sphinx"
 
 [tool.pytest.ini_options]
 python_classes = "!Test"
@@ -155,25 +145,36 @@ dist_glob_patterns = ["dist/*"]
 
 [tool.ruff]
 line-length = 120
+indent-width = 4
 target-version="py39"
 exclude = [
 	"wunderkafka/config/generated/*",
-	"examples/*"
+	"examples/*",
+    #
+    "tests/fixtures/config/answers/models.py"
 ]
 
 [tool.ruff.lint]
 select = ["I"]
+ignore = [
+    "D",
+    "TC001",
+    "TC002",
+    "TC003",
+    "FIX002",
+]
 
-[tool.ruff.lint.mccabe]
-max-complexity = 15
+[tool.ruff.lint.isort]
+length-sort = true
 
 [tool.uv]
 dev-dependencies = [
-    "attrs>=25.1.0",
-    "authlib>=1.5.1",
-    "cachetools>=5.5.2",
-    "httpx>=0.28.1",
-    "pytest>=8.3.4",
-    "requests>=2.32.3",
+    "mypy>=1.15.0",
+    "pytest-cov>=6.1.1",
     "ruff>=0.9.7",
+    # needed by confluent-kafka
+    "authlib>=1.5.2",
+    "cachetools>=5.5.2",
+    # Why do we need httpx, if requests is already brought by confluent-kafka with schema registry?
+    "httpx>=0.28.1",
 ]

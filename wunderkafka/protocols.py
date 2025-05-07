@@ -1,21 +1,18 @@
 import datetime
-from typing import Any, Optional, Union
+from typing import Any, Union, Optional
 
 from confluent_kafka import Message, TopicPartition
 from typing_extensions import Protocol
 
-from wunderkafka.consumers.subscription import TopicSubscription
-
 # ToDo (tribunsky.kir): subject to change. It's not obvious how to merge together
 #                       python-kafka/confluent-kafka and out own API, so currently
 #                       it's just API of (de)serializing producer/consumer with the nested 'real' producer/consumer.
-from wunderkafka.types import DeliveryCallback, MsgKey, MsgValue
+from wunderkafka.types import MsgKey, MsgValue, DeliveryCallback
+from wunderkafka.consumers.subscription import TopicSubscription
 
 
 class AnyConsumer(Protocol):
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
     def commit(
         self,
@@ -48,20 +45,18 @@ class AnyConsumer(Protocol):
 
 
 class AnyProducer(Protocol):
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
     def send_message(
-            self,
-            topic: str,
-            value: MsgValue = None,
-            key: MsgKey = None,
-            partition: Optional[int] = None,
-            on_delivery: Optional[DeliveryCallback] = None,
-            *args: Any,
-            blocking: bool = False,
-            **kwargs: Any,
+        self,
+        topic: str,
+        value: MsgValue = None,
+        key: MsgKey = None,
+        partition: Optional[int] = None,
+        on_delivery: Optional[DeliveryCallback] = None,
+        *args: Any,
+        blocking: bool = False,
+        **kwargs: Any,
     ) -> None:
         """Send encoded message to Kafka almost immediately."""
 

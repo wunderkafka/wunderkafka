@@ -1,0 +1,39 @@
+fail_fast: true
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: ruff-format
+        language: python
+        entry: bash -c "ruff format ."
+      - id: ruff
+        name: ruff
+        language: python
+        entry: bash -c "ruff check --fix"
+#      - id: mypy
+#        name: mypy
+#        language: python
+#        language_version: python3.9
+#        entry: bash -c "mypy --config-file pyproject.toml ."
+      - id: pytest-check
+        name: pytest-check
+        entry: pytest
+        language: system
+        pass_filenames: false
+        always_run: true
+        args: [
+          "tests/"
+        ]
+      - id: pip-audit
+        name: pip-audit
+        language: system
+        pass_filenames: false
+        entry: >-
+          sh -c '[ -n "$(pip-audit --format=json 2>/dev/null | jq ".dependencies[] | select(.vulns[]? .fix_versions[]?)")" ] && { pip-audit; exit $?; } || exit 0'
