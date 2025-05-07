@@ -39,8 +39,8 @@ jobs:
               echo "Installed dependencies simultaneously"
           else
               echo "Error resolving dependencies... Installing consequently"
-              uv pip install pytest 
-              uv pip install pydantic-settings${{ matrix.pydantic-settings-version }} 
+              uv pip install pytest
+              uv pip install pydantic-settings${{ matrix.pydantic-settings-version }}
               uv pip install dataclasses-avroschema[pydantic]${{ matrix.dataclasses-avroschema-version }}
           fi
       - name: run pytest

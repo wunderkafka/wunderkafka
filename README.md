@@ -1,4 +1,4 @@
-<img src="./.github/assets/todo-count-badge.svg"> 
+<img src="./.github/assets/todo-count-badge.svg">
 
 # Wunderkafka
 
@@ -14,7 +14,7 @@ Installation process described [here](https://severstal-digital.github.io/wunder
 
 ### #TypeSafe librdkafka config
 
-Instead of passing just a `dict` to consumer/producer config, the [pydantic-powered](https://github.com/marcosschroh/dataclasses-avroschema) config is used. 
+Instead of passing just a `dict` to consumer/producer config, the [pydantic-powered](https://github.com/marcosschroh/dataclasses-avroschema) config is used.
 It is extracted directly from librdkafka's [CONFIGURATION.md](https://github.com/confluentinc/librdkafka/blob/master/CONFIGURATION.md) with some rough parsing.
 
 ### Confluent & Cloudera Schema Registry support
@@ -159,7 +159,7 @@ and
 # pydantic.BaseModel to AVRO schema example
 
 from typing import Optional
-from pydantic import BaseModel 
+from pydantic import BaseModel
 
 class Event(BaseModel):
   id: Optional[int]

@@ -84,4 +84,3 @@ mixed (de)serializers.
 ## TopicSubscription
 
 ::: wunderkafka.TopicSubscription
-

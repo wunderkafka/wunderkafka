@@ -25,7 +25,7 @@ class SchemaTextRepo(AbstractDescriptionStore):
 
 def _load_from_file(filename: Path) -> str:
     with open(filename) as fl:
-        return fl.read()
+        return fl.read().strip()
 
 
 # FixMe (tribunsky.kir): for now it looks like a crutch, but much better than just `if StringSerializer`

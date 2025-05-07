@@ -16,7 +16,7 @@ def MyAvroConsumer(
     return HighLevelDeserializingConsumer(
         consumer=BytesConsumer(config),
         schema_registry=ClouderaSRClient(
-            KerberizableHTTPClient(config.sr, krb_timeout=10), 
+            KerberizableHTTPClient(config.sr, krb_timeout=10),
             SimpleCache()
         ),
         headers_handler=ConfluentClouderaHeadersHandler().parse,
