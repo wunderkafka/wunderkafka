@@ -1,0 +1,58 @@
+name: 🐞 Bug
+description: Report a bug or unexpected behavior
+labels:
+  - bug
+  - pending
+
+body:
+  - type: markdown
+    attributes:
+      value:  Thank you for contributing!
+
+  - type: textarea
+    id: versions
+    attributes:
+      label: "OS, Python and wunderkafka versions"
+      description: "Please, provide your version"
+
+      placeholder: |
+        - wunderkafka version: ...
+        - confluent-kafka-python version: ...
+        - Python version: ...
+        - Package manager: ...
+        - Operating System: ...
+    validations:
+      required: True
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "What's the problem"
+      description: "Please, describe what's wrong"
+    validations:
+      required: True
+
+  - type: textarea
+    id: expectation
+    attributes:
+      label: "How it should be"
+      description: "Please, explain how do you expect it to be"
+    validations:
+      required: True
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Code snippet
+      description: >
+        If applicable, please add an example demonstrating the bug.
+
+      placeholder: |
+        ...
+      render: Python
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: "Dependencies"
+      description: "Contents of `pip --version && pip freeze` or your preferred package manager"
