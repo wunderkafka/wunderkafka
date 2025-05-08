@@ -31,6 +31,7 @@ dependencies = [
 [project.optional-dependencies]
 krb = ["requests-kerberos>=0.13.0", "python-dateutil"]
 json = ["jsonschema>=4.17.3"]
+iam = ["aws-msk-iam-sasl-signer-python>=1.0.2"]
 
 [build-system]
 requires = ["setuptools", "wheel"]
@@ -64,6 +65,7 @@ warn_untyped_fields = true
 
 [[tool.mypy.overrides]]
 module = [
+    "aws_msk_iam_sasl_signer.*",
 	"confluent_kafka.*",
 	"dateutil.*",
 	"dataclasses_avroschema.*",
