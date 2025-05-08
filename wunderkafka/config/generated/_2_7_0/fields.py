@@ -47,6 +47,7 @@ COMMON_FIELDS = (
     "message.max.bytes",
     "metadata.broker.list",
     "metadata.max.age.ms",
+    "oauth_cb",
     "oauthbearer_token_refresh_cb",
     "opaque",
     "open_cb",

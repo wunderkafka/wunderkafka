@@ -215,6 +215,16 @@ def parse(lines: list[str], *, allow_deprecated: bool = False) -> list[Row]:
             else:
                 rows.append(row)
     logger.info(f"Total properties parsed: {len(rows)}")
+    rows.append(
+        Row(
+            property_name="oauth_cb",
+            property_belongs="*",
+            property_range="",
+            property_default="",
+            property_importance="",
+            property_description="see dedicated API",
+        )
+    )
     return rows
 
 
@@ -262,14 +272,6 @@ def generate_models(groups: dict[str, list[Row]]) -> list[str]:
                     "    # It is just alias, but when setting it manually it may misbehave with current defaults."
                 )
             properties.append(prop.render())
-
-        if grp == "*":
-            properties.extend(
-                [
-                    "",
-                    "    oauth_cb: Optional[Callable] = None",
-                ]
-            )
 
     return properties
 

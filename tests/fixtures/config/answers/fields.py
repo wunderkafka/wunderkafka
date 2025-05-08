@@ -44,6 +44,7 @@ COMMON_FIELDS = (
     "metadata.broker.list",
     "metadata.max.age.ms",
     "metadata.request.timeout.ms",
+    "oauth_cb",
     "oauthbearer_token_refresh_cb",
     "opaque",
     "open_cb",
