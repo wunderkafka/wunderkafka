@@ -12,10 +12,10 @@ from wunderkafka.types import HowToSubscribe
 from wunderkafka.config import ConsumerConfig
 from wunderkafka.errors import ConsumerException
 from wunderkafka.logger import logger
-from wunderkafka.callbacks import reset_partitions
 from wunderkafka.consumers.abc import Message, AbstractConsumer
 from wunderkafka.config.krb.rdkafka import challenge_krb_arg
 from wunderkafka.consumers.subscription import TopicSubscription
+from wunderkafka.callbacks.consumer.subscribe import reset_partitions
 
 
 class BytesConsumer(AbstractConsumer):
