@@ -82,7 +82,7 @@ class RDKafkaConfig(BaseSettings):
     sasl_kerberos_principal: str = 'kafkaclient'
     sasl_kerberos_service_name: str = 'kafka'
     sasl_mechanism: str = 'GSSAPI'
-    # ToDo (tribunsky.kir): rethink using aliases? They may need simultaneous valdiation or may be injected via dict()
+    # ToDo (tribunsky.kir): rethink using aliases? They may need simultaneous validation or may be injected via dict()
     # It is just alias, but when setting it manually it may misbehave with current defaults.
     # sasl_mechanisms: str = 'GSSAPI'
     sasl_oauthbearer_client_id: Optional[str] = None
@@ -133,6 +133,8 @@ class RDKafkaConfig(BaseSettings):
     topic_metadata_refresh_fast_interval_ms: int = Field(ge=1, le=60000, default=100)
     topic_metadata_refresh_interval_ms: int = Field(ge=-1, le=3600000, default=300000)
     topic_metadata_refresh_sparse: bool = True
+
+    oauth_cb: Optional[Callable] = None
 
 
 class RDConsumerConfig(RDKafkaConfig):

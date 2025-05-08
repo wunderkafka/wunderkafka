@@ -256,12 +256,20 @@ def generate_models(groups: dict[str, list[Row]]) -> list[str]:
         for prop in sorted(uniq, key=operator.attrgetter("name")):
             if prop.property_name == SASL_MECHANISMS:
                 properties.append(
-                    "    # ToDo (tribunsky.kir): rethink using aliases? They may need simultaneous valdiation or may be injected via dict()"
+                    "    # ToDo (tribunsky.kir): rethink using aliases? They may need simultaneous validation or may be injected via dict()"
                 )
                 properties.append(
                     "    # It is just alias, but when setting it manually it may misbehave with current defaults."
                 )
             properties.append(prop.render())
+
+        if grp == "*":
+            properties.extend(
+                [
+                    "",
+                    "    oauth_cb: Optional[Callable] = None",
+                ]
+            )
 
     return properties
 
