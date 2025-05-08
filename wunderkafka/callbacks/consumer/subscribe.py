@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from confluent_kafka import Message, KafkaError, TopicPartition
+from confluent_kafka import TopicPartition
 
 from wunderkafka.logger import logger
 from wunderkafka.structures import Timestamp

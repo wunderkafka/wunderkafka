@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-from confluent_kafka import Message, KafkaError, TopicPartition
+from confluent_kafka import Message, KafkaError
 
 from wunderkafka.logger import logger
-from wunderkafka.structures import Timestamp
-from wunderkafka.consumers.abc import AbstractConsumer
 
 
 def info_callback(err: KafkaError | None, msg: Message) -> None:
