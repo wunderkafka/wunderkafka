@@ -11,10 +11,10 @@ from typing import Any, Optional
 
 from wunderkafka.types import MsgKey, MsgValue, TopicName, HeaderPacker, DeliveryCallback, MessageDescription
 from wunderkafka.logger import logger
-from wunderkafka.callbacks import error_callback
 from wunderkafka.serdes.abc import AbstractSerializer, AbstractDescriptionStore
 from wunderkafka.structures import SRMeta, DeserializerSchemaDescription
 from wunderkafka.producers.abc import AbstractProducer, AbstractSerializingProducer
+from wunderkafka.callbacks.producer import error_callback
 from wunderkafka.schema_registry.abc import AbstractSchemaRegistry
 
 

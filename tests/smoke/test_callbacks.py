@@ -3,7 +3,7 @@ from typing import Any, Callable, Optional
 import pytest
 from confluent_kafka import KafkaError
 
-from wunderkafka.callbacks import info_callback, error_callback
+from wunderkafka.callbacks.producer import info_callback, error_callback
 
 
 class Message:
