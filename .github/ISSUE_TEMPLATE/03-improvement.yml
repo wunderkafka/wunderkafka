@@ -1,0 +1,46 @@
+name: 🚧 Improvement
+description: Suggest an improvement to the project
+labels:
+  - improvement
+  - pending
+
+body:
+  - type: markdown
+    attributes:
+      value:  Thank you for contributing!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: |
+        Please, provide context for your suggestion.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Expected behaviour
+      description: |
+        Please, explain how do you expect it to be
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: |
+        Please, provide an idea of how the suggestion could be implemented, if any.
+
+  - type: textarea
+    id: example
+    attributes:
+      label: Code snippet
+      description: >
+        If applicable, please add an example.
+
+      placeholder: |
+        ...
+      render: Python

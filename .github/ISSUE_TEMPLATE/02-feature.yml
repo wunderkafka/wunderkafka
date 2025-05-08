@@ -1,0 +1,18 @@
+name: 🔥Feature
+description: Request or suggest a new feature
+labels:
+  - feature
+  - pending
+
+body:
+  - type: markdown
+    attributes:
+      value:  Thank you for contributing!
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: "Feature"
+      description: "Please, describe your feature request"
+    validations:
+      required: True
