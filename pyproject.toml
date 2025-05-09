@@ -39,7 +39,7 @@ build-backend = "setuptools.build_meta"
 
 
 [tool.setuptools.packages.find]
-include = ["wunderkafka"]
+include = ["wunderkafka", "wunderkafka.*"]
 
 [tool.pytest.ini_options]
 python_classes = "!Test"
@@ -85,7 +85,8 @@ target-version="py39"
 exclude = [
 	"wunderkafka/config/generated/*",
 	"examples/*",
-    #
+    # for now, thet test requires fixing the generator
+    # OR running ruff on generated code also and then comparing with the 'answer'
     "tests/fixtures/config/answers/models.py"
 ]
 
