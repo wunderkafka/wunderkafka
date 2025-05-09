@@ -1,3 +1,6 @@
+import time
+from typing import Any
+
 import pytest
 from pydantic import ValidationError
 
@@ -53,3 +56,27 @@ def test_sr_required_url() -> None:
 def test_group_id_required() -> None:
     with pytest.raises(ValidationError):
         ConsumerConfig()
+
+
+def dummy_oauth_cb(_: Any) -> tuple:
+    return "", int(time.time())
+
+
+def test_init_consumer_oauth_cb(boostrap_servers: str) -> None:
+    config = ConsumerConfig(group_id="my_group", bootstrap_servers=boostrap_servers, oauth_cb=dummy_oauth_cb)
+    consumer = BytesConsumer(config)
+    print(consumer)
+
+    with pytest.raises(AttributeError):
+        consumer.config = ConsumerConfig(  # type: ignore
+            group_id="my_other_group",
+            bootstrap_servers=boostrap_servers,
+        )
+    assert consumer.config == config
+
+    consumer.close()
+
+
+def test_init_producer_oauth_cb(boostrap_servers: str) -> None:
+    config = ProducerConfig(bootstrap_servers=boostrap_servers, oauth_cb=dummy_oauth_cb)
+    BytesProducer(config)

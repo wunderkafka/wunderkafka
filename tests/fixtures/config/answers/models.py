@@ -64,6 +64,7 @@ class RDKafkaConfig(BaseSettings):
     metadata_broker_list: Optional[str] = None
     metadata_max_age_ms: int = Field(ge=1, le=86400000, default=900000)
     metadata_request_timeout_ms: int = Field(ge=10, le=900000, default=60000)
+    oauth_cb: Optional[Callable] = None
     oauthbearer_token_refresh_cb: Optional[Callable] = None
     opaque: Optional[Callable] = None
     open_cb: Optional[Callable] = None
@@ -116,8 +117,6 @@ class RDKafkaConfig(BaseSettings):
     topic_metadata_refresh_fast_interval_ms: int = Field(ge=1, le=60000, default=250)
     topic_metadata_refresh_interval_ms: int = Field(ge=-1, le=3600000, default=300000)
     topic_metadata_refresh_sparse: bool = True
-
-    oauth_cb: Optional[Callable] = None
 
 
 class RDConsumerConfig(RDKafkaConfig):
