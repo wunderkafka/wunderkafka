@@ -19,7 +19,7 @@ urls = {"Homepage" = "https://github.com/wunderkafka/wunderkafka", "Bug Tracker"
 requires-python = ">=3.9"
 
 dependencies = [
-	"confluent-kafka>=1.9.0",
+	"confluent-kafka[schema-registry]>=1.9.0",
 	"avro-python3>=1.10.0",
 	"dataclasses-avroschema[pydantic]>=0.53.0",
 	"fastavro>=1.4.7",
@@ -108,11 +108,4 @@ dev-dependencies = [
     "mypy>=1.15.0",
     "pytest-cov>=6.1.1",
     "ruff>=0.9.7",
-    # needed by confluent-kafka
-    "authlib>=1.5.2",
-    "cachetools>=5.5.2",
-    # Why do we need httpx, if requests is already brought by confluent-kafka with schema registry?
-    "httpx>=0.28.1",
-    # https://github.com/wunderkafka/wunderkafka/actions/runs/14877077302/job/41776349624?pr=3
-    "attrs>=25.3.0",
 ]
