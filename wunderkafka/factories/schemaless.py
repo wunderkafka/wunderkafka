@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Optional
 
 from wunderkafka import BytesConsumer, BytesProducer, ConsumerConfig, ProducerConfig
 from wunderkafka.types import TopicName, MessageDescription
@@ -48,25 +48,29 @@ class SchemaLessJSONModelStringProducer(HighLevelSerializingProducer):
         self,
         mapping: Optional[dict[TopicName, MessageDescription]],
         config: ProducerConfig,
+        **serializer_kwargs: Any,
     ) -> None:
         """
         Init producer from pre-defined blocks.
 
-        :param mapping:     Topic-to-Schemas mapping.
-                            Mapping's value should contain at least message's value schema to be used for serialization.
-        :param config:      Configuration for:
+        :param mapping:             Topic-to-Schemas mapping.
+                                    Mapping's value should contain at least message's value schema to be used for serialization.
+        :param config:              Configuration for:
 
-                                - Librdkafka producer.
-                                - Schema registry client (conventional options for HTTP).
+                                        - Librdkafka producer.
+                                        - Schema registry client (conventional options for HTTP).
 
-                            Refer original CONFIGURATION.md (https://git.io/JmgCl) or generated config.
+                                    Refer original CONFIGURATION.md (https://git.io/JmgCl) or generated config.
+
+        :param serializer_kwargs:   Additional keyword arguments to pass to the SchemaLessJSONModelSerializer,
+                                    see https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump_json
         """
 
         super().__init__(
             producer=BytesProducer(config),
             schema_registry=None,
             header_packer=None,
-            value_serializer=SchemaLessJSONModelSerializer(),
+            value_serializer=SchemaLessJSONModelSerializer(**serializer_kwargs),
             key_serializer=StringSerializer(),
             mapping=mapping,
         )
