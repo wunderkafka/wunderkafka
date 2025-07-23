@@ -1,20 +1,21 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Generic, TypeVar, Optional
+from typing import Generic, TypeVar, Optional
 
 from pydantic import Field, BaseModel, ConfigDict, model_validator
 
 M = TypeVar("M")
+T = TypeVar("T")
 
 
 class PayloadError(BaseModel):
     description: str
 
 
-class StreamResult(BaseModel, Generic[M]):
+class StreamResult(BaseModel, Generic[M, T]):
     model_config = ConfigDict(arbitrary_types_allowed=True)
-    payload: Optional[dict[str, Any]] = None
+    payload: Optional[T] = None
     error: Optional[PayloadError] = None
     msg: M
     t0: float = Field(default_factory=time.perf_counter)
