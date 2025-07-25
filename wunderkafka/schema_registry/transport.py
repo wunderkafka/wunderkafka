@@ -2,9 +2,9 @@ import os
 import json
 from typing import Any, Optional
 
-import requests
 
 from wunderkafka.logger import logger
+from wunderkafka.schema_registry.compat import http
 from wunderkafka.config.krb.rdkafka import init_kerberos
 from wunderkafka.schema_registry.abc import AbstractHTTPClient
 from wunderkafka.config.schema_registry import SRConfig
@@ -21,7 +21,7 @@ class KerberizableHTTPClient(AbstractHTTPClient):
         cmd_kinit: Optional[str] = None,
         krb_timeout: int = 60,
     ) -> None:
-        s = requests.Session()
+        s = http.Session()
         if requires_kerberos and cmd_kinit is not None:
             init_kerberos(cmd_kinit, krb_timeout)
             s.auth = HTTPKerberosAuth(
@@ -83,7 +83,7 @@ class KerberizableHTTPClient(AbstractHTTPClient):
         self._dump(method, relative_url, response)
         return response.json()
 
-    def _dump(self, method: str, relative_url: str, response: requests.Response) -> None:
+    def _dump(self, method: str, relative_url: str, response: http.Response) -> None:
         if self._save_replay:
             filename = f"{method}/{relative_url}.json"
             dir_name = os.path.dirname(filename)

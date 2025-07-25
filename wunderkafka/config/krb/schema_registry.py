@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any
 
-from requests.auth import AuthBase
+from wunderkafka.config.krb.compat import AuthBase
 
 try:
     import requests_kerberos
