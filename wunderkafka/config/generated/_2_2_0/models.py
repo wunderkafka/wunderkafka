@@ -14,6 +14,7 @@ from pydantic_settings import BaseSettings
 # Enums because we can't rely that client code uses linters.
 # Of course, it will fail with cimpl.KafkaException, but later, when Consumer/Producer are really initiated
 from wunderkafka.config.generated import enums
+from wunderkafka.config.protocols import LoggerProtocol
 
 
 class RDKafkaConfig(BaseSettings):
@@ -57,7 +58,8 @@ class RDKafkaConfig(BaseSettings):
     error_cb: Optional[Callable] = None
     interceptors: Optional[Callable] = None
     internal_termination_signal: int = Field(ge=0, le=128, default=0)
-    log_cb: Optional[Callable] = None
+    # confluent-kafka-python doesn't use log_cb, it uses logger instead
+    logger: Optional[LoggerProtocol] = None
     log_connection_close: bool = True
     log_level: int = Field(ge=0, le=7, default=6)
     log_queue: bool = False

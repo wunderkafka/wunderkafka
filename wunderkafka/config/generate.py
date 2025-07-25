@@ -21,6 +21,7 @@ logger = logging
 IGNORE_PYDANTIC_TYPE = "# type: ignore[valid-type]"
 
 GROUP_ID = "group.id"
+LOG_CB = "log_cb"
 SASL_MECHANISMS = "sasl.mechanisms"
 
 CLS_MAPPING = {
@@ -150,6 +151,8 @@ class Row(NamedTuple):
 
         if self.property_name == GROUP_ID:
             return f"    {self.name}: str"
+        if self.property_name == LOG_CB:
+            return f"    logger: Optional[LoggerProtocol] = None"
         if self.property_name == SASL_MECHANISMS:
             return f"    # {self.name}: {self.annotation} = {self.default}"
         if self.property_name == "builtin.features":
@@ -245,6 +248,7 @@ def generate_models(groups: dict[str, list[Row]]) -> list[str]:
         "# Enums because we can't rely that client code uses linters.",
         "# Of course, it will fail with cimpl.KafkaException, but later, when Consumer/Producer are really initiated",
         "from wunderkafka.config.generated import enums",
+        "from wunderkafka.config.protocols import LoggerProtocol",
     ]
     already_generated = set()
     for grp in sorted(groups):
@@ -271,6 +275,8 @@ def generate_models(groups: dict[str, list[Row]]) -> list[str]:
                 properties.append(
                     "    # It is just alias, but when setting it manually it may misbehave with current defaults."
                 )
+            if prop.property_name == LOG_CB:
+                properties.append("    # confluent-kafka-python does not use log_cb, it uses logger instead")
             properties.append(prop.render())
 
     return properties
