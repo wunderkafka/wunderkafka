@@ -1,12 +1,16 @@
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 
+# `@runtime_checkable` is needed for pydantic to create schema in StreamResult
+@runtime_checkable
 class KafkaErrorProtocol(Protocol):
     def code(self) -> int: ...
 
 
+# `@runtime_checkable` is needed for pydantic to create schema in StreamResult
+@runtime_checkable
 class MessageProtocol(Protocol):
     """
     Protocol for message-like objects.
