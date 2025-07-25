@@ -67,8 +67,8 @@ def test_avro_producer_moving_parts_value_only(
     value = Signal(ts=ts)
     clean_producer.send_message(topic, value)
     [message] = test_producer.sent
-    assert message.key is None
-    assert message.value == value_answer
+    assert message.key() is None
+    assert message.value() == value_answer
 
 
 def test_avro_producer_moving_parts_value_and_key(
@@ -83,5 +83,5 @@ def test_avro_producer_moving_parts_value_and_key(
     value = Signal(ts=ts)
     clean_producer.send_message(topic, value, key)
     [message] = test_producer.sent
-    assert message.key == b"\x01\x00\x00\x00\x00\x00\x00\x06\x9d\x00\x00\x00\x01\xcc\xb8\xeb\xa6\x80_"
-    assert message.value == value_answer
+    assert message.key() == b"\x01\x00\x00\x00\x00\x00\x00\x06\x9d\x00\x00\x00\x01\xcc\xb8\xeb\xa6\x80_"
+    assert message.value() == value_answer

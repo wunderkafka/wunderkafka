@@ -1,21 +1,15 @@
 from typing import Any, Union, Optional
-from dataclasses import dataclass
 
+from wunderkafka.message import Message as MessageProtocol
+from wunderkafka.tests.message import Message as MessageStub
 from wunderkafka.types import DeliveryCallback
 from wunderkafka.producers.bytes import BytesProducer
 from wunderkafka.callbacks.producer import error_callback
 
 
-@dataclass
-class Message:
-    topic: str
-    value: Optional[Union[str, bytes]]
-    key: Optional[Union[str, bytes]]
-
-
 class TestProducer(BytesProducer):
     def __init__(self) -> None:
-        self.sent: list[Message] = []
+        self.sent: list[MessageProtocol] = []
 
     def send_message(
         self,
@@ -28,5 +22,5 @@ class TestProducer(BytesProducer):
         blocking: bool = False,
         **kwargs: Any,
     ) -> None:
-        message = Message(topic, value, key)
+        message = MessageStub(topic=topic, value=value, key=key)
         self.sent.append(message)

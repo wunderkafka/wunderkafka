@@ -1,42 +1,14 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any
-
-from confluent_kafka import KafkaError
 
 from wunderkafka.consumers.bytes import BytesConsumer
 from wunderkafka.consumers.subscription import TopicSubscription
-
-
-class Message:
-    def __init__(self, topic: str, value: bytes, key: bytes | None = None, error: KafkaError | None = None):
-        self._topic = topic
-        self._value = value
-        self._key = key
-        self._error = error
-
-    def value(self) -> bytes:
-        return self._value
-
-    def set_value(self, value: Any) -> None:
-        self._value = value
-
-    def key(self) -> bytes | None:
-        return self._key
-
-    def set_key(self, key: Any) -> None:
-        self._key = key
-
-    def topic(self) -> str:
-        return self._topic
-
-    def error(self) -> KafkaError | None:
-        return self._error
+from wunderkafka.message import Message as MessageProtocol
 
 
 class TestConsumer(BytesConsumer):
-    def __init__(self, msgs: list[Message]) -> None:
+    def __init__(self, msgs: list[MessageProtocol]) -> None:
         self._msgs = msgs
 
     def subscribe(
@@ -57,5 +29,5 @@ class TestConsumer(BytesConsumer):
         num_messages: int = 1000000,
         *,
         raise_on_lost: bool = False,
-    ) -> list[Message]:
+    ) -> list[MessageProtocol]:
         return self._msgs

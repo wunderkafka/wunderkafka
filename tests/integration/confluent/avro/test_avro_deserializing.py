@@ -5,7 +5,7 @@ import pytest
 from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.serdes.avro import FastAvroDeserializer
 from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
-from wunderkafka.tests.consumer import Message
+from wunderkafka.tests.message import Message
 from wunderkafka.consumers.types import StreamResult
 from wunderkafka.schema_registry import SimpleCache, ConfluentSRClient
 from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer
@@ -29,7 +29,7 @@ HEADERS = (b"\x00\x00\x00\x08<",)
 @pytest.mark.parametrize("header", list(HEADERS))
 def test_consume_moving_parts(sr_root_existing: Path, topic: str, header: bytes) -> None:
     consumer = HighLevelDeserializingConsumer(
-        consumer=TestConsumer([Message(topic, value=SIGNAL_MESSAGE.serialized(header))]),
+        consumer=TestConsumer([Message(topic=topic, value=SIGNAL_MESSAGE.serialized(header))]),
         schema_registry=ConfluentSRClient(TestHTTPClient(sr_root_existing), SimpleCache()),
         headers_handler=ConfluentClouderaHeadersHandler().parse,
         deserializer=FastAvroDeserializer(),
