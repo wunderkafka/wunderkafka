@@ -50,3 +50,35 @@ def test_serialize_schemaless_jsonmodel(my_model: RandomName) -> None:
     serializer = SchemaLessJSONModelSerializer()
     serialized = serializer.serialize("", my_model)
     assert isinstance(serialized, bytes)
+
+
+class MyModel(BaseModel):
+    name: str = "test_name"
+
+
+class MyAliasedModel(BaseModel):
+    name: str = Field(alias="fullName", default="test_name")
+
+
+@pytest.mark.parametrize(
+    ("left", "right", "answer"),
+    [
+        (
+            SchemaLessJSONModelSerializer(by_alias=True).serialize("", MyModel()),
+            SchemaLessJSONModelSerializer().serialize("", MyModel()),
+            True,
+        ),
+        (
+            SchemaLessJSONModelSerializer(by_alias=True).serialize("", MyAliasedModel()),
+            SchemaLessJSONModelSerializer().serialize("", MyModel()),
+            False,
+        ),
+        (
+            SchemaLessJSONModelSerializer().serialize("", MyAliasedModel()),
+            SchemaLessJSONModelSerializer().serialize("", MyModel()),
+            True,
+        ),
+    ],
+)
+def test_schema_less_json_model_serializer(left: bytes, right: bytes, answer: bool) -> None:
+    assert (left == right) is answer

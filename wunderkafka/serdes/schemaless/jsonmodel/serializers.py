@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Optional
 
 from wunderkafka.serdes.abc import AbstractSerializer
@@ -5,8 +7,9 @@ from wunderkafka.serdes.store import StringRepo
 
 
 class SchemaLessJSONModelSerializer(AbstractSerializer):
-    def __init__(self) -> None:
+    def __init__(self, **pydantic_kwargs: Any) -> None:
         self.store = StringRepo()
+        self._serialization_kwargs = pydantic_kwargs
 
     def serialize(
         self,
@@ -17,4 +20,4 @@ class SchemaLessJSONModelSerializer(AbstractSerializer):
         *,
         is_key: Optional[bool] = None,
     ) -> bytes:
-        return obj.model_dump_json().encode()
+        return obj.model_dump_json(**self._serialization_kwargs).encode()
