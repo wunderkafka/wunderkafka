@@ -29,7 +29,7 @@ jobs:
           apt-get install -y librdkafka1
       - name: install confluent-kafka w/o SASL/SSL support
         run: |
-          uv pip install confluent-kafka[avro]~=2.5.3
+          uv pip install confluent-kafka[avro]~=2.6.2
       - name: Install testing dependencies
         run: |
           if uv pip install pytest pydantic-settings${{ matrix.pydantic-settings-version }} dataclasses-avroschema[pydantic]${{ matrix.dataclasses-avroschema-version }}; then
