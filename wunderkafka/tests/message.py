@@ -1,6 +1,12 @@
 from __future__ import annotations
 
-class KafkaError:
+import time
+
+from wunderkafka.compat import Self
+from wunderkafka.message import MessageProtocol, KafkaErrorProtocol
+
+
+class KafkaError(KafkaErrorProtocol):
     def __init__(self, code: int = 25) -> None:
         self._code = code
 
@@ -12,7 +18,7 @@ class KafkaError:
         return f'KafkaError{{code={self.code()},val={self.code()},str="{self.code()}"}}'
 
 
-class Message:
+class Message(MessageProtocol):
     """
     Represents a message-like
 
@@ -20,6 +26,7 @@ class Message:
         https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html#message
 
     """
+
     def __init__(
         self,
         value: object,
@@ -39,7 +46,6 @@ class Message:
         self._partition = partition
         self._offset = offset
         self._timestamp = timestamp
-
 
     def error(self) -> None | KafkaError:
         return self._error
@@ -88,5 +94,5 @@ class Message:
             topic=topic,
             partition=1,
             offset=1,
-            timestamp=(1, int(time.time()*1000)),
+            timestamp=(1, int(time.time() * 1000)),
         )

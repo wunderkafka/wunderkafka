@@ -4,8 +4,8 @@ import pytest
 
 from wunderkafka.tests import TestConsumer, TestHTTPClient
 from wunderkafka.serdes.avro import FastAvroDeserializer
-from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
 from wunderkafka.tests.message import Message
+from wunderkafka.serdes.headers import ConfluentClouderaHeadersHandler
 from wunderkafka.consumers.types import StreamResult
 from wunderkafka.schema_registry import SimpleCache, ConfluentSRClient
 from wunderkafka.consumers.constructor import HighLevelDeserializingConsumer

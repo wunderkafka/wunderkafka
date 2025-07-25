@@ -1,15 +1,15 @@
 from typing import Any, Union, Optional
 
-from wunderkafka.message import Message as MessageProtocol
-from wunderkafka.tests.message import Message as MessageStub
 from wunderkafka.types import DeliveryCallback
+from wunderkafka.message import MessageProtocol as Message
+from wunderkafka.tests.message import Message as MessageStub
 from wunderkafka.producers.bytes import BytesProducer
 from wunderkafka.callbacks.producer import error_callback
 
 
 class TestProducer(BytesProducer):
     def __init__(self) -> None:
-        self.sent: list[MessageProtocol] = []
+        self.sent: list[Message] = []
 
     def send_message(
         self,

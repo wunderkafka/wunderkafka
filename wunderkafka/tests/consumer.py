@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import datetime
 
+from wunderkafka.message import MessageProtocol as Message
 from wunderkafka.consumers.bytes import BytesConsumer
 from wunderkafka.consumers.subscription import TopicSubscription
-from wunderkafka.message import Message as MessageProtocol
 
 
 class TestConsumer(BytesConsumer):
-    def __init__(self, msgs: list[MessageProtocol]) -> None:
+    def __init__(self, msgs: list[Message]) -> None:
         self._msgs = msgs
 
     def subscribe(
@@ -29,5 +29,5 @@ class TestConsumer(BytesConsumer):
         num_messages: int = 1000000,
         *,
         raise_on_lost: bool = False,
-    ) -> list[MessageProtocol]:
+    ) -> list[Message]:
         return self._msgs
