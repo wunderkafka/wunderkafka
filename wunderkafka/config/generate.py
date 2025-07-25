@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import logging
 import operator
@@ -306,13 +307,23 @@ def generate_enums(groups: dict[str, list[Row]]) -> list[str]:
     return properties
 
 
+def urn_to_snake_field(urn: str) -> str:
+    tail = urn.rsplit(":")[-1]
+    return re.sub(r"[^a-z0-9_]", "", tail.replace("-", "_"))
+
+
 def generate_enum(prop: str, rng: str) -> list[str]:
     cls_name = "".join([word.capitalize() for word in prop.split(".")])
     header = f"class {cls_name}(str, Enum):"
-    flds = []
+    fields = []
     for field in rng.split(","):
-        flds.append('    {0} = "{0}"'.format(field.strip()))
-    return [header] + flds
+        if ":" in field:
+            field_name = urn_to_snake_field(field)
+            line = '    {0} = "{1}"'.format(field_name, field.strip())
+        else:
+            line = '    {0} = "{0}"'.format(field.strip())
+        fields.append(line)
+    return [header] + fields
 
 
 def generate(lines: dict[Version, Files]) -> dict[Version, dict[Name, Lines]]:
