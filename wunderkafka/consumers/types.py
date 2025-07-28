@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import time
-from typing import Generic, TypeVar, Optional
+from typing import Union, Generic, TypeVar, Optional
 
 from pydantic import Field, BaseModel, ConfigDict, model_validator
+from confluent_kafka import Message
 
-M = TypeVar("M")
+from wunderkafka.message import MessageProtocol
+
 T = TypeVar("T")
 
 
@@ -13,11 +15,15 @@ class PayloadError(BaseModel):
     description: str
 
 
-class StreamResult(BaseModel, Generic[M, T]):
+class StreamResult(BaseModel, Generic[T]):
+    # it's needed to allow attaching the real cimpl.Message in runtime anyway
     model_config = ConfigDict(arbitrary_types_allowed=True)
+
     payload: Optional[T] = None
     error: Optional[PayloadError] = None
-    msg: M
+    # not via `|`, because pydantic raises TypeError in python 3.9 without `eval_type_backport` package despite
+    # `from __future__ import annotations`
+    msg: Union[Message, MessageProtocol]
     t0: float = Field(default_factory=time.perf_counter)
 
     @property
