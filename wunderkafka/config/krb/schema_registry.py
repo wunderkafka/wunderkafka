@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any
 
-from requests.auth import AuthBase
+from wunderkafka.config.krb.compat import AuthBase
 
 try:
     import requests_kerberos
@@ -20,12 +20,12 @@ if HAS_KERBEROS:
 
 else:
 
-    class HTTPKerberosMutualAuth(Enum):  # type: ignore
+    class HTTPKerberosMutualAuth(Enum):  # type: ignore[no-redef]
         REQUIRED = 1
         OPTIONAL = 2
         DISABLED = 3
 
-    class HTTPKerberosAuth(AuthBase):  # type: ignore # noqa: F811
+    class HTTPKerberosAuth(AuthBase):  # type: ignore[no-redef] # noqa: F811
         def __init__(self, *args: Any, **kwargs: Any) -> None:
             message = " ".join(
                 [
