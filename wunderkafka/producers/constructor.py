@@ -132,8 +132,8 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
         protocol_id: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
-        if topic not in self._registered and value is not None:
-            raise ValueError(f"Topic {topic} not registered while producing the non-empty message.")
+        if topic not in self._registered:
+            raise ValueError(f"Topic {topic} not registered while producing the message.")
         if protocol_id is None:
             protocol_id = self._protocol_id
         encoded_value = self._encode(topic, value, protocol_id)
