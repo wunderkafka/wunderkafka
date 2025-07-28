@@ -1,16 +1,34 @@
 # CHANGELOG
 
-## v0.19.0 (2025-05-07)
+## v0.19.0 (2025-07-29)
 
 ### Maintenance
 
 - transferred to its own organisation
+- added explicit MessageProtocol
+- StreamResult generic is now also parametrized by payload type
+- extracted MessageProtocol interface for Message stubs
+- generated type safe configs for librdkafka 2.9.0, 2.10.0, 2.11.0, fixed the generation script
+
+### Package
+
+- got rid of `requests` package as required dependency in favor to `httpx` following behind `confluent-kafka` choice.
+- removed examples and tests from the wheel
 
 ### Features
 
 - subscription API
   - allow using a datetime object for time offset subscription
   - ensure that provided timestamp is in milliseconds
+- experimental support for AWS IAM
+
+## Bugfixes
+
+- fixed wrong selection of pre-generated configs, thx to @YekaterinaStrogonova
+- removed failing to be set `log_cb` in favor of `logger` parameter in `Consumer` and `Producer`, extracted `LoggerProtocol`
+- removed failing to be set `oauth_cb` in favor of `oauth_callback`
+- excluded `sasl.kerberos.kinit.cmd` from the dumped config propagated to confluent-kafka for windows runs
+- forbid to send messages for serializing producer, when it is not configured against specific topic. That was leading to producing of tombstone messages.
 
 ## v0.18.0 (2024-10-29)
 
