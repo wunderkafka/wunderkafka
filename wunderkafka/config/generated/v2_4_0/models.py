@@ -11,18 +11,21 @@ from typing import Callable, Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-# Enums because we can't rely that client code uses linters.
+# Enums because we can't rely on client code using linters.
 # Of course, it will fail with cimpl.KafkaException, but later, when Consumer/Producer are really initiated
 from wunderkafka.config.generated import enums
 
 
 class RDKafkaConfig(BaseSettings):
     allow_auto_create_topics: bool = False
+    api_version_fallback_ms: int = Field(ge=0, le=604800000, default=0)
+    api_version_request: bool = True
     api_version_request_timeout_ms: int = Field(ge=1, le=300000, default=10000)
     background_event_cb: Optional[Callable] = None
     bootstrap_servers: Optional[str] = None
     broker_address_family: enums.BrokerAddressFamily = enums.BrokerAddressFamily.any
     broker_address_ttl: int = Field(ge=0, le=86400000, default=1000)
+    broker_version_fallback: str = '0.10.0'
     builtin_features: str = ', '.join([
         'gzip',
         'snappy',
@@ -47,7 +50,6 @@ class RDKafkaConfig(BaseSettings):
     connections_max_idle_ms: int = Field(ge=0, le=2147483647, default=0)
     debug: Optional[str] = None
     default_topic_conf: Optional[Callable] = None
-    enable_metrics_push: bool = True
     enable_random_seed: bool = True
     enable_sasl_oauthbearer_unsecure_jwt: bool = False
     enable_ssl_certificate_verification: bool = True
@@ -66,7 +68,6 @@ class RDKafkaConfig(BaseSettings):
     message_max_bytes: int = Field(ge=1000, le=1000000000, default=1000000)
     metadata_broker_list: Optional[str] = None
     metadata_max_age_ms: int = Field(ge=1, le=86400000, default=900000)
-    metadata_recovery_strategy: enums.MetadataRecoveryStrategy = enums.MetadataRecoveryStrategy.rebootstrap
     oauth_cb: Optional[Callable] = None
     oauthbearer_token_refresh_cb: Optional[Callable] = None
     opaque: Optional[Callable] = None
@@ -76,8 +77,6 @@ class RDKafkaConfig(BaseSettings):
     reconnect_backoff_max_ms: int = Field(ge=0, le=3600000, default=10000)
     reconnect_backoff_ms: int = Field(ge=0, le=3600000, default=100)
     resolve_cb: Optional[Callable] = None
-    retry_backoff_max_ms: int = Field(ge=1, le=300000, default=1000)
-    retry_backoff_ms: int = Field(ge=1, le=300000, default=100)
     sasl_kerberos_keytab: Optional[str] = None
     sasl_kerberos_kinit_cmd: str = 'kinit -R -t "%{sasl.kerberos.keytab}" -k %{sasl.kerberos.principal} || kinit -t "%{sasl.kerberos.keytab}" -k %{sasl.kerberos.principal}'
     sasl_kerberos_min_time_before_relogin: int = Field(ge=0, le=86400000, default=60000)
@@ -197,6 +196,8 @@ class RDProducerConfig(RDKafkaConfig):
     request_required_acks: int = Field(ge=-1, le=1000, default=-1)
     request_timeout_ms: int = Field(ge=1, le=900000, default=30000)
     retries: int = Field(ge=0, le=2147483647, default=2147483647)
+    retry_backoff_max_ms: int = Field(ge=1, le=300000, default=1000)
+    retry_backoff_ms: int = Field(ge=1, le=300000, default=100)
     sticky_partitioning_linger_ms: int = Field(ge=0, le=900000, default=10)
     transaction_timeout_ms: int = Field(ge=1000, le=2147483647, default=60000)
     transactional_id: Optional[str] = None

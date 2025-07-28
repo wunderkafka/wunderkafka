@@ -243,7 +243,7 @@ def generate_models(groups: dict[str, list[Row]]) -> list[str]:
         "from pydantic import Field",
         "from pydantic_settings import BaseSettings",
         "",
-        "# Enums because we can't rely that client code uses linters.",
+        "# Enums because we can't rely on client code using linters.",
         "# Of course, it will fail with cimpl.KafkaException, but later, when Consumer/Producer are really initiated",
         "from wunderkafka.config.generated import enums",
     ]
@@ -364,17 +364,19 @@ def main() -> None:
     # clean generated dir in order to clean removed versions automatically
     shutil.rmtree("generated/", ignore_errors=True)
 
+    versions_formatted = {}
     for version, dct in versionized_dcts.items():
+        version_dir = version_to_dir_name(version)
+        version_tuple = tuple(int(part) for part in version.split("."))
+        p = Path(f"generated/{version_dir}/")
+        p.mkdir(parents=True, exist_ok=True)
+        versions_formatted[version_tuple] = version_dir
+
         for file_name, content in dct.items():
-            version_dir = version_to_dir_name(version)
-            p = Path(f"generated/{version_dir}/")
-            p.mkdir(parents=True, exist_ok=True)
             write_python(content, f"generated/{version_dir}/{file_name}")
 
-    versions = sorted((tuple(int(v) for v in version.split(".")) for version in versionized_dcts), reverse=True)
-    versions_formated = [(version, f"_{'_'.join(str(i) for i in version)}") for version in versions]
     for kind in ("models", "enums", "fields"):
-        write_module_file(versions_formated, kind)
+        write_module_file([(k, versions_formatted[k]) for k in sorted(versions_formatted)], kind)
 
 
 def write_module_file(versions: list[tuple[tuple, str]], kind: str) -> None:
@@ -399,7 +401,7 @@ def write_module_file(versions: list[tuple[tuple, str]], kind: str) -> None:
 
 
 def version_to_dir_name(version: str) -> str:
-    return f"_{version.replace('.', '_')}"
+    return f"v{version.replace('.', '_')}"
 
 
 def single() -> None:

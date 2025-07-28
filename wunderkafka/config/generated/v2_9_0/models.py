@@ -11,21 +11,18 @@ from typing import Callable, Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-# Enums because we can't rely that client code uses linters.
+# Enums because we can't rely on client code using linters.
 # Of course, it will fail with cimpl.KafkaException, but later, when Consumer/Producer are really initiated
 from wunderkafka.config.generated import enums
 
 
 class RDKafkaConfig(BaseSettings):
     allow_auto_create_topics: bool = False
-    api_version_fallback_ms: int = Field(ge=0, le=604800000, default=0)
-    api_version_request: bool = True
     api_version_request_timeout_ms: int = Field(ge=1, le=300000, default=10000)
     background_event_cb: Optional[Callable] = None
     bootstrap_servers: Optional[str] = None
     broker_address_family: enums.BrokerAddressFamily = enums.BrokerAddressFamily.any
     broker_address_ttl: int = Field(ge=0, le=86400000, default=1000)
-    broker_version_fallback: str = '0.10.0'
     builtin_features: str = ', '.join([
         'gzip',
         'snappy',
@@ -42,6 +39,7 @@ class RDKafkaConfig(BaseSettings):
         'http',
         'oidc',
     ])
+    client_dns_lookup: enums.ClientDnsLookup = enums.ClientDnsLookup.use_all_dns_ips
     client_id: str = 'rdkafka'
     client_rack: Optional[str] = None
     closesocket_cb: Optional[Callable] = None
@@ -49,6 +47,7 @@ class RDKafkaConfig(BaseSettings):
     connections_max_idle_ms: int = Field(ge=0, le=2147483647, default=0)
     debug: Optional[str] = None
     default_topic_conf: Optional[Callable] = None
+    enable_metrics_push: bool = True
     enable_random_seed: bool = True
     enable_sasl_oauthbearer_unsecure_jwt: bool = False
     enable_ssl_certificate_verification: bool = True
@@ -67,6 +66,7 @@ class RDKafkaConfig(BaseSettings):
     message_max_bytes: int = Field(ge=1000, le=1000000000, default=1000000)
     metadata_broker_list: Optional[str] = None
     metadata_max_age_ms: int = Field(ge=1, le=86400000, default=900000)
+    metadata_recovery_strategy: enums.MetadataRecoveryStrategy = enums.MetadataRecoveryStrategy.rebootstrap
     oauth_cb: Optional[Callable] = None
     oauthbearer_token_refresh_cb: Optional[Callable] = None
     opaque: Optional[Callable] = None
@@ -76,6 +76,8 @@ class RDKafkaConfig(BaseSettings):
     reconnect_backoff_max_ms: int = Field(ge=0, le=3600000, default=10000)
     reconnect_backoff_ms: int = Field(ge=0, le=3600000, default=100)
     resolve_cb: Optional[Callable] = None
+    retry_backoff_max_ms: int = Field(ge=1, le=300000, default=1000)
+    retry_backoff_ms: int = Field(ge=1, le=300000, default=100)
     sasl_kerberos_keytab: Optional[str] = None
     sasl_kerberos_kinit_cmd: str = 'kinit -R -t "%{sasl.kerberos.keytab}" -k %{sasl.kerberos.principal} || kinit -t "%{sasl.kerberos.keytab}" -k %{sasl.kerberos.principal}'
     sasl_kerberos_min_time_before_relogin: int = Field(ge=0, le=86400000, default=60000)
@@ -130,7 +132,7 @@ class RDKafkaConfig(BaseSettings):
     throttle_cb: Optional[Callable] = None
     topic_blacklist: Optional[str] = None
     topic_metadata_propagation_max_ms: int = Field(ge=0, le=3600000, default=30000)
-    topic_metadata_refresh_fast_interval_ms: int = Field(ge=1, le=60000, default=250)
+    topic_metadata_refresh_fast_interval_ms: int = Field(ge=1, le=60000, default=100)
     topic_metadata_refresh_interval_ms: int = Field(ge=-1, le=3600000, default=300000)
     topic_metadata_refresh_sparse: bool = True
 
@@ -150,9 +152,12 @@ class RDConsumerConfig(RDKafkaConfig):
     fetch_max_bytes: int = Field(ge=0, le=2147483135, default=52428800)
     fetch_message_max_bytes: int = Field(ge=1, le=1000000000, default=1048576)
     fetch_min_bytes: int = Field(ge=1, le=100000000, default=1)
+    fetch_queue_backoff_ms: int = Field(ge=0, le=300000, default=1000)
     fetch_wait_max_ms: int = Field(ge=0, le=300000, default=500)
     group_instance_id: Optional[str] = None
+    group_protocol: enums.GroupProtocol = enums.GroupProtocol.classic
     group_protocol_type: str = 'consumer'
+    group_remote_assignor: Optional[str] = None
     heartbeat_interval_ms: int = Field(ge=1, le=3600000, default=3000)
     isolation_level: enums.IsolationLevel = enums.IsolationLevel.read_committed
     max_partition_fetch_bytes: int = Field(ge=1, le=1000000000, default=1048576)
@@ -192,7 +197,6 @@ class RDProducerConfig(RDKafkaConfig):
     request_required_acks: int = Field(ge=-1, le=1000, default=-1)
     request_timeout_ms: int = Field(ge=1, le=900000, default=30000)
     retries: int = Field(ge=0, le=2147483647, default=2147483647)
-    retry_backoff_ms: int = Field(ge=1, le=300000, default=100)
     sticky_partitioning_linger_ms: int = Field(ge=0, le=900000, default=10)
     transaction_timeout_ms: int = Field(ge=1000, le=2147483647, default=60000)
     transactional_id: Optional[str] = None
