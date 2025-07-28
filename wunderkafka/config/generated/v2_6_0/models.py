@@ -59,7 +59,7 @@ class RDKafkaConfig(BaseSettings):
     error_cb: Optional[Callable] = None
     interceptors: Optional[Callable] = None
     internal_termination_signal: int = Field(ge=0, le=128, default=0)
-    # confluent-kafka-python doesn't use log_cb, it uses logger instead
+    # confluent-kafka-python does not use log_cb, it uses logger instead
     logger: Optional[LoggerProtocol] = None
     log_connection_close: bool = True
     log_level: int = Field(ge=0, le=7, default=6)
