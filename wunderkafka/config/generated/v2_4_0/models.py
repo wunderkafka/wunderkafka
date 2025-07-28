@@ -11,7 +11,7 @@ from typing import Callable, Optional
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
-# Enums because we can't rely that client code uses linters.
+# Enums because we can't rely on client code using linters.
 # Of course, it will fail with cimpl.KafkaException, but later, when Consumer/Producer are really initiated
 from wunderkafka.config.generated import enums
 
