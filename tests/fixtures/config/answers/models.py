@@ -6,7 +6,8 @@
 ########### THIS FILE IS GENERATED, DO NOT EDIT MANUALLY!!! ##########
 ######################################################################
 
-from typing import Callable, Optional
+from logging import Logger
+from typing import Callable, Optional, Union
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -54,7 +55,7 @@ class RDKafkaConfig(BaseSettings):
     interceptors: Optional[Callable] = None
     internal_termination_signal: int = Field(ge=0, le=128, default=0)
     # confluent-kafka-python does not use log_cb, it uses logger instead
-    logger: Optional[LoggerProtocol] = None
+    logger: Union[Logger, LoggerProtocol, None] = None
     log_connection_close: bool = True
     log_level: int = Field(ge=0, le=7, default=6)
     log_queue: bool = False

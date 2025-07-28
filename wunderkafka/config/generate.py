@@ -153,7 +153,7 @@ class Row(NamedTuple):
         if self.property_name == GROUP_ID:
             return f"    {self.name}: str"
         if self.property_name == LOG_CB:
-            return f"    logger: Optional[LoggerProtocol] = None"
+            return f"    logger: Union[Logger, LoggerProtocol, None] = None"
         if self.property_name == SASL_MECHANISMS:
             return f"    # {self.name}: {self.annotation} = {self.default}"
         if self.property_name == "builtin.features":
@@ -241,7 +241,8 @@ def group(rows: list[Row]) -> dict[str, list[Row]]:
 
 def generate_models(groups: dict[str, list[Row]]) -> list[str]:
     properties = DEFAULT_HEADER + [
-        "from typing import Callable, Optional",
+        "from logging import Logger",
+        "from typing import Callable, Optional, Union",
         "",
         "from pydantic import Field",
         "from pydantic_settings import BaseSettings",
@@ -291,7 +292,13 @@ def generate_fields(groups: dict[str, list[Row]]) -> list[str]:
     ]
     for grp in sorted(groups):
         properties.append(f"{TPL_MAPPING[grp]}")
-        all_fields = sorted({row.property_name for row in groups[grp]})
+        fields = set()
+        for row in groups[grp]:
+            if row.property_name == LOG_CB:
+                fields.add("logger")
+            else:
+                fields.add(row.property_name)
+        all_fields = sorted(fields)
         properties += [f'    "{field}",' for field in all_fields]
         properties.append(")")
     return properties
