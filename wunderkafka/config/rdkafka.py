@@ -39,20 +39,26 @@ def remap_properties(
 #                       to not monkeypatch config before actually feeding it to librdkafka.
 #                       #TypeSafety!!1
 def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
-    # cimpl.KafkaException: KafkaError{
-    #   ...
-    #   "Configuration property "ssl.ca.certificate.stores" not supported in this build: configuration only valid on Windows"  # noqa: E501
-    #  }
-    if os.name != "nt":
-        property_name = "ssl.ca.certificate.stores"
+    if os.name == "nt":
+        exclude = {
+            # cimpl.KafkaException: KafkaError{
+            #   ...
+            #   "Configuration property "sasl.kerberos.kinit.cmd" not supported in this build: Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI"
+            #  }
+            "sasl.kerberos.kinit.cmd": "Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI"
+        }
+    else:
+        exclude = {
+            # cimpl.KafkaException: KafkaError{
+            #   ...
+            #   "Configuration property "ssl.ca.certificate.stores" not supported in this build: configuration only valid on Windows"
+            #  }
+            "ssl.ca.certificate.stores": 'Configuration property "ssl.ca.certificate.stores" not supported in this build: configuration only valid on Windows'
+        }
+    for property_name, exclude_reason in exclude.items():
         property_value = dct.pop(property_name, None)
         if property_value is not None:
-            logger.warning(
-                "Excluding {}={} as windows-only even it was set to default".format(
-                    property_name,
-                    property_value,
-                )
-            )
+            logger.warning(f"Excluding {property_name}={property_value} ({exclude_reason}) even it was set to default")
     return dct
 
 

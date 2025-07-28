@@ -57,6 +57,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
                                     before the first message sending.
         """
         self._mapping = mapping or {}
+        self._registered: set[TopicName] = set()
 
         # ToDo (tribunsky.kir): look like wrong place. Maybe it's better to highlight an entity
         #                       of Schema which may be checked or not. Then input mapping may be eliminated (or not).
@@ -117,6 +118,7 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
                 assert key_descr is not None
                 if not key_descr.empty:
                     self._check_schema(topic, key_descr, is_key=True)
+        self._registered.add(topic)
 
     def send_message(  # noqa: D102,WPS211 # inherited from superclass.
         self,
@@ -130,6 +132,8 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
         protocol_id: Optional[int] = None,
         **kwargs: Any,
     ) -> None:
+        if topic not in self._registered:
+            raise ValueError(f"Topic {topic} not registered while producing the message.")
         if protocol_id is None:
             protocol_id = self._protocol_id
         encoded_value = self._encode(topic, value, protocol_id)

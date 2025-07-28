@@ -44,8 +44,8 @@ def test_avro_producer_create_schema(sr_root_create: Path, topic: str, schema_de
 
     [message] = test_producer.sent
 
-    assert message.key is None
-    assert message.value == b"\x00\x00\x00\x00\x14\x02\x00\xcc\xb8\xeb\xa6\x80_"
+    assert message.key() is None
+    assert message.value() == b"\x00\x00\x00\x00\x14\x02\x00\xcc\xb8\xeb\xa6\x80_"
 
 
 def test_avro_producer_existing_schema(
@@ -72,8 +72,8 @@ def test_avro_producer_existing_schema(
 
     [message] = test_producer.sent
 
-    assert message.key is None
-    assert message.value == b"\x00\x00\x00\x00\x14\x02\x00\xcc\xb8\xeb\xa6\x80_"
+    assert message.key() is None
+    assert message.value() == b"\x00\x00\x00\x00\x14\x02\x00\xcc\xb8\xeb\xa6\x80_"
 
 
 def test_avro_producer_update_schema(
@@ -100,5 +100,5 @@ def test_avro_producer_update_schema(
 
     [message] = test_producer.sent
 
-    assert message.key is None
-    assert message.value == b"\x00\x00\x00\x00\x15\x02\x00\xcc\xb8\xeb\xa6\x80_\x00\x00\x08test"
+    assert message.key() is None
+    assert message.value() == b"\x00\x00\x00\x00\x15\x02\x00\xcc\xb8\xeb\xa6\x80_\x00\x00\x08test"
