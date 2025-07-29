@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.19.1 (2025-08-30)
+
+- excluded `sasl.kerberos.min.time.before.relogin` from the dumped config propagated to confluent-kafka for windows runs
+
 ## v0.19.0 (2025-07-29)
 
 ### Maintenance
