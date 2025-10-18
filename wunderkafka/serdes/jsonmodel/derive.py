@@ -12,8 +12,9 @@ class JSONClosedModelGenerator(GenerateJsonSchema):
         ref_template: str = DEFAULT_REF_TEMPLATE,
         *,
         evolvable: bool = True,
+        **kwargs,
     ) -> None:
-        super().__init__(by_alias, ref_template)
+        super().__init__(by_alias, ref_template, **kwargs)
         self.__evolvable = evolvable
 
     def generate(self, schema: CoreSchema, mode: JsonSchemaMode = "validation") -> JsonSchemaValue:
