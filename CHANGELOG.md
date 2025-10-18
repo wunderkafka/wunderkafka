@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.20.0 (2025-10-18)
+
+## Bugfixes
+
+- fixed ValueError when checking librdkafka version [link](https://github.com/wunderkafka/wunderkafka/issues/30)
+
+### Maintenance
+
+- generated type safe configs for librdkafka 2.12
+
 ## v0.19.0 (2025-07-29)
 
 ### Maintenance
