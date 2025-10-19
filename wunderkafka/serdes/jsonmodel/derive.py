@@ -4,6 +4,10 @@ from pydantic import BaseModel
 from pydantic_core import CoreSchema
 from pydantic.json_schema import DEFAULT_REF_TEMPLATE, JsonSchemaMode, JsonSchemaValue, GenerateJsonSchema
 
+from wunderkafka.compat import ParamSpec
+
+P = ParamSpec("P")
+
 
 class JSONClosedModelGenerator(GenerateJsonSchema):
     def __init__(
@@ -12,8 +16,11 @@ class JSONClosedModelGenerator(GenerateJsonSchema):
         ref_template: str = DEFAULT_REF_TEMPLATE,
         *,
         evolvable: bool = True,
+        # bug https://github.com/python/typing/discussions/1286 or not,
+        # but in the new version of python should work something like **P w/o ParamSpec definition
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
     ) -> None:
-        super().__init__(by_alias, ref_template)
+        super().__init__(by_alias, ref_template, **kwargs)
         self.__evolvable = evolvable
 
     def generate(self, schema: CoreSchema, mode: JsonSchemaMode = "validation") -> JsonSchemaValue:

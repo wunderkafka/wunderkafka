@@ -34,3 +34,5 @@ if librdkafka.__version__ >= (2, 10, 0):
     from wunderkafka.config.generated.v2_10_0.enums import *  # type: ignore[assignment]
 if librdkafka.__version__ >= (2, 11, 0):
     from wunderkafka.config.generated.v2_11_0.enums import *  # type: ignore[assignment]
+if librdkafka.__version__ >= (2, 12, 0):
+    from wunderkafka.config.generated.v2_12_0.enums import *  # type: ignore[assignment]
