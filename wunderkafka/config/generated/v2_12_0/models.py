@@ -55,6 +55,8 @@ class RDKafkaConfig(BaseSettings):
     enable_ssl_certificate_verification: bool = True
     enabled_events: int = Field(ge=0, le=2147483647, default=0)
     error_cb: Optional[Callable] = None
+    https_ca_location: Optional[str] = None
+    https_ca_pem: Optional[str] = None
     interceptors: Optional[Callable] = None
     internal_termination_signal: int = Field(ge=0, le=128, default=0)
     # confluent-kafka-python does not use log_cb, it uses logger instead
@@ -69,6 +71,7 @@ class RDKafkaConfig(BaseSettings):
     message_max_bytes: int = Field(ge=1000, le=1000000000, default=1000000)
     metadata_broker_list: Optional[str] = None
     metadata_max_age_ms: int = Field(ge=1, le=86400000, default=900000)
+    metadata_recovery_rebootstrap_trigger_ms: int = Field(ge=0, le=2147483647, default=300000)
     metadata_recovery_strategy: enums.MetadataRecoveryStrategy = enums.MetadataRecoveryStrategy.rebootstrap
     oauth_cb: Optional[Callable] = None
     oauthbearer_token_refresh_cb: Optional[Callable] = None
@@ -90,10 +93,26 @@ class RDKafkaConfig(BaseSettings):
     # ToDo (tribunsky.kir): rethink using aliases? They may need simultaneous validation or may be injected via dict()
     # It is just alias, but when setting it manually it may misbehave with current defaults.
     # sasl_mechanisms: str = 'GSSAPI'
+    sasl_oauthbearer_assertion_algorithm: enums.SaslOauthbearerAssertionAlgorithm = enums.SaslOauthbearerAssertionAlgorithm.RS256
+    sasl_oauthbearer_assertion_claim_aud: Optional[str] = None
+    sasl_oauthbearer_assertion_claim_exp_seconds: int = Field(ge=1, le=2147483647, default=300)
+    sasl_oauthbearer_assertion_claim_iss: Optional[str] = None
+    sasl_oauthbearer_assertion_claim_jti_include: bool = False
+    sasl_oauthbearer_assertion_claim_nbf_seconds: int = Field(ge=0, le=2147483647, default=60)
+    sasl_oauthbearer_assertion_claim_sub: Optional[str] = None
+    sasl_oauthbearer_assertion_file: Optional[str] = None
+    sasl_oauthbearer_assertion_jwt_template_file: Optional[str] = None
+    sasl_oauthbearer_assertion_private_key_file: Optional[str] = None
+    sasl_oauthbearer_assertion_private_key_passphrase: Optional[str] = None
+    sasl_oauthbearer_assertion_private_key_pem: Optional[str] = None
+    sasl_oauthbearer_client_credentials_client_id: Optional[str] = None
+    sasl_oauthbearer_client_credentials_client_secret: Optional[str] = None
     sasl_oauthbearer_client_id: Optional[str] = None
     sasl_oauthbearer_client_secret: Optional[str] = None
     sasl_oauthbearer_config: Optional[str] = None
     sasl_oauthbearer_extensions: Optional[str] = None
+    sasl_oauthbearer_grant_type: enums.SaslOauthbearerGrantType = enums.SaslOauthbearerGrantType.client_credentials
+    sasl_oauthbearer_metadata_authentication_type: enums.SaslOauthbearerMetadataAuthenticationType = enums.SaslOauthbearerMetadataAuthenticationType.none
     sasl_oauthbearer_method: enums.SaslOauthbearerMethod = enums.SaslOauthbearerMethod.default
     sasl_oauthbearer_scope: Optional[str] = None
     sasl_oauthbearer_token_endpoint_url: Optional[str] = None
@@ -104,7 +123,7 @@ class RDKafkaConfig(BaseSettings):
     socket_connection_setup_timeout_ms: int = Field(ge=1000, le=2147483647, default=30000)
     socket_keepalive_enable: bool = False
     socket_max_fails: int = Field(ge=0, le=1000000, default=1)
-    socket_nagle_disable: bool = False
+    socket_nagle_disable: bool = True
     socket_receive_buffer_bytes: int = Field(ge=0, le=100000000, default=0)
     socket_send_buffer_bytes: int = Field(ge=0, le=100000000, default=0)
     socket_timeout_ms: int = Field(ge=10, le=300000, default=60000)

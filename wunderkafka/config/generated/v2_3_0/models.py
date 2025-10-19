@@ -6,9 +6,9 @@
 ########### THIS FILE IS GENERATED, DO NOT EDIT MANUALLY!!! ##########
 ######################################################################
 
+from logging import Logger
 from typing import Callable, Optional, Union
 
-from logging import Logger
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
