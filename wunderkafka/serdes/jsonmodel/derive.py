@@ -3,6 +3,9 @@ import json
 from pydantic import BaseModel
 from pydantic_core import CoreSchema
 from pydantic.json_schema import DEFAULT_REF_TEMPLATE, JsonSchemaMode, JsonSchemaValue, GenerateJsonSchema
+from wunderkafka.compat import ParamSpec
+
+P = ParamSpec("P")
 
 
 class JSONClosedModelGenerator(GenerateJsonSchema):
@@ -12,7 +15,7 @@ class JSONClosedModelGenerator(GenerateJsonSchema):
         ref_template: str = DEFAULT_REF_TEMPLATE,
         *,
         evolvable: bool = True,
-        **kwargs,
+        **kwargs: P.kwargs,
     ) -> None:
         super().__init__(by_alias, ref_template, **kwargs)
         self.__evolvable = evolvable
