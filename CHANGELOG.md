@@ -10,6 +10,7 @@
 
 - fixed ValueError when checking librdkafka version [issue](https://github.com/wunderkafka/wunderkafka/issues/30)
 - fixed TypeError when trying to instantiate JSONClosedModelGenerator with new pydantic versions [issue](https://github.com/wunderkafka/wunderkafka/issues/29)
+- excluded `sasl.kerberos.min.time.before.relogin` from the dumped config propagated to confluent-kafka for windows runs
 
 ## v0.19.0 (2025-07-29)
 

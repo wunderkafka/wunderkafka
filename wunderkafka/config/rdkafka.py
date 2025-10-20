@@ -45,7 +45,12 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
             #   ...
             #   "Configuration property "sasl.kerberos.kinit.cmd" not supported in this build: Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI"
             #  }
-            "sasl.kerberos.kinit.cmd": "Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI"
+            "sasl.kerberos.kinit.cmd": "Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI",
+            # cimpl.KafkaException: KafkaError{
+            #   ...
+            #   "Configuration property "sasl.kerberos.min.time.before.relogin" not supported in this build: Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI"
+            #   }
+            "sasl.kerberos.min.time.before.relogin": "Kerberos keytabs are not supported on Windows, instead the logged on user's credentials are used through native SSPI",
         }
     else:
         exclude = {
