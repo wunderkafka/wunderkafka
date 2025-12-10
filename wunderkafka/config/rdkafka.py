@@ -60,6 +60,13 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
             #  }
             "ssl.ca.certificate.stores": 'Configuration property "ssl.ca.certificate.stores" not supported in this build: configuration only valid on Windows'
         }
+
+    if dct.get('transactional.id') is not None:
+        dct['enable.idempotence'] = True
+        dct['max.in.flight'] = min(dct['max.in.flight'], 5)
+        dct['max.in.flight.requests.per.connection'] = min(dct['max.in.flight.requests.per.connection'],
+                                                           dct['max.in.flight'])
+        dct['message.timeout.ms'] = min(dct['message.timeout.ms'], dct['transaction.timeout.ms'])
     for property_name, exclude_reason in exclude.items():
         property_value = dct.pop(property_name, None)
         if property_value is not None:

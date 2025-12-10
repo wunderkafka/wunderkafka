@@ -89,6 +89,15 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
             else:
                 self.set_target_topic(topic, description, lazy=lazy)
 
+    @property
+    def transaction_ready(self) -> bool:
+        """Returns True if init_transactions() has already been called and False otherwise."""
+        return self._producer.transaction_ready
+
+    def prepare_transactions(self) -> None:
+        """Call init_transactions() and set internal flag to indicate that it has been called."""
+        self._producer.prepare_transactions()
+
     def flush(self, timeout: Optional[float] = None) -> int:  # noqa: D102 # docstring inherited from superclass.
         if timeout is None:
             return self._producer.flush()

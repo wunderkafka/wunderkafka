@@ -22,6 +22,16 @@ T = TypeVar("T")
 class AbstractProducer(Producer):
     """Extension point for the original Producer API."""
 
+    @property
+    def transaction_ready(self) -> bool:
+        """Returns True if init_transactions() has already been called and False otherwise."""
+        return getattr(self, "__transaction_ready", False) is True
+
+    def prepare_transactions(self) -> None:
+        """Call init_transactions() and set internal flag to indicate that it has been called."""
+        self.init_transactions()
+        setattr(self, "__transaction_ready", True)
+
     # TODO (tribunsky.kir): rethink API?
     #                       https://github.com/severstal-digital/wunderkafka/issues/91
     # https://github.com/python/mypy/issues/13966
@@ -58,6 +68,17 @@ class AbstractProducer(Producer):
 
 class AbstractSerializingProducer(ABC):
     """High-level interface for extended producer."""
+
+    @property
+    @abstractmethod
+    def transaction_ready(self) -> bool:
+        """Returns True if init_transactions() has already been called and False otherwise."""
+        ...
+
+    @abstractmethod
+    def prepare_transactions(self) -> None:
+        """Call init_transactions() and set internal flag to indicate that it has been called."""
+        ...
 
     @abstractmethod
     # https://github.com/python/mypy/issues/13966
