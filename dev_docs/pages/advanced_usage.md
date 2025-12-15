@@ -51,8 +51,8 @@ instead of schema registry and write own header (un)packer.
 
 ## Exactly-once semantics
 
-Sometimes you need to be sure that each message is sent and delivered exactly once. You
-can achieve this with exactly-once semantics. And we give you a simple way to do this!
+Confluent Kafka and librdkafka support exactly-once semantics (EOS) in Kafka (transaction API). 
+Wunderkafka provides its own simple facade for using it.
 
 ```python
 {!../examples/eos/producer_and_consumer.py!}
