@@ -227,7 +227,11 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
     def consumer_group_metadata(self) -> object:
         return self.consumer_group_metadata()
 
-    def assignment(self, *args: P.args, **kwargs: P.kwargs) -> list[TopicPartition]:
+    def assignment(
+        self,
+        *args: P.args,  # type: ignore[valid-type]
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
+    ) -> list[TopicPartition]:
         return self.consumer.assignment(*args, **kwargs)
 
     def position(self, partitions: list[TopicPartition]) -> list[TopicPartition]:

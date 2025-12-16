@@ -129,7 +129,11 @@ class AbstractDeserializingConsumer(ABC):
         """
 
     @abstractmethod
-    def assignment(self, *args: P.args, **kwargs: P.kwargs) -> list[TopicPartition]:
+    def assignment(
+        self,
+        *args: P.args,  # type: ignore[valid-type]
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
+    ) -> list[TopicPartition]:
         """
         Returns the current partition assignment.
 
