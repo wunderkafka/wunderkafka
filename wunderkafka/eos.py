@@ -19,8 +19,7 @@ class EOSTransaction:
         if not self.producer.transaction_ready:
             logger.debug("Initializing transactions for the producer.")
             self.producer.prepare_transactions()
-        self.producer.begin_transaction()
-        self.producer.poll(0)
+        self.producer.start_transaction()
         return self
 
     def _abort(self) -> None:
