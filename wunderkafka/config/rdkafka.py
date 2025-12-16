@@ -73,12 +73,12 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
             logger.warning(
                 f"Adjusting {max_in_flight} from {max_in_flight_value} to 5 to be compatible with exactly-once semantics"
             )
-            dct[max_in_flight] = 5
+            dct[max_in_flight] = max_in_flight_value = 5
 
         max_in_flight_requests_per_connection = "max.in.flight.requests.per.connection"
         max_in_flight_requests_per_connection_value = dct.get(max_in_flight_requests_per_connection)
         if (
-            isinstance(max_in_flight_requests_per_connection_value, int)
+            isinstance(max_in_flight_requests_per_connection_value, int | float)
             and isinstance(max_in_flight_value, int)
             and max_in_flight_requests_per_connection_value > max_in_flight_value
         ):
