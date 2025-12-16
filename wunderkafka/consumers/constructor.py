@@ -14,12 +14,12 @@ from confluent_kafka import Message, TopicPartition
 from confluent_kafka.serialization import MessageField, SerializationError, SerializationContext
 
 from wunderkafka.types import HeaderParser
+from wunderkafka.compat import ParamSpec
 from wunderkafka.logger import logger
 from wunderkafka.serdes.abc import AbstractDeserializer
 from wunderkafka.structures import SchemaMeta, SerializerSchemaDescription
 from wunderkafka.consumers.abc import AbstractConsumer, AbstractDeserializingConsumer
 from wunderkafka.consumers.types import PayloadError, StreamResult
-from wunderkafka.compat import ParamSpec
 from wunderkafka.schema_registry.abc import AbstractSchemaRegistry
 from wunderkafka.consumers.subscription import TopicSubscription
 

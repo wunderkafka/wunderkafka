@@ -101,18 +101,18 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
     def start_transaction(self, poll_timeout: float = 0.0) -> None:
         self._producer.start_transaction(poll_timeout)
 
-    def commit_transaction(self, timeout: float | None = None) -> None:
+    def commit_transaction(self, timeout: Optional[float] = None) -> None:
         if timeout is not None:
             self._producer.commit_transaction(timeout)
         self._producer.commit_transaction()
 
-    def abort_transaction(self, timeout: float | None = None) -> None:
+    def abort_transaction(self, timeout: Optional[float] = None) -> None:
         if timeout is not None:
             self._producer.abort_transaction(timeout)
         self._producer.abort_transaction()
 
     def send_offsets_to_transaction(
-        self, offsets: list[TopicPartition], group_metadata: object, timeout: float | None = None
+        self, offsets: list[TopicPartition], group_metadata: object, timeout: Optional[float] = None
     ) -> None:
         self._producer.send_offsets_to_transaction(offsets, group_metadata, timeout)
 

@@ -13,8 +13,8 @@ from abc import ABC, abstractmethod
 from confluent_kafka import Message, Consumer, TopicPartition
 
 from wunderkafka.types import HowToSubscribe
-from wunderkafka.config import ConsumerConfig
 from wunderkafka.compat import ParamSpec
+from wunderkafka.config import ConsumerConfig
 from wunderkafka.consumers.subscription import TopicSubscription
 
 P = ParamSpec("P")
