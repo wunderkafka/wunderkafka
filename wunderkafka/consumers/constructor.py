@@ -8,7 +8,7 @@ All moving parts should be interchangeable in terms of schema, header and serial
 """
 
 import datetime
-from typing import Any, Union, TypeVar, Optional, ParamSpec
+from typing import Any, Union, TypeVar, Optional
 
 from confluent_kafka import Message, TopicPartition
 from confluent_kafka.serialization import MessageField, SerializationError, SerializationContext
@@ -19,6 +19,7 @@ from wunderkafka.serdes.abc import AbstractDeserializer
 from wunderkafka.structures import SchemaMeta, SerializerSchemaDescription
 from wunderkafka.consumers.abc import AbstractConsumer, AbstractDeserializingConsumer
 from wunderkafka.consumers.types import PayloadError, StreamResult
+from wunderkafka.compat import ParamSpec
 from wunderkafka.schema_registry.abc import AbstractSchemaRegistry
 from wunderkafka.consumers.subscription import TopicSubscription
 

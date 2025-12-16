@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import datetime
 from abc import ABC, abstractmethod
-from typing import ParamSpec
 
 from confluent_kafka import Message, Consumer, TopicPartition
 
 from wunderkafka.types import HowToSubscribe
 from wunderkafka.config import ConsumerConfig
+from wunderkafka.compat import ParamSpec
 from wunderkafka.consumers.subscription import TopicSubscription
 
 P = ParamSpec("P")
