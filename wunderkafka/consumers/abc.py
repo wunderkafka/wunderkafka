@@ -9,12 +9,15 @@ from __future__ import annotations
 
 import datetime
 from abc import ABC, abstractmethod
+from typing import ParamSpec
 
 from confluent_kafka import Message, Consumer, TopicPartition
 
 from wunderkafka.types import HowToSubscribe
 from wunderkafka.config import ConsumerConfig
 from wunderkafka.consumers.subscription import TopicSubscription
+
+P = ParamSpec("P")
 
 
 class AbstractConsumer(Consumer):
@@ -115,4 +118,39 @@ class AbstractDeserializingConsumer(ABC):
         :param offset:          If set, will return an Offset object.
         :param ts:              If set, will return Timestamp.
         :param with_timedelta:  If set, will calculate timestamp for corresponding timedelta.
+        """
+
+    @abstractmethod
+    def consumer_group_metadata(self) -> object:
+        """
+        This method overlaps the original consumer's method and will use the nested consumer.
+        :return: An opaque object representing the consumer's current group metadata for passing to the transactional
+        producer's send_offsets_to_transaction() API.
+        """
+
+    @abstractmethod
+    def assignment(self, *args: P.args, **kwargs: P.kwargs) -> list[TopicPartition]:
+        """
+        Returns the current partition assignment.
+
+        This method overlaps the original consumer's method and will use the nested consumer.
+
+        :return:                List of assigned topic+partitions.
+        :raises KafkaException:
+        :raises RuntimeError:   if called on a closed consumer
+        """
+
+    @abstractmethod
+    def position(self, partitions: list[TopicPartition]) -> list[TopicPartition]:
+        """
+        Retrieve current positions (offsets) for the specified partitions.
+
+        This method overlaps the original consumer's method and will use the nested consumer.
+
+        :param partitions:      List of topic+partitions to return current offsets for. The current offset is
+                                the offset of the last consumed message + 1.
+        :return:                List of topic+partitions with offset and possibly error set.
+
+        :raises KafkaException:
+        :raises RuntimeError:   if called on a closed consumer
         """
