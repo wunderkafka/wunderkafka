@@ -114,7 +114,9 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
     def send_offsets_to_transaction(
         self, offsets: list[TopicPartition], group_metadata: object, timeout: Optional[float] = None
     ) -> None:
-        self._producer.send_offsets_to_transaction(offsets, group_metadata, timeout)
+        if timeout is not None:
+            self._producer.send_offsets_to_transaction(offsets, group_metadata, timeout)
+        self._producer.send_offsets_to_transaction(offsets, group_metadata)
 
     def flush(self, timeout: Optional[float] = None) -> int:  # noqa: D102 # docstring inherited from superclass.
         if timeout is None:

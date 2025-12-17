@@ -225,7 +225,7 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
         return self._key_deserializer if is_key else self._value_deserializer
 
     def consumer_group_metadata(self) -> object:
-        return self.consumer_group_metadata()
+        return self.consumer.consumer_group_metadata()
 
     def assignment(
         self,
