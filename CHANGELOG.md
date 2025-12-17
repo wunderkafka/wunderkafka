@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.21.0 (2025-12-17)
+
+### Features
+
+- Exactly-Once Semantics implementation (Kafka transactions)
+
 ## v0.20.0 (2025-10-18)
 
 ### Features

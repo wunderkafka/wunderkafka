@@ -9,6 +9,8 @@ All moving parts should be interchangeable in terms of schema, header and serial
 
 from typing import Any, Optional
 
+from confluent_kafka import TopicPartition
+
 from wunderkafka.types import MsgKey, MsgValue, TopicName, HeaderPacker, DeliveryCallback, MessageDescription
 from wunderkafka.logger import logger
 from wunderkafka.serdes.abc import AbstractSerializer, AbstractDescriptionStore
@@ -88,6 +90,33 @@ class HighLevelSerializingProducer(AbstractSerializingProducer):
                 self.set_target_topic(topic, msg_value, msg_key, lazy=lazy)
             else:
                 self.set_target_topic(topic, description, lazy=lazy)
+
+    @property
+    def transaction_ready(self) -> bool:
+        return self._producer.transaction_ready
+
+    def prepare_transactions(self) -> None:
+        self._producer.prepare_transactions()
+
+    def start_transaction(self, poll_timeout: float = 0.0) -> None:
+        self._producer.start_transaction(poll_timeout)
+
+    def commit_transaction(self, timeout: Optional[float] = None) -> None:
+        if timeout is not None:
+            self._producer.commit_transaction(timeout)
+        self._producer.commit_transaction()
+
+    def abort_transaction(self, timeout: Optional[float] = None) -> None:
+        if timeout is not None:
+            self._producer.abort_transaction(timeout)
+        self._producer.abort_transaction()
+
+    def send_offsets_to_transaction(
+        self, offsets: list[TopicPartition], group_metadata: object, timeout: Optional[float] = None
+    ) -> None:
+        if timeout is not None:
+            self._producer.send_offsets_to_transaction(offsets, group_metadata, timeout)
+        self._producer.send_offsets_to_transaction(offsets, group_metadata)
 
     def flush(self, timeout: Optional[float] = None) -> int:  # noqa: D102 # docstring inherited from superclass.
         if timeout is None:

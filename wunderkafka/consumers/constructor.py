@@ -14,6 +14,7 @@ from confluent_kafka import Message, TopicPartition
 from confluent_kafka.serialization import MessageField, SerializationError, SerializationContext
 
 from wunderkafka.types import HeaderParser
+from wunderkafka.compat import ParamSpec
 from wunderkafka.logger import logger
 from wunderkafka.serdes.abc import AbstractDeserializer
 from wunderkafka.structures import SchemaMeta, SerializerSchemaDescription
@@ -22,6 +23,7 @@ from wunderkafka.consumers.types import PayloadError, StreamResult
 from wunderkafka.schema_registry.abc import AbstractSchemaRegistry
 from wunderkafka.consumers.subscription import TopicSubscription
 
+P = ParamSpec("P")
 T = TypeVar("T")
 
 
@@ -221,3 +223,16 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
 
     def _get_deserializer(self, is_key: bool) -> AbstractDeserializer:
         return self._key_deserializer if is_key else self._value_deserializer
+
+    def consumer_group_metadata(self) -> object:
+        return self.consumer.consumer_group_metadata()
+
+    def assignment(
+        self,
+        *args: P.args,  # type: ignore[valid-type]
+        **kwargs: P.kwargs,  # type: ignore[valid-type]
+    ) -> list[TopicPartition]:
+        return self.consumer.assignment(*args, **kwargs)
+
+    def position(self, partitions: list[TopicPartition]) -> list[TopicPartition]:
+        return self.consumer.position(partitions)

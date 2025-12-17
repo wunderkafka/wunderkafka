@@ -60,6 +60,34 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
             #  }
             "ssl.ca.certificate.stores": 'Configuration property "ssl.ca.certificate.stores" not supported in this build: configuration only valid on Windows'
         }
+
+    if dct.get("transactional.id") is not None:
+        logger.info(
+            f"Transactional.id is set to {dct['transactional.id']}, enabling idempotence and adjusting related settings"
+        )
+        dct["enable.idempotence"] = True
+
+        max_in_flight = "max.in.flight"
+        max_in_flight_value = dct.get(max_in_flight)
+        if isinstance(max_in_flight_value, int) and max_in_flight_value > 5:
+            logger.warning(
+                f"Adjusting {max_in_flight} from {max_in_flight_value} to 5 to be compatible with exactly-once semantics"
+            )
+            dct[max_in_flight] = max_in_flight_value = 5
+
+        max_in_flight_requests_per_connection = "max.in.flight.requests.per.connection"
+        max_in_flight_requests_per_connection_value = dct.get(max_in_flight_requests_per_connection)
+        if (
+            isinstance(max_in_flight_requests_per_connection_value, int | float)
+            and isinstance(max_in_flight_value, int)
+            and max_in_flight_requests_per_connection_value > max_in_flight_value
+        ):
+            logger.warning(
+                f"Adjusting {max_in_flight_requests_per_connection} from {max_in_flight_requests_per_connection_value} "
+                f"to {max_in_flight_value} to be not greater than {max_in_flight}"
+            )
+            dct[max_in_flight_requests_per_connection] = max_in_flight_value
+
     for property_name, exclude_reason in exclude.items():
         property_value = dct.pop(property_name, None)
         if property_value is not None:

@@ -48,3 +48,19 @@ It's also simple enough to redefine every part of the (de)serializing
 pipeline with specific implementation. For example, if there is need to
 keep message's schema in message itself, it is possible to define stub
 instead of schema registry and write own header (un)packer.
+
+## Exactly-once semantics
+
+Confluent Kafka and librdkafka support exactly-once semantics (EOS) in Kafka (transaction API). 
+Wunderkafka provides its own simple facade for using it.
+
+```python
+{!../examples/eos/producer_and_consumer.py!}
+```
+
+It also can be used with producer only:
+
+
+```python
+{!../examples/eos/producer.py!}
+```
