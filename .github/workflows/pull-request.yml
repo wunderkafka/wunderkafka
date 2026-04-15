@@ -13,7 +13,7 @@ jobs:
         pydantic-settings-version: [ '~=2.7.0', '']
         # ToDo (tribunsky.kir): make avro extra too but do not forget to require requests in the sake of SRs
         dataclasses-avroschema-version: [ '==0.53.0', '~=0.53.0', '==0.54.0', '~=0.60.0', '']
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12']
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
       - name: Checkout
@@ -47,9 +47,7 @@ jobs:
           uv pip install -U mypy==1.15.0
       - name: run mypy
         run: |
-          PY="${{ matrix.python-version }}"
-          if [ "$PY" = "3.9" ]; then PY="3.10"; fi
-          uv run mypy --python-version "$PY" --config pyproject.toml .
+          uv run mypy --python-version "${{ matrix.python-version }}" --config pyproject.toml .
       - name: run ruff
         run: uv run ruff check wunderkafka tests
 
@@ -60,7 +58,7 @@ jobs:
       matrix:
         pydantic-settings-version: ['~=2.0.0', '']
         dataclasses-avroschema-version: [ '==0.53.0', '~=0.53.0', '==0.54.0', '~=0.60.0','']
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12']
         requests-kerberos-version: ['==0.13.0']
         confluent-kafka-version: ['~=1.9.0', '~=2.5.3', '']
     container: python:${{ matrix.python-version }}-slim-bookworm

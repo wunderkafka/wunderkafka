@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import time
-from typing import Union, Generic, TypeVar, Optional
+from typing import Generic, TypeVar, Optional
 
 from pydantic import Field, BaseModel, ConfigDict, model_validator
 from confluent_kafka import Message
@@ -21,9 +21,7 @@ class StreamResult(BaseModel, Generic[T]):
 
     payload: Optional[T] = None
     error: Optional[PayloadError] = None
-    # not via `|`, because pydantic raises TypeError in python 3.9 without `eval_type_backport` package despite
-    # `from __future__ import annotations`
-    msg: Union[Message, MessageProtocol]
+    msg: Message | MessageProtocol
     t0: float = Field(default_factory=time.perf_counter)
 
     @property
