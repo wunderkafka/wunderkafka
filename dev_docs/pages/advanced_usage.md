@@ -51,7 +51,7 @@ instead of schema registry and write own header (un)packer.
 
 ## Exactly-once semantics
 
-Confluent Kafka and librdkafka support exactly-once semantics (EOS) in Kafka (transaction API). 
+Confluent Kafka and librdkafka support exactly-once semantics (EOS) in Kafka (transaction API).
 Wunderkafka provides its own simple facade for using it.
 
 ```python
