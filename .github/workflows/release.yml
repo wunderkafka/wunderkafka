@@ -17,7 +17,7 @@ jobs:
     steps:
     - name: Install packaging dependencies
       run: pip install build
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: sed version
       run: |
         echo "Got version from vcs: ${{ github.ref_name }}"
@@ -36,7 +36,7 @@ jobs:
       pages: write
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
