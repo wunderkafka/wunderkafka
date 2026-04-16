@@ -40,16 +40,18 @@ jobs:
               uv pip install pydantic-settings${{ matrix.pydantic-settings-version }}
               uv pip install dataclasses-avroschema[pydantic]${{ matrix.dataclasses-avroschema-version }}
           fi
+      - name: Install project without re-resolving deps
+        run: uv pip install --no-deps .
       - name: run pytest
-        run: uv run pytest -s tests/
+        run: uv run --no-sync pytest -s tests/
       - name: Install dependencies
         run: |
           uv pip install -U mypy==1.15.0
       - name: run mypy
         run: |
-          uv run mypy --python-version "${{ matrix.python-version }}" --config pyproject.toml .
+          uv run --no-sync mypy --python-version "${{ matrix.python-version }}" --config pyproject.toml .
       - name: run ruff
-        run: uv run ruff check wunderkafka tests
+        run: uv run --no-sync ruff check wunderkafka tests
 
   checks:
     needs: [independent]
@@ -93,8 +95,10 @@ jobs:
             uv pip install requests-kerberos${{ matrix.requests-kerberos-version }}
             uv pip install confluent-kafka[avro]${{ matrix.confluent-kafka-version }}
         fi
+    - name: Install project without re-resolving deps
+      run: uv pip install --no-deps .
     - name: run pytest
-      run: uv run pytest -s tests/
+      run: uv run --no-sync pytest -s tests/
 
   version:
     runs-on: ubuntu-latest
