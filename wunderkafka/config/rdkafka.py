@@ -88,10 +88,6 @@ def sanitize(dct: dict[str, ConfigValues]) -> dict[str, ConfigValues]:
             )
             dct[max_in_flight_requests_per_connection] = max_in_flight_value
 
-    # builtin.features describes the build, not a user setting.
-    # Passing the doc default triggers validation against missing compile-time features (e.g. http w/o libcurl).
-    exclude["builtin.features"] = "build-time descriptor, not a user setting"
-
     for property_name, exclude_reason in exclude.items():
         property_value = dct.pop(property_name, None)
         if property_value is not None:
