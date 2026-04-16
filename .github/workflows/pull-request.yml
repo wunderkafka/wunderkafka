@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v8.0.0
       - name: Set up uv venv
         run: |
           uv sync --only-dev
@@ -66,7 +66,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v5
     - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      uses: astral-sh/setup-uv@v8.0.0
     - name: Set up uv venv
       run: |
         uv sync --only-dev
