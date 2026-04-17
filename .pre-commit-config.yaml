@@ -12,21 +12,22 @@ repos:
       - id: ruff-format
         name: ruff-format
         language: system
-        entry: uv run ruff format .
+        entry: uv run --locked ruff format .
         pass_filenames: false
       - id: ruff
         name: ruff
         language: system
-        entry: uv run ruff check --fix
+        entry: uv run --locked ruff check --fix
         pass_filenames: false
       - id: mypy
         name: mypy
-        language: python
-        entry: bash -c "mypy --config-file pyproject.toml ."
+        language: system
+        entry: bash -c "uv run --locked mypy --config-file pyproject.toml ."
+        pass_filenames: false
       - id: pytest-check
         name: pytest-check
         language: system
-        entry: uv run pytest
+        entry: uv run --locked pytest
         pass_filenames: false
         always_run: true
         args: [
@@ -37,4 +38,4 @@ repos:
         language: system
         pass_filenames: false
         entry: >-
-          sh -c 'output=$(uv run pip-audit --format=json 2>/tmp/pip-audit-err); rc=$?; if [ $rc -eq 0 ]; then exit 0; elif [ $rc -ne 1 ]; then cat /tmp/pip-audit-err; echo "$output"; exit $rc; fi; fixable=$(echo "$output" | jq -e ".dependencies[] | select(.vulns[]? .fix_versions[]?)") && { uv run pip-audit; exit $?; } || exit 0'
+          sh -c 'command -v jq >/dev/null 2>&1 || { echo "pip-audit hook requires jq"; exit 1; }; output=$(uv run --locked pip-audit --format=json 2>/tmp/pip-audit-err); rc=$?; if [ $rc -eq 0 ]; then exit 0; elif [ $rc -ne 1 ]; then cat /tmp/pip-audit-err; echo "$output"; exit $rc; fi; fixable=$(echo "$output" | jq -e ".dependencies[] | select(.vulns[]? .fix_versions[]?)") && { uv run --locked pip-audit; exit $?; } || exit 0'
