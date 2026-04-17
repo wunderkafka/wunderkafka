@@ -13,13 +13,13 @@ jobs:
         pydantic-settings-version: [ '~=2.7.0', '']
         # ToDo (tribunsky.kir): make avro extra too but do not forget to require requests in the sake of SRs
         dataclasses-avroschema-version: [ '==0.53.0', '~=0.53.0', '==0.54.0', '~=0.60.0', '']
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12']
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@v8.0.0
       - name: Set up uv venv
         run: |
           uv sync --only-dev
@@ -41,17 +41,15 @@ jobs:
               uv pip install dataclasses-avroschema[pydantic]${{ matrix.dataclasses-avroschema-version }}
           fi
       - name: run pytest
-        run: uv run pytest -s tests/
+        run: uv run --no-sync pytest -s tests/
       - name: Install dependencies
         run: |
           uv pip install -U mypy==1.15.0
       - name: run mypy
         run: |
-          PY="${{ matrix.python-version }}"
-          if [ "$PY" = "3.9" ]; then PY="3.10"; fi
-          uv run mypy --python-version "$PY" --config pyproject.toml .
+          uv run --no-sync mypy --python-version "${{ matrix.python-version }}" --config pyproject.toml .
       - name: run ruff
-        run: uv run ruff check wunderkafka tests
+        run: uv run --no-sync ruff check wunderkafka tests
 
   checks:
     needs: [independent]
@@ -60,15 +58,22 @@ jobs:
       matrix:
         pydantic-settings-version: ['~=2.0.0', '']
         dataclasses-avroschema-version: [ '==0.53.0', '~=0.53.0', '==0.54.0', '~=0.60.0','']
-        python-version: ['3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.10', '3.11', '3.12']
         requests-kerberos-version: ['==0.13.0']
-        confluent-kafka-version: ['~=1.9.0', '~=2.5.3', '']
+        confluent-kafka-version: ['~=2.0.0', '~=2.5.3', '~=2.12.0']
+        exclude:
+          # No cp312 wheel for confluent-kafka 2.0.x — pip falls back to sdist,
+          # which rebuilds bundled librdkafka. The CI container lacks libcurl-dev,
+          # so the resulting librdkafka has no http/oidc and rejects builtin.features
+          # at runtime. Not worth patching the CI image for a legacy version.
+          - python-version: '3.12'
+            confluent-kafka-version: '~=2.0.0'
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      uses: astral-sh/setup-uv@v8.0.0
     - name: Set up uv venv
       run: |
         uv sync --only-dev
@@ -96,7 +101,7 @@ jobs:
             uv pip install confluent-kafka[avro]${{ matrix.confluent-kafka-version }}
         fi
     - name: run pytest
-      run: uv run pytest -s tests/
+      run: uv run --no-sync pytest -s tests/
 
   version:
     runs-on: ubuntu-latest
@@ -104,7 +109,7 @@ jobs:
       tag: ${{ steps.get_tag.outputs.tag }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: '0'
       - name: Get git tag.
@@ -147,10 +152,10 @@ jobs:
       id-token: write
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Install packaging dependencies
       run: pip install build
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: sed version
       run: |
         echo "Got version from vcs: ${{ needs.version.outputs.tag }}"

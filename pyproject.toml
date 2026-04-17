@@ -16,7 +16,7 @@ classifiers = [
 ]
 authors = [{name = "Kirill Tribunsky", email = "tribunsky.kir@yandex.ru"}]
 urls = {"Homepage" = "https://github.com/wunderkafka/wunderkafka", "Bug Tracker" = "https://github.com/wunderkafka/wunderkafka/issues"}
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 dependencies = [
 	"confluent-kafka[schema-registry]>=1.9.0",
@@ -84,7 +84,7 @@ ignore_missing_imports = true
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version="py39"
+target-version="py310"
 exclude = [
 	"wunderkafka/config/generated/*",
 	"examples/*",
@@ -106,8 +106,8 @@ ignore = [
 [tool.ruff.lint.isort]
 length-sort = true
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "mypy>=1.15.0",
     "pytest-cov>=6.1.1",
     "ruff>=0.9.7",
