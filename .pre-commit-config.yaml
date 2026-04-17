@@ -22,7 +22,7 @@ repos:
       - id: mypy
         name: mypy
         language: system
-        entry: bash -c "uv run --locked mypy --config-file pyproject.toml ."
+        entry: uv run --locked mypy --config-file pyproject.toml .
         pass_filenames: false
       - id: pytest-check
         name: pytest-check
