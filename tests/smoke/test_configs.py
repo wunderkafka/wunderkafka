@@ -64,7 +64,13 @@ def dummy_oauth_cb(_: Any) -> tuple:
 
 
 def test_init_consumer_oauth_cb(boostrap_servers: str) -> None:
-    config = ConsumerConfig(group_id="my_group", bootstrap_servers=boostrap_servers, oauth_cb=dummy_oauth_cb)
+    config = ConsumerConfig(
+        group_id="my_group",
+        bootstrap_servers=boostrap_servers,
+        oauth_cb=dummy_oauth_cb,
+        security_protocol="sasl_plaintext",
+        sasl_mechanism="OAUTHBEARER",
+    )
     consumer = BytesConsumer(config)
     print(consumer)
 
@@ -79,7 +85,12 @@ def test_init_consumer_oauth_cb(boostrap_servers: str) -> None:
 
 
 def test_init_producer_oauth_cb(boostrap_servers: str) -> None:
-    config = ProducerConfig(bootstrap_servers=boostrap_servers, oauth_cb=dummy_oauth_cb)
+    config = ProducerConfig(
+        bootstrap_servers=boostrap_servers,
+        oauth_cb=dummy_oauth_cb,
+        security_protocol="sasl_plaintext",
+        sasl_mechanism="OAUTHBEARER",
+    )
     BytesProducer(config)
 
 
@@ -91,6 +102,8 @@ def test_init_consumer_log_cb(boostrap_servers: str) -> None:
         bootstrap_servers=boostrap_servers,
         oauth_cb=dummy_oauth_cb,
         logger=mylogger,
+        security_protocol="sasl_plaintext",
+        sasl_mechanism="OAUTHBEARER",
     )
     consumer = BytesConsumer(config)
     print(consumer)
@@ -108,5 +121,11 @@ def test_init_consumer_log_cb(boostrap_servers: str) -> None:
 def test_init_producer_log_cb(boostrap_servers: str) -> None:
     mylogger = logging.getLogger()
     mylogger.addHandler(logging.StreamHandler())
-    config = ProducerConfig(bootstrap_servers=boostrap_servers, oauth_cb=dummy_oauth_cb, logger=mylogger)
+    config = ProducerConfig(
+        bootstrap_servers=boostrap_servers,
+        oauth_cb=dummy_oauth_cb,
+        logger=mylogger,
+        security_protocol="sasl_plaintext",
+        sasl_mechanism="OAUTHBEARER",
+    )
     BytesProducer(config)
