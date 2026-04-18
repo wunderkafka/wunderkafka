@@ -60,7 +60,7 @@ def test_group_id_required() -> None:
 
 
 def dummy_oauth_cb(_: Any) -> tuple:
-    return "", int(time.time())
+    return "dummy-token", time.time() + 3600
 
 
 def test_init_consumer_oauth_cb(boostrap_servers: str) -> None:
