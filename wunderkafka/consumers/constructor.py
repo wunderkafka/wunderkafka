@@ -8,7 +8,7 @@ All moving parts should be interchangeable in terms of schema, header and serial
 """
 
 import datetime
-from typing import Any, Union, TypeVar, Optional
+from typing import Any, Union, TypeVar, Optional, cast
 
 from confluent_kafka import Message, TopicPartition
 from confluent_kafka.serialization import MessageField, SerializationError, SerializationContext
@@ -87,8 +87,8 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
         dt: Optional[datetime.datetime] = None,
         with_timedelta: Optional[datetime.timedelta] = None,
     ) -> None:
-        self.consumer.subscribe(
-            topics,
+        self.consumer.subscribe(  # type: ignore[call-arg]
+            topics,  # type: ignore[arg-type]
             from_beginning=from_beginning,
             offset=offset,
             ts=ts,
@@ -102,11 +102,11 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
         asynchronous: bool = True,
     ) -> Optional[list[TopicPartition]]:
         if message is None and offsets is not None:
-            return self.consumer.commit(offsets=offsets, asynchronous=asynchronous)
+            return self.consumer.commit(offsets=offsets, asynchronous=asynchronous)  # type: ignore[call-overload, no-any-return]
         if message is not None and offsets is None:
-            return self.consumer.commit(message=message, asynchronous=asynchronous)
+            return self.consumer.commit(message=message, asynchronous=asynchronous)  # type: ignore[call-overload, no-any-return]
         # Default behavior
-        return self.consumer.commit(message=message, offsets=offsets, asynchronous=asynchronous)
+        return self.consumer.commit(message=message, offsets=offsets, asynchronous=asynchronous)  # type: ignore[call-overload, no-any-return]
 
     def consume(
         self,
@@ -152,9 +152,10 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
                 logger.error(kafka_error)
                 if raise_on_error:
                     # Even PyCharm stubs show that it is inherited from an object, in fact it is a valid Exception
-                    raise kafka_error
+                    raise cast(BaseException, kafka_error)
 
             topic = msg.topic()
+            assert topic is not None
 
             raw_key_value = msg.key()
             decode_key_ok = True
@@ -168,7 +169,7 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
                 # KeyDeserializationError is inherited from SerializationError
                 except SerializationError:
                     decode_key_ok = False
-                    logger.error(f"Unable to decode key from bytes: {raw_key_value}")
+                    logger.error(f"Unable to decode key from bytes: {raw_key_value!r}")
                     if not ignore_keys:
                         raise
                 else:
@@ -177,14 +178,14 @@ class HighLevelDeserializingConsumer(AbstractDeserializingConsumer):
             try:
                 decoded_value = self._decode(topic, msg.value())
             except (SerializationError, ValueError) as exc:
-                logger.error(f"Unable to decode value from bytes: {msg.value()}")
+                logger.error(f"Unable to decode value from bytes: {msg.value()!r}")
                 if not self._stream_result:
                     raise
                 value_error = str(exc)
                 if decode_key_ok:
                     error = PayloadError(description=value_error)
                 else:
-                    message = f"Unable to decode key (topic: {topic}, key payload: {raw_key_value})"
+                    message = f"Unable to decode key (topic: {topic}, key payload: {raw_key_value!r})"
                     error = PayloadError(description=message)
                 results.append(StreamResult(payload=None, error=error, msg=msg))
             else:

@@ -61,7 +61,7 @@ class SchemaRegistryClient(ConfluentSchemaRegistryClient):
     def from_client(cls, http_client: AbstractHTTPClient, *args: P.args, **kwargs: P.kwargs) -> SchemaRegistryClient:  # type: ignore[valid-type]
         # Minimal initialization as we will override a client with our own
         client = cls({"url": http_client.base_url, **kwargs})
-        client._rest_client = SchemaRegistryHttpClientAdapter(http_client)
+        client._rest_client = SchemaRegistryHttpClientAdapter(http_client)  # type: ignore[assignment]
         return client
 
 
@@ -76,7 +76,9 @@ class ConfluentSRClient(AbstractSchemaRegistry):
         self.client = SchemaRegistryClient.from_client(http_client, *args, **kwargs)
 
     def get_schema_text(self, meta: SchemaMeta) -> str:
+        assert meta.header.schema_id is not None
         schema = self.client.get_schema(meta.header.schema_id)
+        assert schema.schema_str is not None
         return schema.schema_str
 
     def register_schema(self, topic: str, schema_text: str, schema_type: SchemaType, *, is_key: bool = True) -> SRMeta:

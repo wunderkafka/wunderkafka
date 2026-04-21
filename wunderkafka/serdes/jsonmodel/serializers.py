@@ -39,4 +39,7 @@ class JSONModelSerializer(AbstractSerializer):
             self._cache[schema] = JSONSerializer(schema, self._sr_client, pydantic_to_dict)
         serializer = self._cache[schema]
         field = MessageField.KEY if is_key else MessageField.VALUE
-        return serializer(obj, SerializationContext(topic, field))
+        assert topic is not None
+        result = serializer(obj, SerializationContext(topic, field))
+        assert result is not None
+        return result

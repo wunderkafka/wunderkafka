@@ -40,4 +40,7 @@ class JSONSerializer(AbstractSerializer):
             self._cache[schema] = JSONSchemaSerializer(schema, self._sr_client, self._to_dict)
         serializer = self._cache[schema]
         field = MessageField.KEY if is_key else MessageField.VALUE
-        return serializer(obj, SerializationContext(topic, field))
+        assert topic is not None
+        result = serializer(obj, SerializationContext(topic, field))
+        assert result is not None
+        return result
