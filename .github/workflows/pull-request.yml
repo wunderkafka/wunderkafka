@@ -13,6 +13,18 @@ jobs:
         pydantic-settings-version: [ '~=2.7.0', '']
         dataclasses-avroschema-version: [ '~=0.53.0', '~=0.60.0', '']
         python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        exclude:
+          # dataclasses-avroschema 0.53.x/0.60.x call issubclass(origin, typing.Annotated)
+          # in utils.is_annotated(), which raises TypeError on Python 3.13+. Fixed upstream
+          # in later versions — the unpinned cells still exercise 3.13/3.14 coverage.
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.60.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.60.0'
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
       - name: Checkout
@@ -77,6 +89,17 @@ jobs:
             confluent-kafka-version: '~=2.0.0'
           - python-version: '3.14'
             confluent-kafka-version: '~=2.5.3'
+          # dataclasses-avroschema 0.53.x/0.60.x call issubclass(origin, typing.Annotated)
+          # in utils.is_annotated(), which raises TypeError on Python 3.13+. Fixed upstream
+          # in later versions — the unpinned cells still exercise 3.13/3.14 coverage.
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.60.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.60.0'
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
     - name: Checkout
