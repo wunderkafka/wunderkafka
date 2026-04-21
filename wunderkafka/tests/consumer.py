@@ -11,7 +11,7 @@ class TestConsumer(BytesConsumer):
     def __init__(self, msgs: list[Message]) -> None:
         self._msgs = msgs
 
-    def subscribe(
+    def subscribe(  # type: ignore[override]
         self,
         topics: list[str | TopicSubscription],
         *,
@@ -23,7 +23,7 @@ class TestConsumer(BytesConsumer):
     ) -> None:
         pass
 
-    def batch_poll(
+    def batch_poll(  # type: ignore[override]
         self,
         timeout: float = 1.0,
         num_messages: int = 1000000,

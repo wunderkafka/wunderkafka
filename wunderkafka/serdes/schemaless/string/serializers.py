@@ -20,4 +20,6 @@ class StringSerializer(AbstractSerializer):
         *,
         is_key: Optional[bool] = None,
     ) -> bytes:
-        return self._serializer(payload, None)
+        result = self._serializer(payload, None)
+        assert result is not None
+        return result

@@ -1,5 +1,6 @@
 import re
 import json
+import inspect
 from typing import Any
 from dataclasses import is_dataclass
 
@@ -48,10 +49,10 @@ def derive(model_type: type[object], topic: str, *, is_key: bool = False) -> str
 
 
 def _extract_attributes(type_: type[object]) -> dict[str, Any]:
-    fields = vars(type_).get("__annotations__", {})
+    fields = inspect.get_annotations(type_)
     _, *parents = type_.mro()
     for base in parents:
-        new_fields = {**vars(base).get("__annotations__", {})}
+        new_fields = {**inspect.get_annotations(base)}
         # Currently it is `model_config: ClassVar[SettingsConfigDict]`
         # https://github.com/pydantic/pydantic-settings/blob/919a20b77527ecc1cd6eeb0a09ca22cc21486fb8/pydantic_settings/main.py#L166
         for field in ["__slots__", "klass", "metadata", "schema_def", "__config__", "model_config"]:

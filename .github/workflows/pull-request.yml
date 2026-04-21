@@ -11,9 +11,20 @@ jobs:
     strategy:
       matrix:
         pydantic-settings-version: [ '~=2.7.0', '']
-        # ToDo (tribunsky.kir): make avro extra too but do not forget to require requests in the sake of SRs
-        dataclasses-avroschema-version: [ '==0.53.0', '~=0.53.0', '==0.54.0', '~=0.60.0', '']
-        python-version: ['3.10', '3.11', '3.12']
+        dataclasses-avroschema-version: [ '~=0.53.0', '~=0.60.0', '~=0.65.7', '']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        exclude:
+          # dataclasses-avroschema 0.53.x/0.60.x call issubclass(origin, typing.Annotated)
+          # in utils.is_annotated(), which raises TypeError on Python 3.13+. Fixed upstream
+          # in later versions — the unpinned cells still exercise 3.13/3.14 coverage.
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.60.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.60.0'
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
       - name: Checkout
@@ -29,7 +40,7 @@ jobs:
           apt-get install -y librdkafka1
       - name: install confluent-kafka w/o SASL/SSL support
         run: |
-          uv pip install confluent-kafka[schemaregistry]~=2.7.0
+          uv pip install confluent-kafka[schemaregistry]~=2.14.0
       - name: Install testing dependencies
         run: |
           if uv pip install pytest pydantic-settings${{ matrix.pydantic-settings-version }} dataclasses-avroschema[pydantic]${{ matrix.dataclasses-avroschema-version }}; then
@@ -57,8 +68,8 @@ jobs:
     strategy:
       matrix:
         pydantic-settings-version: ['~=2.0.0', '']
-        dataclasses-avroschema-version: [ '==0.53.0', '~=0.53.0', '==0.54.0', '~=0.60.0','']
-        python-version: ['3.10', '3.11', '3.12']
+        dataclasses-avroschema-version: [ '~=0.53.0', '~=0.60.0', '~=0.65.7', '']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
         requests-kerberos-version: ['==0.13.0']
         confluent-kafka-version: ['~=2.0.0', '~=2.5.3', '~=2.12.0']
         exclude:
@@ -68,6 +79,27 @@ jobs:
           # at runtime. Not worth patching the CI image for a legacy version.
           - python-version: '3.12'
             confluent-kafka-version: '~=2.0.0'
+          # No cp313/cp314 wheels for confluent-kafka 2.0.x / 2.5.x — same sdist
+          # fallback problem as above.
+          - python-version: '3.13'
+            confluent-kafka-version: '~=2.0.0'
+          - python-version: '3.13'
+            confluent-kafka-version: '~=2.5.3'
+          - python-version: '3.14'
+            confluent-kafka-version: '~=2.0.0'
+          - python-version: '3.14'
+            confluent-kafka-version: '~=2.5.3'
+          # dataclasses-avroschema 0.53.x/0.60.x call issubclass(origin, typing.Annotated)
+          # in utils.is_annotated(), which raises TypeError on Python 3.13+. Fixed upstream
+          # in later versions — the unpinned cells still exercise 3.13/3.14 coverage.
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.13'
+            dataclasses-avroschema-version: '~=0.60.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.53.0'
+          - python-version: '3.14'
+            dataclasses-avroschema-version: '~=0.60.0'
     container: python:${{ matrix.python-version }}-slim-bookworm
     steps:
     - name: Checkout

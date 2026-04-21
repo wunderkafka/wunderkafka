@@ -73,7 +73,7 @@ class BytesConsumer(AbstractConsumer):
 
     # TODO (tribunsky.kir): do not override original API and wrap it in superclass
     #                       https://github.com/severstal-digital/wunderkafka/issues/93
-    def subscribe(  # noqa: PLR0913
+    def subscribe(  # type: ignore[override]  # noqa: PLR0913
         self,
         topics: list[str | TopicSubscription],
         *,
@@ -115,6 +115,6 @@ class BytesConsumer(AbstractConsumer):
             self.subscription_offsets = subscriptions
             # TODO (tribunsky.kir): avoid mutation of self.subscription_offset and remove it as a field
             #                       https://github.com/severstal-digital/wunderkafka/issues/87
-            super().subscribe(topics=list(self.subscription_offsets), on_assign=reset_partitions)
+            super().subscribe(topics=list(self.subscription_offsets), on_assign=reset_partitions)  # type: ignore[arg-type]
         else:
             super().subscribe(topics=list(subscriptions))

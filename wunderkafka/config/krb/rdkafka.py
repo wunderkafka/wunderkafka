@@ -1,7 +1,7 @@
 import time
 import subprocess
 
-from confluent_kafka import KafkaError
+from confluent_kafka import KafkaError, KafkaException
 
 from wunderkafka.logger import logger
 from wunderkafka.config.rdkafka import RDKafkaConfig
@@ -23,7 +23,7 @@ def config_requires_kerberos(config: RDKafkaConfig) -> bool:
     return config.security_protocol in {enums.SecurityProtocol.sasl_ssl, enums.SecurityProtocol.sasl_plaintext}
 
 
-def challenge_krb_arg(exc: KafkaError, config: RDKafkaConfig) -> RDKafkaConfig:
+def challenge_krb_arg(exc: KafkaException, config: RDKafkaConfig) -> RDKafkaConfig:
     """
     Check if we can just skip kerberos configuration which comes to RDKafkaConfig from documentation default.
 
