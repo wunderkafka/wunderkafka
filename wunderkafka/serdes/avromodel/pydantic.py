@@ -1,3 +1,4 @@
+import inspect
 from typing import Any, Final, Union, TypeVar, Optional, get_args
 
 try:
@@ -100,8 +101,9 @@ def _check_pydantic_service_fields(model_type: type[object]) -> None:
             # fragile, maybe it's better to check any of the fields
             is_just_a_base_model = model is BaseModel or model is BaseSettings
             if not is_just_a_base_model:
-                for field in vars(model).get("__annotations__", {}):
-                    is_real_config_dict = field == "model_config" and model.__annotations__[field] is ConfigDict
+                annotations = inspect.get_annotations(model)
+                for field in annotations:
+                    is_real_config_dict = field == "model_config" and annotations[field] is ConfigDict
                     if not is_real_config_dict:
                         all_annotations.add(field)
         has_protected_fields = all_annotations & PYDANTIC_PROTECTED_FIELDS

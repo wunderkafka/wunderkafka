@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
-from wunderkafka import SRConfig, BytesConsumer, BytesProducer, ConsumerConfig, ProducerConfig
+from wunderkafka import SRConfig, BytesConsumer, BytesProducer, ConsumerConfig, ProducerConfig, SecurityProtocol
 from tests.smoke.conftest import RawConfig
 
 
@@ -59,6 +59,11 @@ def test_group_id_required() -> None:
         ConsumerConfig()
 
 
+# confluent-kafka >= 2.13.0 blocks Consumer/Producer.__init__() in wait_for_oauth_token_set()
+# until the oauth_cb is invoked and rd_kafka_oauthbearer_set_token() succeeds. librdkafka only
+# invokes the refresh callback when SASL/OAUTHBEARER is the active mechanism — tests using
+# oauth_cb must therefore set security_protocol=sasl_plaintext and sasl_mechanism=OAUTHBEARER,
+# and the callback must return a non-empty token with a future expiry.
 def dummy_oauth_cb(_: Any) -> tuple:
     return "dummy-token", time.time() + 3600
 
@@ -68,7 +73,7 @@ def test_init_consumer_oauth_cb(boostrap_servers: str) -> None:
         group_id="my_group",
         bootstrap_servers=boostrap_servers,
         oauth_cb=dummy_oauth_cb,
-        security_protocol="sasl_plaintext",
+        security_protocol=SecurityProtocol.sasl_plaintext,
         sasl_mechanism="OAUTHBEARER",
     )
     consumer = BytesConsumer(config)
@@ -88,7 +93,7 @@ def test_init_producer_oauth_cb(boostrap_servers: str) -> None:
     config = ProducerConfig(
         bootstrap_servers=boostrap_servers,
         oauth_cb=dummy_oauth_cb,
-        security_protocol="sasl_plaintext",
+        security_protocol=SecurityProtocol.sasl_plaintext,
         sasl_mechanism="OAUTHBEARER",
     )
     BytesProducer(config)
@@ -102,7 +107,7 @@ def test_init_consumer_log_cb(boostrap_servers: str) -> None:
         bootstrap_servers=boostrap_servers,
         oauth_cb=dummy_oauth_cb,
         logger=mylogger,
-        security_protocol="sasl_plaintext",
+        security_protocol=SecurityProtocol.sasl_plaintext,
         sasl_mechanism="OAUTHBEARER",
     )
     consumer = BytesConsumer(config)
@@ -125,7 +130,7 @@ def test_init_producer_log_cb(boostrap_servers: str) -> None:
         bootstrap_servers=boostrap_servers,
         oauth_cb=dummy_oauth_cb,
         logger=mylogger,
-        security_protocol="sasl_plaintext",
+        security_protocol=SecurityProtocol.sasl_plaintext,
         sasl_mechanism="OAUTHBEARER",
     )
     BytesProducer(config)
