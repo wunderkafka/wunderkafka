@@ -65,7 +65,7 @@ Let's skip raw producer, as we can see all the benefits in AvroProducer too.
     `flush()`. Nothing is guaranteed if something sudden happens
     with the process, but manual close is also in danger in that case.
 -   less boilerplate with text schemas. You may also load it simply from
-    files (via specific "store"), but wait for a minute, you 
+    files (via specific "store"), but wait for a minute, you
     won't want to use them.
 
 ## AvroModelProducer
