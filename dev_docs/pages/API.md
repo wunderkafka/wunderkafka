@@ -53,11 +53,11 @@
 ## Mixed
 
 These pre-configured consumers and producers are provided for
-convenience and as explicit example of how to define own factories with
+convenience and as explicit example of how to define their own factories with
 mixed (de)serializers.
 
 !!! Note
-    The naming follow producer API, where the key follows the value. That\'s
+    The naming follows producer API, where the key follows the value. That\'s
     why the classes are called:
     Value(de)Serializer + Key(de)Serializer.
 

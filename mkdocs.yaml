@@ -2,6 +2,8 @@ site_name: wunderkafka
 repo_url: https://github.com/wunderkafka/wunderkafka
 repo_name: wunderkafka/wunderkafka
 
+strict: true
+
 docs_dir: dev_docs
 site_dir: docs
 watch:
@@ -27,7 +29,7 @@ plugins:
         python:
           options:
             docstring_style: sphinx
-            annotation_path: brief
+            annotations_path: brief
 
 markdown_extensions:
   - pymdownx.highlight:

@@ -1,10 +1,10 @@
 # Advanced Examples
 
-As you've just seen in [`quickstart`](/pages/quickstart/), we
+As you've just seen in [`quickstart`](quickstart.md), we
 couldn't eliminate all the boilerplate which is needed to start
 consumer/producer with ease.
 
-So let's see, what we can do here.
+So let's see what we can do here.
 
 ## Redefining configs
 
@@ -36,18 +36,18 @@ rebuild your own pipeline with minimum effort.
 
 Looks java'sh? I know, forgive me that.
 
-If you like to use inheritance, there is nice examples in
+If you like to use inheritance, there are nice examples in
 `wunderkafka.factories` to start with. Or check
-[`advanced_API`]("/pages/advanced_usage/") (currently to-be-done).
+[`advanced_API`](advanced_API.md) (currently to-be-done).
 
-As you can see it is pretty straightforward and you can write your own
+As you can see it is pretty straightforward, and you can write your own
 containers for schema handling or (de)serialization, still running above
 performant `librdkafka`.
 
 It's also simple enough to redefine every part of the (de)serializing
-pipeline with specific implementation. For example, if there is need to
-keep message's schema in message itself, it is possible to define stub
-instead of schema registry and write own header (un)packer.
+pipeline with a specific implementation. For example, if there is a need to
+keep a message's schema in a message itself, it is possible to define stub
+instead of schema registry and write its own header (un)packer.
 
 ## Exactly-once semantics
 

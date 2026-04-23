@@ -37,10 +37,8 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v8
         with:
-          python-version: 3.x
-      - name: Install doc dependencies
-        run: pip install -r dev_docs/requirements.txt
-      - run: |
-          mkdocs gh-deploy --force
+          enable-cache: true
+          python-version: "3.12"
+      - run: uv run --no-project --with-requirements dev_docs/requirements.lock -- mkdocs gh-deploy --force

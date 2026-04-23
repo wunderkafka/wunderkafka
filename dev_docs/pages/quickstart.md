@@ -24,8 +24,8 @@ What you can (and can't see here):
     configuration parameters for supported `librdkafka` version just in
     your IDE/text editor. No more searching with `Ctrl + F` through
     `CONFIGURATION.md` and dictionaries.
--   you may subscribe to multiple topics via single timestamp or
-    timedelta (per topic definition is also supported)
+-   you may subscribe to multiple topics via a single timestamp or
+    timedelta (per-topic definition is also supported)
 -   by default, you don't need to close consumer manually (though, you
     can still do it). `atexit` is used.
 
@@ -37,36 +37,35 @@ More differences are on the way
 {!../examples/consumer_avro.py!}
 ```
 
--   keys may be ignored, which is totally optional, but may be useful.
+-   keys may be ignored, which is totally optional but may be useful.
 -   the main advantage here is that messages may be consumed with a
-    batch even with avro deserialization, despite of the original API.
+    batch even with avro deserialization, despite the original API.
     It saves time. Really.
 
 Multiple subscriptions example:
 
-{!../../examples/consumer_avro_multiple_subscriptions.py!}
+{!../examples/consumer_avro_multiple_subscriptions.py!}
 
 Let's move on.
 
 ## AvroProducer
 
-Let's skip raw producer, as we can see all benefits in AvroProducer
-either.
+Let's skip raw producer, as we can see all the benefits in AvroProducer too.
 
 ```python
 {!../examples/producer_avro.py!}
 ```
 
--   instead of *producing* message we are thinking in terms of *sending*
+-   instead of *producing* message, we are thinking in terms of *sending*
     message. No big deal as original `produce()` is still under the
     hood, but we automatically use `poll()` for asynchronous
-    communication and `flush()` to await that message is sent. This
-    behaviour is hidden by `blocking` which is `False` by default.
+    communication and `flush()` to await that a message is sent. This
+    behavior is hidden by `blocking` which is `False` by default.
 -   by the way, `atexit` is also used here: producer will try to
-    `flush()`. Nothing is guaranteed if something sudden will happen
-    with process, but manual close is also in danger in that case.
+    `flush()`. Nothing is guaranteed if something sudden happens
+    with the process, but manual close is also in danger in that case.
 -   less boilerplate with text schemas. You may also load it simply from
-    files (via specific "store"), but wait for a minute, you may
+    files (via specific "store"), but wait for a minute, you 
     won't want to use them.
 
 ## AvroModelProducer
@@ -86,5 +85,5 @@ Let's consider the next few lines:
 
 This is a simple API for "daily" usage.
 
-You still can use original rich API of confluent-kafka if needed, but
+You still can use the original rich API of confluent-kafka if needed, but
 from now you have some fast track.
