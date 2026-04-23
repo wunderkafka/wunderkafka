@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.23.0 (2026-04-23)
+
+### Breaking changes
+
+- `SchemaLessJSONStringConsumer` now defaults to `stream_result=True`, matching the Avro and JSON schema-registry factories. Previously, a malformed JSON payload raised `SerializationError` synchronously from `.consume(...)`; it now yields a `StreamResult` wrapping a `PayloadError`. Callers that relied on the raised exception should either handle the `StreamResult` / `PayloadError` path, or construct `HighLevelDeserializingConsumer` directly with `stream_result=False` to restore the previous behaviour.
+
 ## v0.22.0 (2026-04-23)
 
 ### Breaking changes
