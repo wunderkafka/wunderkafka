@@ -36,3 +36,7 @@ if librdkafka.__version__ >= (2, 11, 0):
     from wunderkafka.config.generated.v2_11_0.fields import *  # type: ignore[assignment]
 if librdkafka.__version__ >= (2, 12, 0):
     from wunderkafka.config.generated.v2_12_0.fields import *  # type: ignore[assignment]
+if librdkafka.__version__ >= (2, 13, 0):
+    from wunderkafka.config.generated.v2_13_0.fields import *  # type: ignore[assignment]
+if librdkafka.__version__ >= (2, 14, 0):
+    from wunderkafka.config.generated.v2_14_0.fields import *  # type: ignore[assignment]
