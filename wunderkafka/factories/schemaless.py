@@ -99,5 +99,5 @@ class SchemaLessJSONStringConsumer(HighLevelDeserializingConsumer):
             headers_handler=None,
             value_deserializer=SchemaLessJSONDeserializer(),
             key_deserializer=StringDeserializer(),
-            stream_result=False,
+            stream_result=True,
         )
