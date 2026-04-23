@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## v0.22.0 (2026-04-23)
+
+### Breaking changes
+
+- Dropped Python 3.9 support; `requires-python` is now `>=3.10`. Users on 3.9 should pin to the `v0.21.x` line.
+
+### Features
+
+- Officially supported on Python 3.13 and 3.14.
+- CI matrix now covers `confluent-kafka ~=2.12.0` (primary smoke run on `~=2.14.x`), with the tested floor raised from `~=1.9.0` to `~=2.0.0`.
+- CI matrix now covers `dataclasses-avroschema ~=0.65.7` alongside `~=0.53.0` / `~=0.60.0`.
+
+### Bugfixes
+
+- `avromodel` schema derivation now uses `inspect.get_annotations(...)` instead of `vars(type_).get("__annotations__", {})`. This is the correct API on Python 3.10+ and behaves properly with `from __future__ import annotations` and `ClassVar`, and is a prerequisite for running on Python 3.13/3.14.
+- On deserialization failure, raw key/value payloads are now formatted with `!r` in log messages so non-printable bytes no longer mangle log output.
+- Compatibility note for Python 3.13/3.14 users: `dataclasses-avroschema 0.53.x`/`0.60.x` still hit `TypeError: typing.Annotated cannot be used with issubclass()` (upstream bug in their `is_annotated()`); upgrade to a newer `dataclasses-avroschema` to run on 3.13+.
+
+### Maintenance
+
+- Tightened internal typing across consumer constructor, schema registry client, and JSON/schemaless serializers: consolidated `Union[X, Y]` → `X | Y` now that 3.10 is the floor, and added mypy narrowing (`assert`, `cast`) where the external stubs are loose.
+
 ## v0.21.0 (2025-12-17)
 
 ### Features
