@@ -85,7 +85,7 @@ def get_model_attributes(model_type: type[BaseModel]) -> dict[str, Any]:
                     field_info.annotation = new_annotation
                     attributes[field_name] = (new_annotation, field_info)
                 else:
-                    if issubclass(annotation_type, BaseModel):
+                    if isinstance(annotation_type, type) and issubclass(annotation_type, BaseModel):
                         new_type = _create_model(annotation_type)
                         field_info.annotation = new_type
                         attributes[field_name] = (new_type, field_info)
