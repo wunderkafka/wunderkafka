@@ -74,23 +74,18 @@ def get_model_attributes(model_type: type[BaseModel]) -> dict[str, Any]:
         if field_info.default_factory is not None:
             field_info.default_factory = None
         annotation_type = field_info.annotation
-        if isinstance(annotation_type, BaseModel):
-            attributes[field_name] = create_model(model_type.__name__, __base__=(annotation_type, AvroBaseModel))
+        if annotation_type is None:
+            attributes[field_name] = (annotation_type, field_info)
+        elif is_generic_type(annotation_type):
+            new_annotation = replace_type_in_annotation(annotation_type)
+            field_info.annotation = new_annotation
+            attributes[field_name] = (new_annotation, field_info)
+        elif isinstance(annotation_type, type) and issubclass(annotation_type, BaseModel):
+            new_type = _create_model(annotation_type)
+            field_info.annotation = new_type
+            attributes[field_name] = (new_type, field_info)
         else:
-            if annotation_type is None:
-                attributes[field_name] = (annotation_type, field_info)
-            else:
-                if is_generic_type(annotation_type):
-                    new_annotation = replace_type_in_annotation(annotation_type)
-                    field_info.annotation = new_annotation
-                    attributes[field_name] = (new_annotation, field_info)
-                else:
-                    if isinstance(annotation_type, type) and issubclass(annotation_type, BaseModel):
-                        new_type = _create_model(annotation_type)
-                        field_info.annotation = new_type
-                        attributes[field_name] = (new_type, field_info)
-                    else:
-                        attributes[field_name] = (annotation_type, field_info)
+            attributes[field_name] = (annotation_type, field_info)
     return attributes
 
 
