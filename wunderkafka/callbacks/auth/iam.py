@@ -33,38 +33,31 @@ class OAuthCallback:
 
     def __init__(self, session_name: str):
         self.session_name = session_name
-        self._reset()
-        if hasattr(os, "register_at_fork"):
-            os.register_at_fork(after_in_child=self._reset)
-
-    def _reset(self) -> None:
         self._cached: RefreshableCredentials | None = None
         self._lock = threading.Lock()
 
     def _resolve(self) -> Credentials:
         with patch.dict(os.environ, {"AWS_ROLE_SESSION_NAME": self.session_name}):
             credentials = botocore.session.Session().get_credentials()
+
         if credentials is None:
             msg = "No AWS credentials found for MSK IAM auth"
             raise RuntimeError(msg)
         return credentials
 
     def _credentials(self) -> Credentials:
-        with self._lock:
-            if self._cached is not None:
-                return self._cached
-            credentials = self._resolve()
-            if isinstance(credentials, RefreshableCredentials):
-                self._cached = credentials
-            return credentials
+        if self._cached is not None:
+            return self._cached
 
-    def _forget_cached(self) -> bool:
-        with self._lock:
-            had_cached, self._cached = self._cached is not None, None
-            return had_cached
+        credentials = self._resolve()
+        if isinstance(credentials, RefreshableCredentials):
+            self._cached = credentials
+        return credentials
 
     def _token(self, region: str) -> tuple[Token, ExpiryMs]:
-        provider = _SnapshotCredentialProvider(self._credentials())
+        credentials = self._credentials()
+
+        provider = _SnapshotCredentialProvider(credentials)
         auth_token, expiry_ms = MSKAuthTokenProvider.generate_auth_token_from_credentials_provider(region, provider)
         logger.info(f"Generated auth token for region {region} with expiry {ts2dt(expiry_ms)}")
         return auth_token, expiry_ms / 1000
@@ -74,13 +67,16 @@ class OAuthCallback:
         if not region:
             msg = "Region not set - export AWS_REGION or AWS_DEFAULT_REGION before running."
             raise RuntimeError(msg)
-        try:
-            return self._token(region)
-        except (BotoCoreError, ClientError):
-            if not self._forget_cached():
-                raise
-            logger.warning("Cached AWS credentials failed to renew, resolving them again", exc_info=True)
-            return self._token(region)
+
+        with self._lock:
+            try:
+                return self._token(region)
+            except (BotoCoreError, ClientError):
+                if self._cached is None:
+                    raise
+                self._cached = None
+                logger.warning("Cached AWS credentials failed to renew, resolving them again", exc_info=True)
+                return self._token(region)
 
 
 # as the librdkafka on `sasl.oauthbearer.config` doc says,

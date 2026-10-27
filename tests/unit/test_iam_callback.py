@@ -134,22 +134,6 @@ def test_token_is_signed_with_one_consistent_refreshed_credentials_set(monkeypat
     assert second["X-Amz-Security-Token"] == [second_key.replace("ASIAKEY", "token")]
 
 
-def test_forked_child_resolves_credentials_again(
-    monkeypatch: pytest.MonkeyPatch,
-    sessions_created: list[botocore.session.Session],
-) -> None:
-    credentials = _rotating_credentials(expires_in=datetime.timedelta(hours=1))
-    monkeypatch.setattr(botocore.session.Session, "get_credentials", lambda _: credentials)
-    callback = OAuthCallback(SESSION_NAME)
-    callback(None)
-
-    callback._reset()  # noqa: SLF001
-    callback(None)
-
-    parent_session, child_session = sessions_created
-    assert parent_session is not child_session
-
-
 @pytest.mark.parametrize("error", RENEWAL_FAILURES)
 def test_cached_credentials_that_fail_to_renew_are_resolved_again(
     monkeypatch: pytest.MonkeyPatch,
