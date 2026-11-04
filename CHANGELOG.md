@@ -2,9 +2,13 @@
 
 ## v0.24.0 (2026-10-20)
 
+### Breaking changes
+
+- Removed `oauth_callback`, use `OAuthCallback()` instead.
+
 ### Bugfixes
 
-- `OAuthCallback` (`wunderkafka.callbacks.auth.iam`) resolves botocore credentials once per instance and reuses them instead of building a new botocore session on every token refresh. On `BotoCoreError`/`ClientError` the cached credentials are dropped and the error is re-raised, so the next retry resolves them anew.
+- `OAuthCallback` resolves AWS credentials once per instance instead of building a botocore session on every token refresh.
 
 ## v0.23.0 (2026-04-23)
 

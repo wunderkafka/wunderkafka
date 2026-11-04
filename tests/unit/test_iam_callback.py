@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import base64
 import datetime
 from urllib.parse import parse_qs, urlparse
@@ -134,3 +135,29 @@ def test_credentials_that_fail_to_renew_are_resolved_again_on_the_next_call(
 
     assert len(sessions_created) == 2
     assert _access_key(token) == "ASIAKEY1"
+
+
+@pytest.mark.parametrize(
+    ("session_name", "expected"),
+    [
+        pytest.param(SESSION_NAME, SESSION_NAME, id="named-overrides-env"),
+        pytest.param(None, "from-env", id="unnamed-keeps-env"),
+    ],
+)
+def test_role_session_name_is_set_only_when_given(
+    monkeypatch: pytest.MonkeyPatch,
+    session_name: str | None,
+    expected: str,
+) -> None:
+    monkeypatch.setenv("AWS_ROLE_SESSION_NAME", "from-env")
+    seen: list[str | None] = []
+
+    def get_credentials(_: botocore.session.Session) -> RefreshableCredentials:
+        seen.append(os.environ.get("AWS_ROLE_SESSION_NAME"))
+        return _rotating_credentials(expires_in=datetime.timedelta(hours=1))
+
+    monkeypatch.setattr(botocore.session.Session, "get_credentials", get_credentials)
+
+    OAuthCallback(session_name)(None)
+
+    assert seen == [expected]
