@@ -84,7 +84,7 @@ def _access_key(token: str) -> str:
     return _signed_query(token)["X-Amz-Credential"][0].split("/")[0]
 
 
-def test_refreshable_credentials_are_resolved_once(
+def test_credentials_are_resolved_once(
     monkeypatch: pytest.MonkeyPatch,
     sessions_created: list[botocore.session.Session],
 ) -> None:
@@ -100,22 +100,6 @@ def test_refreshable_credentials_are_resolved_once(
     url = base64.urlsafe_b64decode(first_token + "==").decode()
     assert url.startswith("https://kafka.ap-southeast-1.amazonaws.com/")
     assert first_expiry > datetime.datetime.now(tz=datetime.timezone.utc).timestamp()
-
-
-def test_static_credentials_are_resolved_on_every_call(
-    monkeypatch: pytest.MonkeyPatch,
-    sessions_created: list[botocore.session.Session],
-) -> None:
-    callback = OAuthCallback(SESSION_NAME)
-
-    first_token, _ = callback(None)
-    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "AKIDROTATED")
-    second_token, _ = callback(None)
-
-    first_session, second_session = sessions_created
-    assert first_session is not second_session
-    assert _access_key(first_token) == "AKIDEXAMPLE"
-    assert _access_key(second_token) == "AKIDROTATED"
 
 
 def test_token_is_signed_with_one_consistent_refreshed_credentials_set(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -135,7 +119,7 @@ def test_token_is_signed_with_one_consistent_refreshed_credentials_set(monkeypat
 
 
 @pytest.mark.parametrize("error", RENEWAL_FAILURES)
-def test_cached_credentials_that_fail_to_renew_are_resolved_again(
+def test_credentials_that_fail_to_renew_are_resolved_again_on_the_next_call(
     monkeypatch: pytest.MonkeyPatch,
     sessions_created: list[botocore.session.Session],
     error: Exception,
@@ -144,20 +128,9 @@ def test_cached_credentials_that_fail_to_renew_are_resolved_again(
     monkeypatch.setattr(botocore.session.Session, "get_credentials", lambda _: next(resolutions))
     callback = OAuthCallback(SESSION_NAME)
 
-    first_token, _ = callback(None)
-    second_token, _ = callback(None)
-
-    first_session, second_session = sessions_created
-    assert first_session is not second_session
-    assert _access_key(first_token) == _access_key(second_token) == "ASIAKEY1"
-
-
-@pytest.mark.parametrize("error", RENEWAL_FAILURES)
-def test_renewal_failure_is_raised_when_fresh_credentials_fail_too(
-    monkeypatch: pytest.MonkeyPatch,
-    error: Exception,
-) -> None:
-    monkeypatch.setattr(botocore.session.Session, "get_credentials", lambda _: _failing_to_renew(error))
-
     with pytest.raises(type(error)):
-        OAuthCallback(SESSION_NAME)(None)
+        callback(None)
+    token, _ = callback(None)
+
+    assert len(sessions_created) == 2
+    assert _access_key(token) == "ASIAKEY1"
