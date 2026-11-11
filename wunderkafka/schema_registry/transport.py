@@ -8,6 +8,7 @@ from wunderkafka.schema_registry.abc import AbstractHTTPClient
 from wunderkafka.config.schema_registry import SRConfig
 from wunderkafka.schema_registry.compat import http
 from wunderkafka.config.krb.schema_registry import HTTPKerberosAuth
+from wunderkafka.schema_registry.credentials import split_url_credentials
 
 
 class KerberizableHTTPClient(AbstractHTTPClient):
@@ -20,6 +21,8 @@ class KerberizableHTTPClient(AbstractHTTPClient):
         cmd_kinit: Optional[str] = None,
         krb_timeout: int = 60,
     ) -> None:
+        split = split_url_credentials(config.url)
+
         s = http.Session()
         if requires_kerberos and cmd_kinit is not None:
             init_kerberos(cmd_kinit, krb_timeout)
@@ -27,6 +30,8 @@ class KerberizableHTTPClient(AbstractHTTPClient):
                 principal=config.sasl_username,
                 mutual_authentication=config.mutual_auth,
             )
+        elif split.credentials is not None:
+            s.auth = (split.credentials.username, split.credentials.password)
 
         if config.ssl_certificate_location is not None:
             if config.ssl_key_location is not None:
@@ -52,7 +57,7 @@ class KerberizableHTTPClient(AbstractHTTPClient):
         )
 
         self._session = s
-        self._base_url = config.url
+        self._base_url = split.url
 
         self._save_replay = save_replay
 

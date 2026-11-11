@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.23.1 (2026-11-10)
+
+### Bugfixes
+
+- Schema Registry credentials embedded in `SRConfig.url` (`https://user:password@host`) no longer leak into logs or exception messages (e.g. `HTTPError: 503 ... for url: https://user:password@host/...`). `KerberizableHTTPClient` now strips the credentials from the base URL and sends them as HTTP Basic auth through the session; the `Authorization` header on the wire is unchanged.
+
 ## v0.23.0 (2026-04-23)
 
 ### Breaking changes
