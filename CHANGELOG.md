@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## v0.23.1 (2026-11-12)
+
+### Bugfixes
+
+- fixed `ModuleNotFoundError: No module named 'httpx'` on import with `confluent-kafka>=2.16`, which ships `httpx2` instead of `httpx` on python 3.10+
+
+### Package
+
+- `typing-extensions>=4.13.0` is now an explicit dependency for python < 3.15
+
+### Maintenance
+
+- fixed typing for mypy 2.x, thx to @skar404
+
 ## v0.23.0 (2026-04-23)
 
 ### Breaking changes
