@@ -1,6 +1,6 @@
 from typing import Any, Optional, get_args, get_origin
 
-from typing_extensions import TypeForm
+from wunderkafka.compat import TypeForm
 
 
 def is_generic_type(annotation: Optional[TypeForm[Any]]) -> bool:
