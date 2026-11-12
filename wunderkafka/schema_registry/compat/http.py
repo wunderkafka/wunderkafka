@@ -3,8 +3,8 @@ try:
 except ImportError:
     # confluent-kafka>=2.16 on Python>=3.10 ships httpx2 instead of httpx
     try:
-        from httpx2 import Client as Session
-        from httpx2 import Response
+        from httpx2 import Client as Session  # type: ignore[import-not-found]
+        from httpx2 import Response  # type: ignore[import-not-found]
     except ImportError:
-        from httpx import Client as Session
-        from httpx import Response
+        from httpx import Client as Session  # type: ignore[import-not-found]
+        from httpx import Response  # type: ignore[import-not-found]
