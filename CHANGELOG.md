@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.24.0 (2026-11-12)
+
+### Breaking changes
+
+- dropped python 3.10 support, `requires-python` is now `>=3.11`; users on 3.10 should pin to `v0.23.x`
+
+### Maintenance
+
+- removed compatibility code for python < 3.11, `HTTPMethod` is now `http.HTTPMethod` from the standard library
+
 ## v0.23.1 (2026-11-12)
 
 ### Bugfixes
