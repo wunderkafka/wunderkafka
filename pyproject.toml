@@ -73,6 +73,7 @@ module = [
 	"dataclasses_avroschema.*",
 	"fastavro.*",
 	"httpx.*",
+	"httpx2.*",
 	"loguru.*",
 	"pydantic.*",
 	"requests.*",
