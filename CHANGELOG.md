@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v0.25.0 (2026-11-13)
+
+### Breaking changes
+
+- Removed `oauth_callback`, use `OAuthCallback()` instead.
+
+### Bugfixes
+
+- `OAuthCallback` resolves AWS credentials once per instance instead of building a botocore session on every token refresh.
+
 ## v0.24.0 (2026-11-12)
 
 ### Breaking changes

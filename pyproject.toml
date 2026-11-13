@@ -69,10 +69,12 @@ warn_required_dynamic_aliases = true
 [[tool.mypy.overrides]]
 module = [
     "aws_msk_iam_sasl_signer.*",
+	"botocore.*",
 	"confluent_kafka.*",
 	"dateutil.*",
 	"dataclasses_avroschema.*",
 	"fastavro.*",
+	"httpx.*",
 	"loguru.*",
 	"pydantic.*",
 	"requests.*",
