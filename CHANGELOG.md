@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v0.24.0 (2026-10-20)
+## v0.25.0 (2026-11-13)
 
 ### Breaking changes
 
@@ -9,6 +9,30 @@
 ### Bugfixes
 
 - `OAuthCallback` resolves AWS credentials once per instance instead of building a botocore session on every token refresh.
+
+## v0.24.0 (2026-11-12)
+
+### Breaking changes
+
+- dropped python 3.10 support, `requires-python` is now `>=3.11`; users on 3.10 should pin to `v0.23.x`
+
+### Maintenance
+
+- removed compatibility code for python < 3.11, `HTTPMethod` is now `http.HTTPMethod` from the standard library
+
+## v0.23.1 (2026-11-12)
+
+### Bugfixes
+
+- fixed `ModuleNotFoundError: No module named 'httpx'` on import with `confluent-kafka>=2.16`, which ships `httpx2` instead of `httpx` on python 3.10+
+
+### Package
+
+- `typing-extensions>=4.13.0` is now an explicit dependency for python < 3.15
+
+### Maintenance
+
+- fixed typing for mypy 2.x, thx to @skar404
 
 ## v0.23.0 (2026-04-23)
 
