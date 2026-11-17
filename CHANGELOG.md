@@ -1,10 +1,34 @@
 # CHANGELOG
 
-## v0.23.1 (2026-11-10)
+## v0.24.1 (2026-11-17)
 
 ### Bugfixes
 
 - Schema Registry credentials embedded in `SRConfig.url` (`https://user:password@host`) no longer leak into logs or exception messages (e.g. `HTTPError: 503 ... for url: https://user:password@host/...`). `KerberizableHTTPClient` now strips the credentials from the base URL and sends them as HTTP Basic auth through the session; the `Authorization` header on the wire is unchanged.
+
+## v0.24.0 (2026-11-12)
+
+### Breaking changes
+
+- dropped python 3.10 support, `requires-python` is now `>=3.11`; users on 3.10 should pin to `v0.23.x`
+
+### Maintenance
+
+- removed compatibility code for python < 3.11, `HTTPMethod` is now `http.HTTPMethod` from the standard library
+
+## v0.23.1 (2026-11-12)
+
+### Bugfixes
+
+- fixed `ModuleNotFoundError: No module named 'httpx'` on import with `confluent-kafka>=2.16`, which ships `httpx2` instead of `httpx` on python 3.10+
+
+### Package
+
+- `typing-extensions>=4.13.0` is now an explicit dependency for python < 3.15
+
+### Maintenance
+
+- fixed typing for mypy 2.x, thx to @skar404
 
 ## v0.23.0 (2026-04-23)
 

@@ -1,7 +1,6 @@
-import sys
 import json
 import time
-from typing import Union, Optional
+from typing import Optional
 from datetime import datetime
 from dataclasses import dataclass
 
@@ -275,24 +274,14 @@ def test_pydantic_base_settings_with_defaults() -> None:
     }
 
 
-if sys.version_info <= (3, 10):
+class ParentOptional(BaseModel):
+    volume: float = Field(description="...")
+    weight: float | None = Field(description="...")
 
-    class ParentOptional(BaseModel):
-        volume: float = Field(description="...")
-        weight: Optional[float] = Field(description="...")
 
-    class ParentUnion(BaseModel):
-        payload: Union[bytes, str]
-        value: float
-else:
-
-    class ParentOptional(BaseModel):
-        volume: float = Field(description="...")
-        weight: float | None = Field(description="...")
-
-    class ParentUnion(BaseModel):
-        payload: bytes | str
-        value: float
+class ParentUnion(BaseModel):
+    payload: bytes | str
+    value: float
 
 
 def test_optional_type() -> None:

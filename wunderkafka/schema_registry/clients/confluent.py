@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Optional, Protocol
 
-from typing_extensions import Protocol
 from confluent_kafka.schema_registry import Schema
 from confluent_kafka.schema_registry import SchemaRegistryClient as ConfluentSchemaRegistryClient
 
